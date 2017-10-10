@@ -135,7 +135,7 @@ com.walker.customer.photo.getGridPnl = function(){
 		totalProperty : 'total'
 	});
 	var store = new Ext.data.Store({
-		url : '/sync/photo/getPhotoListPage',
+		url : '/walker/photo/getPhotoListPage',
 		reader : reader,
 		baseParams : {
 			limit : 15,
@@ -236,7 +236,7 @@ com.walker.customer.photo.getGridPnl = function(){
 			listeners:{
 				afteredit : function(val){
 					Ext.Ajax.request({
-						url: '/sync/photo/savePhoto',
+						url: '/walker/photo/savePhoto',
 						params: {
 							id : val.record.get("id"),
 							name : val.record.get("name"),
@@ -289,7 +289,7 @@ com.walker.customer.photo.deletePhoto=function(){
 			return;
 		}
 		Ext.Ajax.request( {
-			url : '/sync/photo/deletePhoto',
+			url : '/walker/photo/deletePhoto',
 			success : function(response) {
 				var result = Ext.decode(response.responseText);
 				if (result.success) {
@@ -422,7 +422,7 @@ com.walker.customer.photo.fileOutput=function(){
 	    }  
 		// 请求附件下载  
 		Ext.Ajax.request({
-			url : "/sync/video/downloadVideo",
+			url : "/walker/video/downloadVideo",
 		    isUpload : true,
 		    form : Ext.fly('downloadAttachFileForm'),
 		    method : 'POST',

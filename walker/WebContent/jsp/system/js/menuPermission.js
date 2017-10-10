@@ -263,7 +263,7 @@ Ext.onReady(function(){
 							}
 			            }],
 					loader: new Tree.TreeLoader({
-						dataUrl : '/sync/user/getTreeMenuPermissionList'
+						dataUrl : '/walker/user/getTreeMenuPermissionList'
 					})
 				});
 				
@@ -332,7 +332,7 @@ com.walker.menuPermission.deleteTreeNode = function() {
 			if(btn!='yes'){return;}
 			//保存请求后台
 			Ext.Ajax.request({
-			   url: '/sync/user/deleteMenu',
+			   url: '/walker/user/deleteMenu',
 			   params: { 
 				   MENU_ID : com.walker.menuPermission.contentPnl.find("name","MENU_ID")[0].getValue()
 			   },
@@ -391,7 +391,7 @@ com.walker.menuPermission.saveTreeNode = function() {
 		
 		//保存请求后台
 		Ext.Ajax.request({
-		   url: '/sync/user/saveMenu.do',
+		   url: '/walker/user/saveMenu.do',
 		   success: function(response) {
 			   var result = Ext.util.JSON.decode(response.responseText);
 				if(result.success == 'success'){

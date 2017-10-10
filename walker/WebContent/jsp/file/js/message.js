@@ -134,7 +134,7 @@ com.walker.file.message.getGridPnl = function(){
 		totalProperty : 'total'
 	});
 	var store = new Ext.data.Store({
-		url : '/sync/file/getMessageListPage',
+		url : '/walker/file/getMessageListPage',
 		reader : reader,
 		baseParams : {
 			limit : 15,
@@ -273,7 +273,7 @@ com.walker.file.message.editMessage = function(types) {
 		var rec = com.walker.common.getSelectRecord(com.walker.file.message.messageGridPnl,true);
 		if(rec){
 			Ext.Ajax.request({
-				url: '/sync/file/getMessageById',
+				url: '/walker/file/getMessageById',
 				params : {
 					id:rec.get('id')
 				},
@@ -436,7 +436,7 @@ com.walker.file.message.saveMessage=function(){
 			com.walker.file.message.messageFormPnl.getForm().submit({
 				method:"POST",
 				waitMsg:"保存中,请稍后...",
-				url : "/sync/file/saveMessage",
+				url : "/walker/file/saveMessage",
 				success: function(form, action) {
 						if(action.result.success){
 							Ext.Msg.alert("提示","保存成功" ,function() {
@@ -475,7 +475,7 @@ com.walker.file.message.deleteMessage=function(){
 			return;
 		}
 		Ext.Ajax.request( {
-			url : '/sync/file/deleteMessage',
+			url : '/walker/file/deleteMessage',
 			success : function(response) {
 				var result = Ext.decode(response.responseText);
 				if (result.success) {
@@ -558,7 +558,7 @@ com.walker.file.message.inputWinForm=function(){
 com.walker.file.message.fileInput=function(){
 
 	com.walker.file.message.formPanel.getForm().submit({
-		url:'/sync/file/importExcel',
+		url:'/walker/file/importExcel',
 		method :'POST',
 		waitMsg:"导入中,请稍后...",
 		success: function(form ,action) {		
@@ -596,7 +596,7 @@ com.walker.file.message.exportExcel=function(){
 			return;
 		}
 		Ext.Ajax.request( {
-			url : '/sync/file/exportExcel',
+			url : '/walker/file/exportExcel',
 			success : function(response) {
 				var result = Ext.decode(response.responseText);
 				if (result.success) {
@@ -623,7 +623,7 @@ com.walker.file.message.exportPDF = function() {
 				return;
 			}
 			Ext.Ajax.request({
-				url: '/sync/file/exportPDF',
+				url: '/walker/file/exportPDF',
 				params : {
 					id:rec.get('id')
 				},
@@ -663,7 +663,7 @@ com.walker.file.message.exportListPDF=function(){
 			return;
 		}
 		Ext.Ajax.request( {
-			url : '/sync/file/exportListPDF',
+			url : '/walker/file/exportListPDF',
 			success : function(response) {
 				var result = Ext.decode(response.responseText);
 				if (result.success) {

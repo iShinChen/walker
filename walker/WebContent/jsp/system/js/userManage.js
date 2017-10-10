@@ -111,7 +111,7 @@ com.walker.userManage.getGridPnl = function(){
 		totalProperty : 'total'
 	});
 	var store = new Ext.data.Store({
-		url : '/sync/user/getUserListPage',
+		url : '/walker/user/getUserListPage',
 		reader : reader,
 		baseParams : {
 			limit : 20,
@@ -420,7 +420,7 @@ com.walker.userManage.createUserFormPnl = function(user) {
             		
             		//保存请求后台
     				Ext.Ajax.request({
-    				   url: '/sync/user/saveUser',
+    				   url: '/walker/user/saveUser',
     				   success: function(response) {
     					   var result = Ext.util.JSON.decode(response.responseText);
     						if(result.success == 'success'){
@@ -468,7 +468,7 @@ Ext.onReady(function() {
 	
 	//角色下拉数据
 	com.walker.userManage.roleStore = new Ext.data.Store({
-			url : '/sync/user/getRoleStore',
+			url : '/walker/user/getRoleStore',
 			reader : new Ext.data.JsonReader({
 						fields : ["TEXT","ID"],
 						root : 'rows'
@@ -587,7 +587,7 @@ com.walker.userManage.updateUserPassword=function(){
 		Ext.Ajax.request({
 			method:"POST",
 			waitMsg:"保存中，请稍后...",
-			url : "/sync/user/updatePassword",
+			url : "/walker/user/updatePassword",
 			params: { 
 				userId : com.walker.userManage.record.get("ID"),
 				NPASSWORD : Ext.util.MD5(npassword)
@@ -623,7 +623,7 @@ com.walker.userManage.daleteUser=function(){
 		var sumBtn = function(btn){
 			if(btn!='yes'){return;}
 			Ext.Ajax.request({
-				url: '/sync/user/deleteUser',
+				url: '/walker/user/deleteUser',
 				params: {
 					ids : ids.substring(0,ids.lastIndexOf(','))
 				},

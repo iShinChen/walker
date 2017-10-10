@@ -6,7 +6,7 @@ com.walker.permission.rolePermissionChecked = "";
 com.walker.permission.userpermission = function(menuId) {
 	//查询请求后台
 	Ext.Ajax.request({
-	   url: '/sync/user/getPermission',
+	   url: '/walker/user/getPermission',
 	   success: com.walker.permission.loadPerSuccess,
 	   params : {
 			menuId : menuId
@@ -55,7 +55,7 @@ com.walker.permission.showRolePermissionTree = function(roleId){
 				}
             }],
 		loader: new Ext.tree.TreeLoader({
-			dataUrl : '/sync/user/getTreeMenuPermissionListByRole',
+			dataUrl : '/walker/user/getTreeMenuPermissionListByRole',
 			baseParams : {  
                 roleId : roleId
             } 
@@ -111,7 +111,7 @@ com.walker.permission.showRolePermissionTree = function(roleId){
                 
                 //查询请求后台
             	Ext.Ajax.request({
-            	   url: '/sync/user/saveRoleMenuPermission',
+            	   url: '/walker/user/saveRoleMenuPermission',
             	   success: function(response) {
             		   var result = Ext.util.JSON.decode(response.responseText);
             		   com.walker.permission.rolePermissionTree.getRootNode().reload();

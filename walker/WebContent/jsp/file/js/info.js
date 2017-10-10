@@ -110,7 +110,7 @@ com.walker.file.info.getGridPnl = function(){
 		totalProperty : 'total'
 	});
 	var store = new Ext.data.Store({
-		url : '/sync/info/getInfoListPage',
+		url : '/walker/info/getInfoListPage',
 		reader : reader,
 		baseParams : {
 			limit : 15,
@@ -237,7 +237,7 @@ com.walker.file.info.editInfo = function(types) {
 		var rec = com.walker.common.getSelectRecord(com.walker.file.info.infoGridPnl,true);
 		if(rec){
 			Ext.Ajax.request({
-				url: '/sync/info/getInfoById',
+				url: '/walker/info/getInfoById',
 				params : {
 					id:rec.get('id')
 				},
@@ -399,7 +399,7 @@ com.walker.file.info.saveInfo=function(){
 			com.walker.file.info.infoFormPnl.getForm().submit({
 				method:"POST",
 				waitMsg:"保存中,请稍后...",
-				url : "/sync/info/saveInfo",
+				url : "/walker/info/saveInfo",
 				success: function(form, action) {
 						if(action.result.success){
 							Ext.Msg.alert("提示","保存成功" ,function() {
@@ -438,7 +438,7 @@ com.walker.file.info.deleteInfo=function(){
 			return;
 		}
 		Ext.Ajax.request( {
-			url : '/sync/info/deleteInfo',
+			url : '/walker/info/deleteInfo',
 			success : function(response) {
 				var result = Ext.decode(response.responseText);
 				if (result.success) {
@@ -478,7 +478,7 @@ Ext.onReady(function() {
 
 //资讯类型
 com.walker.file.info.info_type = new Ext.data.Store({
-	url : '/sync/user/getPubCode?PUB_CODE_NAME=INFO_TYPE',
+	url : '/walker/user/getPubCode?PUB_CODE_NAME=INFO_TYPE',
 	reader : new Ext.data.JsonReader({
 		fields : ["VALUE","CODE"],
 		root : 'data'

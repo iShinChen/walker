@@ -4,7 +4,7 @@ com.walker.preview.previewInfo=function(gridPnl){
 	var rec = com.walker.common.getSelectRecord(gridPnl,true);
 	if(rec){
 		Ext.Ajax.request({
-			url: '/sync/info/getInfoById',
+			url: '/walker/info/getInfoById',
 			params : {
 				id:rec.get('id')
 			},

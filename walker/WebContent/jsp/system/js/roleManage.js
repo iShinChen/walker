@@ -94,7 +94,7 @@ com.walker.roleManage.getGridPnl = function(){
 		totalProperty : 'total'
 	});
 	var store = new Ext.data.Store({
-		url : '/sync/user/getRoleListPage',
+		url : '/walker/user/getRoleListPage',
 		reader : reader,
 		baseParams : {
 			limit : 20,
@@ -220,7 +220,7 @@ com.walker.roleManage.deleteRole = function() {
 		var sumBtn = function(btn){
 			if(btn!='yes'){return;}
 			Ext.Ajax.request({
-				url: '/sync/user/deleteRole',
+				url: '/walker/user/deleteRole',
 				params: {
 					ids : ids.substring(0,ids.lastIndexOf(','))
 				},
@@ -371,7 +371,7 @@ com.walker.roleManage.createRoleFormPnl = function(role) {
             		
             		//保存请求后台
     				Ext.Ajax.request({
-    				   url: '/sync/user/saveRole',
+    				   url: '/walker/user/saveRole',
     				   success: function(response) {
     					   var result = Ext.util.JSON.decode(response.responseText);
     						if(result.success == 'success'){

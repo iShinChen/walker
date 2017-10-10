@@ -111,7 +111,7 @@ com.walker.file.video.getGridPnl = function(){
 		totalProperty : 'total'
 	});
 	var store = new Ext.data.Store({
-		url : '/sync/video/getVideoListPage',
+		url : '/walker/video/getVideoListPage',
 		reader : reader,
 		baseParams : {
 			limit : 15,
@@ -282,7 +282,7 @@ com.walker.file.video.getGridPnl = function(){
 			listeners:{
 				afteredit : function(val){
 					Ext.Ajax.request({
-						url: '/sync/video/saveVideo',
+						url: '/walker/video/saveVideo',
 						params: {
 							id : val.record.get("id"),
 							name : val.record.get("name"),
@@ -333,7 +333,7 @@ com.walker.file.video.deleteVideo=function(){
 			return;
 		}
 		Ext.Ajax.request( {
-			url : '/sync/video/deleteVideo',
+			url : '/walker/video/deleteVideo',
 			success : function(response) {
 				var result = Ext.decode(response.responseText);
 				if (result.success) {
@@ -460,7 +460,7 @@ com.walker.file.video.inputWinForm=function(){
 com.walker.file.video.fileInput=function(){
 
 	com.walker.file.video.formPanel.getForm().submit({
-		url:'/sync/video/uploadVideo',
+		url:'/walker/video/uploadVideo',
 		method :'POST',
 		waitMsg:"上传中,请稍后...",
 		success: function(form ,action) {		
@@ -504,7 +504,7 @@ com.walker.file.video.fileOutput=function(){
 	    }  
 		// 请求附件下载  
 		Ext.Ajax.request({
-			url : "/sync/video/downloadVideo",
+			url : "/walker/video/downloadVideo",
 		    isUpload : true,
 		    form : Ext.fly('downloadAttachFileForm'),
 		    method : 'POST',
@@ -533,7 +533,7 @@ com.walker.file.video.getDownloadProgress = function(videoId) {
 	var task = {
 		run: function () {
 			Ext.Ajax.request({
-				url: '/sync/video/findDownloadProgress',
+				url: '/walker/video/findDownloadProgress',
 				params: {
 					videoId : videoId
 				},
@@ -572,7 +572,7 @@ com.walker.file.video.getUploadProgress = function(videoId) {
 	var task = {
 		run: function () {
 			Ext.Ajax.request({
-				url: '/sync/video/findUploadProgress',
+				url: '/walker/video/findUploadProgress',
 				params: {
 					videoId : videoId
 				},

@@ -103,7 +103,7 @@ com.walker.systemConfig.getGridPnl = function(){
 		totalProperty : 'total'
 	});
 	var store = new Ext.data.Store({
-		url : '/sync/user/getSysConfigListPage',
+		url : '/walker/user/getSysConfigListPage',
 		reader : reader,
 		baseParams : {
 			limit : 15,
@@ -309,7 +309,7 @@ com.walker.systemConfig.saveSysConfigInfo=function(){
 		com.walker.systemConfig.formPanel.getForm().submit({
 			method:"POST",
 			waitMsg:"保存中,请稍后...",
-			url : "/sync/user/saveSysConfigInfo",
+			url : "/walker/user/saveSysConfigInfo",
 			params : {
 				ID : com.walker.systemConfig.formPanel.find("name", "id")[0].getValue(),
 				CODE : com.walker.systemConfig.formPanel.find("name", "code")[0].getValue(),
@@ -336,7 +336,7 @@ com.walker.systemConfig.flushSysConfig=function(){
 	var sumBtn = function(btn){
 		if(btn!='yes'){return;}
 		Ext.Ajax.request({
-			url: '/sync/user/flushSysConfig.do',
+			url: '/walker/user/flushSysConfig.do',
 			success: function(response) {
 				var result = Ext.decode(response.responseText);
 				if(result.success){

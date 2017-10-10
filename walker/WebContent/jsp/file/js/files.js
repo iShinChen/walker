@@ -102,7 +102,7 @@ com.walker.file.files.getGridPnl = function(){
 		totalProperty : 'total'
 	});
 	var store = new Ext.data.Store({
-		url : '/sync/files/getFileListPage',
+		url : '/walker/files/getFileListPage',
 		reader : reader,
 		baseParams : {
 			limit : 15,
@@ -209,7 +209,7 @@ com.walker.file.files.getGridPnl = function(){
 			listeners:{
 				afteredit : function(val){
 					Ext.Ajax.request({
-						url: '/sync/files/saveFile',
+						url: '/walker/files/saveFile',
 						params: {
 							id : val.record.get("id"),
 							name : val.record.get("name"),
@@ -260,7 +260,7 @@ com.walker.file.files.deleteFile=function(){
 			return;
 		}
 		Ext.Ajax.request( {
-			url : '/sync/files/deleteFile',
+			url : '/walker/files/deleteFile',
 			success : function(response) {
 				var result = Ext.decode(response.responseText);
 				if (result.success) {
@@ -343,7 +343,7 @@ com.walker.file.files.inputWinForm=function(){
 com.walker.file.files.fileInput=function(){
 
 	com.walker.file.files.formPanel.getForm().submit({
-		url:'/sync/files/uploadFile',
+		url:'/walker/files/uploadFile',
 		method :'POST',
 		waitMsg:"上传中,请稍后...",
 		success: function(form ,action) {		
@@ -375,7 +375,7 @@ com.walker.file.files.fileOutput=function(){
 	    }  
 		// 请求附件下载  
 		Ext.Ajax.request({
-			url : "/sync/files/downLoadFile",
+			url : "/walker/files/downLoadFile",
 		    isUpload : true,
 		    form : Ext.fly('downloadAttachFileForm'),
 		    method : 'POST',

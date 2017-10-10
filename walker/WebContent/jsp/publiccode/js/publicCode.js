@@ -112,7 +112,7 @@ com.walker.publicCode.getGridPnl = function(){
 		totalProperty : 'total'
 	});
 	var store = new Ext.data.Store({
-		url : '/sync/user/getPublicCodeListPage',
+		url : '/walker/user/getPublicCodeListPage',
 		reader : reader,
 		baseParams : {
 			limit : 15,
@@ -237,7 +237,7 @@ com.walker.publicCode.update=function(){
 		
 		com.walker.publicCode.createType="2";
 		Ext.Ajax.request({
-			url: '/sync/user/selectPublicCodeInfoById',
+			url: '/walker/user/selectPublicCodeInfoById',
 			params : {
 				ID:rec.get('ID')
 			},
@@ -410,7 +410,7 @@ com.walker.publicCode.savePublicCodeInfo=function(){
 			com.walker.publicCode.formPanel.getForm().submit({
 				method:"POST",
 				waitMsg:"保存中,请稍后...",
-				url : "/sync/user/savePublicCodeInfo",		
+				url : "/walker/user/savePublicCodeInfo",		
 				success: function(form, action) {
 					if(action.result.success){
 						Ext.Msg.alert("提示","保存成功" ,function() {
@@ -443,7 +443,7 @@ com.walker.publicCode.deletePublicCode=function(){
 		var sumBtn = function(btn){
 			if(btn!='yes'){return;}
 			Ext.Ajax.request({
-				url: '/sync/user/deletePublicCodeInfo',
+				url: '/walker/user/deletePublicCodeInfo',
 				params: {
 				   codeId:selReds.get('ID')
 				},
@@ -471,7 +471,7 @@ com.walker.publicCode.flushBookConfig=function(){
 	var sumBtn = function(btn){
 		if(btn!='yes'){return;}
 		Ext.Ajax.request({
-			url: '/sync/user/flushBookConfig',
+			url: '/walker/user/flushBookConfig',
 			success: function(response) {
 				var result = Ext.decode(response.responseText);
 				if(result.success){
@@ -492,7 +492,7 @@ com.walker.publicCode.createContent=function(){
 	var rec = com.walker.common.getSelectRecord(com.walker.publicCode.publicCodeGridPnl,true);
 	if(rec){
 		Ext.Ajax.request({
-			url: '/sync/user/selectPublicCodeInfoById',
+			url: '/walker/user/selectPublicCodeInfoById',
 			params : {
 				ID:rec.get('ID')
 			},
@@ -628,7 +628,7 @@ com.walker.publicCode.getContentGridPnl=function(){
 		totalProperty : 'total'
 	});
 	var store = new Ext.data.Store({
-		url : '/sync/user/getPublicCodeListPage',
+		url : '/walker/user/getPublicCodeListPage',
 		reader : reader,
 		baseParams : {
 			limit : 15,
@@ -749,7 +749,7 @@ com.walker.publicCode.updateContent=function(){
 	if(rec){
 		com.walker.publicCode.cType="2";
 		Ext.Ajax.request({
-			url: '/sync/user/selectPublicCodeInfoById',
+			url: '/walker/user/selectPublicCodeInfoById',
 			params : {
 				ID:rec.get('ID')
 			},
@@ -938,7 +938,7 @@ com.walker.publicCode.savePublicCodeContent=function(){
 			com.walker.publicCode.nformPanel.getForm().submit({
 				method:"POST",
 				waitMsg:"保存中,请稍后...",
-				url : "/sync/user/savePublicCodeInfo",		
+				url : "/walker/user/savePublicCodeInfo",		
 				success: function(form, action) {
 					if(action.result.success){
 						Ext.Msg.alert("提示","保存成功" ,function() {
@@ -971,7 +971,7 @@ com.walker.publicCode.deleteContent=function(){
 		var sumBtn = function(btn){
 			if(btn!='yes'){return;}
 			Ext.Ajax.request({
-				url: '/sync/user/deletePublicCodeInfo',
+				url: '/walker/user/deletePublicCodeInfo',
 				params: {
 				   codeId:selReds.get('ID')
 				},

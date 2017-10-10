@@ -30,7 +30,7 @@
 				}
 				
 				Ext.Ajax.request({
-					url : '/sync/user/login',
+					url : '/walker/user/login',
 					success : function(response){
 						var result = Ext.util.JSON.decode(response.responseText);
 						if(result.success)

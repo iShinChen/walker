@@ -102,7 +102,7 @@ com.walker.file.video_online.getGridPnl = function(){
 		totalProperty : 'total'
 	});
 	var store = new Ext.data.Store({
-		url : '/sync/videoOnline/getVideoOnlineListPage',
+		url : '/walker/videoOnline/getVideoOnlineListPage',
 		reader : reader,
 		baseParams : {
 			limit : 15,
@@ -252,7 +252,7 @@ com.walker.file.video_online.editVideoOnline = function(types) {
 		var rec = com.walker.common.getSelectRecord(com.walker.file.video_online.videoOnlineGridPnl,true);
 		if(rec){
 			Ext.Ajax.request({
-				url: '/sync/videoOnline/getVideoOnlineById',
+				url: '/walker/videoOnline/getVideoOnlineById',
 				params : {
 					id:rec.get('id')
 				},
@@ -421,7 +421,7 @@ com.walker.file.video_online.saveVdieoOnline=function(){
 			com.walker.file.video_online.messageFormPnl.getForm().submit({
 				method:"POST",
 				waitMsg:"保存中,请稍后...",
-				url : "/sync/videoOnline/saveVideoOnline",
+				url : "/walker/videoOnline/saveVideoOnline",
 				success: function(form, action) {
 						if(action.result.success){
 							Ext.Msg.alert("提示","保存成功" ,function() {
@@ -460,7 +460,7 @@ com.walker.file.video_online.deleteVideoOnline=function(){
 			return;
 		}
 		Ext.Ajax.request( {
-			url : '/sync/videoOnline/deleteVideoOnline',
+			url : '/walker/videoOnline/deleteVideoOnline',
 			success : function(response) {
 				var result = Ext.decode(response.responseText);
 				if (result.success) {

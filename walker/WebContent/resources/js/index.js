@@ -199,7 +199,7 @@ com.walker.system.topTap = function() {
 			listeners : {
 				afterrender : function() {
 					Ext.Ajax.request({
-						url : "/sync/user/getUserSession",
+						url : "/walker/user/getUserSession",
 						success : function(response, options) {
 							var data = Ext.decode(response.responseText);
 							jQuery("#username").append(data.USER_NAME);
@@ -210,7 +210,7 @@ com.walker.system.topTap = function() {
 						Ext.Msg.confirm('提示',"确定退出本平台吗?", function(btn) {
 							if(btn == 'yes'){
 								Ext.Ajax.request({
-									url : '/sync/user/loginOut',
+									url : '/walker/user/loginOut',
 									success : function(response){
 										var result = Ext.util.JSON.decode(response.responseText);
 										if(result.success)
@@ -269,7 +269,7 @@ com.walker.system.viewport  = function (){
    	   ]
 	});
 	Ext.Ajax.request({
-		url : "/sync/user/getLevelOneMenuList",
+		url : "/walker/user/getLevelOneMenuList",
 		success : function(response, options) {
 			var data=Ext.decode(response.responseText);
 			for ( var i = 0; i < data.length; i++) {
@@ -307,7 +307,7 @@ com.walker.system.viewport  = function (){
 								        expanded : false
 								    }),
 									loader : new Ext.tree.TreeLoader( {
-										dataUrl : '/sync/user/getLevelTwoMenuList',
+										dataUrl : '/walker/user/getLevelTwoMenuList',
 										listeners : {
 											'beforeload' : function(loader, node) {
 												var pid = node.attributes.id;
