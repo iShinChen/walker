@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.walker.mapper.file.MessageMapper" >
+
+	<insert id="insertMessage" parameterType="java.util.Map">
+		insert into t_message(
+		id,
+		version,
+		name,
+		<if test="age != null and age != ''">
+			age,
+		</if>
+		sex,
+		<if test="birth != null and birth != ''">
+			birth,
+		</if>
+		<if test="address != null and address != ''">
+			address,
+		</if>
+		create_time,
+		update_time,
+		data_flag
+		)values(
+		#{id},
+		00000000000000000000000000000000,
+		#{name},
+		<if test="age != null and age != ''">
+			#{age},
+		</if>
+		#{sex},
+		<if test="birth != null and birth != ''">
+			#{birth},
+		</if>
+		<if test="address != null and address != ''">
+			#{address},
+		</if>
+		now(),
+		now(),
+		1
+		)
+	</insert>
+	
+	<update id="updateMessage" parameterType="java.util.Map">
+		update t_message
+		set
+			version = #{version},
+			<if test="name != null and name != ''">
+				name = #{name},
+			</if>
+			<if test="age != null and age != ''">
+				age = #{age},
+			</if>
+			<if test="sex != null and sex != ''">
+				sex = #{sex},
+			</if>
+			<if test="birth != null and birth != ''">
+				birth = #{birth},
+			</if>
+			<if test="address != null and address != ''">
+				address = #{address},
+			</if>
+			update_time = now()
+		where
+			id = #{id}
+	</update>
+
+	<delete id="deleteCompletely" parameterType="java.lang.String">
+		delete from t_message
+		where 
+			id in 
+			<foreach item="item" index="index" collection="array" 
+            	open="(" separator="," close=")">
+            	#{item}
+            </foreach>
+	</delete>
+	
+	<update id="deleteMessage">
+		update t_message
+		set
+			data_flag = 0
+		where
+			id in 
+			<foreach item="item" index="index" collection="array" 
+            	open="(" separator="," close=")">
+            	#{item}
+            </foreach>
+	</update>
+	
+	<select id="getMessageCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		select
+			count(id)
+		from
+			t_message
+		WHERE 1=1
+		<if test="name != null and name != ''">
+			and name like concat('%', #{name}, '%')
+		</if>
+	</select>
+	
+	<select id="getMessagePage" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select
+			id,
+			version,
+			name,
+			age,
+			(case sex
+				when '1' then '男'
+				when '2' then '女'
+				end
+			)as sex,
+			date_format(birth,'%Y-%m-%d') birth,
+			address,
+			date_format(create_time,'%Y-%m-%d %H:%i:%s') create_time,
+			date_format(update_time,'%Y-%m-%d %H:%i:%s') update_time,
+			data_flag
+		from
+			t_message
+		WHERE 1=1
+		<if test="name != null and name != ''">
+			and name like concat('%', #{name}, '%')
+		</if>
+		order by update_time desc
+		limit #{start},#{limit}
+	</select>
+	
+	<select id="getMessageById" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select
+			id,
+			version,
+			name,
+			age,
+			sex,
+			date_format(birth,'%Y-%m-%d') birth,
+			address
+		from
+			t_message
+		WHERE 
+			id = #{id}
+	</select>
+	
+	<select id="getMessageByIds" resultType="java.util.HashMap">
+		select
+			id,
+			version,
+			name,
+			age,
+			(case sex
+				when '1' then '男'
+				when '2' then '女'
+				end
+			)as sex,
+			date_format(birth,'%Y-%m-%d') birth,
+			address
+		from
+			t_message
+		WHERE 
+			id in 
+			<foreach item="item" index="index" collection="array" 
+            	open="(" separator="," close=")">
+            	#{item}
+            </foreach>
+	</select>
+	
+	
+</mapper>

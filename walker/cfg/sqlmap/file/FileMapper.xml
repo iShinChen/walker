@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.walker.mapper.file.FileMapper" >
+
+	<insert id="insertFile" parameterType="java.util.Map">
+		insert into t_file(
+			id,
+			name,
+			type,
+			file_size,
+			url,
+			create_time,
+			update_time,
+			status
+		)values(
+			#{id},
+			#{name},
+			#{type},
+			#{file_size},
+			#{url},
+			now(),
+			now(),
+			1
+		)
+	</insert>
+	
+	<update id="updateFile" parameterType="java.util.Map">
+		update t_file
+		set
+			<if test="name != null and name != ''">
+				name = #{name},
+			</if>
+			<if test="type != null and type != ''">
+				type = #{type},
+			</if>
+			<if test="file_size != null and file_size != ''">
+				file_size = #{file_size},
+			</if>
+			<if test="url != null and url != ''">
+				url = #{url},
+			</if>
+			update_time = now()
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteCompletely" parameterType="java.lang.String">
+		delete from t_file
+		where 
+			id in 
+			<foreach item="item" index="index" collection="array" 
+            	open="(" separator="," close=")">
+            	#{item}
+            </foreach>
+	</delete>
+	
+	<update id="deleteFile">
+		update t_file
+		set
+			status = 0
+		where
+			id in 
+			<foreach item="item" index="index" collection="array" 
+            	open="(" separator="," close=")">
+            	#{item}
+            </foreach>
+	</update>
+	
+	<select id="getFileCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		select
+			count(id)
+		from
+			t_file
+		WHERE 1=1
+		<if test="name != null and name != ''">
+			and name like concat('%', #{name}, '%')
+		</if>
+	</select>
+	
+	<select id="getFilePage" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select
+			id,
+			name,
+			type,
+			file_size,
+			url,
+			date_format(create_time,'%Y-%m-%d %H:%i:%s') create_time,
+			date_format(update_time,'%Y-%m-%d %H:%i:%s') update_time,
+			status
+		from
+			t_file
+		WHERE 1=1
+		<if test="name != null and name != ''">
+			and name like concat('%', #{name}, '%')
+		</if>
+		order by update_time desc
+		limit #{start},#{limit}
+	</select>
+	
+	<select id="getFileById" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select
+			id,
+			name,
+			type,
+			file_size
+		from
+			t_file
+		WHERE 
+			id = #{id}
+	</select>
+	
+	<select id="getFileByName" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select
+			id,
+			name,
+			type,
+			file_size
+		from
+			t_file
+		WHERE 
+			name = #{name}
+	</select>
+
+</mapper>

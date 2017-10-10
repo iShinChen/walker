@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.walker.mapper.SeckillMapper" >
+
+	<update id="reduceNumber" >  
+        update  seckill 
+        set number=number-1  
+        where seckill_id = #{seckillId}  
+        and start_time <![CDATA[<=]]>#{killTime}  
+        and end_time >= #{killTime}  
+        and number >0  
+    </update>  
+    
+    <select id="queryById"  resultType="com.springmvc.walker.entity.Seckill" >  
+            select  seckill_id,name,number,start_time,end_time,create_time  
+            from seckill  
+            where seckill_id =#{seckillId}  
+    </select>
+    
+     <select id="queryAll"  resultType="com.springmvc.walker.entity.Seckill">  
+        select  
+        	seckill_id,
+        	name,
+        	number,
+        	start_time,
+        	end_time,
+        	create_time  
+            from seckill  
+        order by create_time desc  
+        limit #{offset},#{limit}  
+    </select>
+    
+    <select id="seckillByProcedure" statementType="CALLABLE">  
+       call execute_seckill(  
+          #{seckillId,jdbcType=BIGINT,mode=IN},  
+          #{phone,jdbcType=BIGINT,mode=IN},  
+          #{killTime,jdbcType=TIMESTAMP,mode=IN},  
+          #{result,jdbcType=INTEGER,mode=OUT}  
+       )  
+   	</select>
+   
+   	<insert id="insertSuccessKill">  
+            insert ignore into success_kill(seckill_id,user_phone,state)  
+            values (#{seckillId},#{userPhone},0)  
+   	</insert>  
+    
+  	<select id="queryByIdWithSeckill"  resultType="com.springmvc.walker.entity.SuccessKill">  
+        select   
+            sk.seckill_id,  
+            sk.user_phone,  
+            sk.create_time,  
+            sk.state,  
+            s.seckill_id   "seckill.seckill_id",  
+            s.name   "seckill.name",  
+            s.number  "seckill.number",  
+            s.start_time  "seckill.start_time",  
+            s.end_time  "seckill.end_time",  
+            s.create_time  "seckill.create_time"      
+        from success_kill sk  
+        inner join seckill s on sk.seckill_id=s.seckill_id  
+        where 
+        	sk.seckill_id=#{seckillId} 
+        	and sk.user_phone=#{userPhone}   
+    
+  </select>  
+</mapper>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.walker.mapper.customer.PhotoMapper" >
+	<insert id="insertPhoto" parameterType="java.util.Map">
+		insert into t_photo(
+			id,
+			name,
+			type,
+			people,
+			uploader,
+			size,
+			url,
+			date_format(create_time,'%Y-%m-%d %H:%i:%s') create_time,
+			date_format(update_time,'%Y-%m-%d %H:%i:%s') update_time,
+			status
+		)values(
+			#{id},
+			#{name},
+			#{type},
+			#{people},
+			#{uploader},
+			#{size},
+			#{url},
+			now(),
+			now(),
+			'01'
+		)
+	</insert>
+	
+	<update id="updatePhoto" parameterType="java.util.Map">
+		update t_photo
+		set
+			<if test="name != null and name != ''">
+				name = #{name},
+			</if>
+			<if test="type != null and type != ''">
+				type = #{type},
+			</if>
+			<if test="people != null and people != ''">
+				people = #{people},
+			</if>
+			<if test="uploader != null and uploader != ''">
+				uploader = #{uploader},
+			</if>
+			<if test="url != null and url != ''">
+				url = #{url},
+			</if>
+			update_time = now()
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deletePhoto">
+		delete from t_photo
+		where id  = #{id}
+	</delete>
+
+	<select id="getPhotoCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		select
+			count(id)
+		from
+			t_photo
+		where 1=1
+		<if test="name != null and name != ''">
+			and name like concat('%', #{name}, '%')
+		</if>
+		<if test="people != null and people != ''">
+			and people like concat('%', #{people}, '%')
+		</if>
+		<if test="uploader != null and uploader != ''">
+			and uploader like concat('%', #{uploader}, '%')
+		</if>
+	</select>
+	
+	<select id="getPhotoPage" resultType="java.util.Map" parameterType="java.util.Map">
+		select
+			id,
+			name,
+			type,
+			people,
+			uploader,
+			size,
+			create_time,
+			update_time,
+			url,
+			status
+		from
+			t_photo
+		where 1=1
+		<if test="name != null and name != ''">
+			and name like concat('%', #{name}, '%')
+		</if>
+		<if test="people != null and people != ''">
+			and people like concat('%', #{people}, '%')
+		</if>
+		<if test="uploader != null and uploader != ''">
+			and uploader like concat('%', #{uploader}, '%')
+		</if>
+		order by update_time desc
+		limit #{start},#{limit}
+	</select>
+	
+	<select id="getPhotoById" resultType="java.util.Map" parameterType="java.util.Map">
+		select
+			id,
+			name,
+			type,
+			people,
+			uploader,
+			size,
+			url,
+			status
+		from
+			t_photo
+		where id = #{id}	
+	</select>
+
+</mapper>
