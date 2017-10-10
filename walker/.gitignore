@@ -11,8 +11,7 @@
 *.dex  
   
 # Java class files  
-*.class  
-*.jar  
+*.class
   
 # generated files  
 bin/  
