@@ -3,7 +3,6 @@ package com.springmvc.walker.service;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSONObject;
 import com.springmvc.walker.entity.JsonTreeNode;
 import com.springmvc.walker.entity.Menu;
 import com.springmvc.walker.entity.Page;
@@ -22,9 +21,9 @@ public interface SysService {
 	
 	public List<Map<String, Object>> getRoleStore();
 	
-	public JSONObject updatePassword(Map<String, Object> paraMap);
+	public boolean updatePassword(Map<String, Object> paraMap);
 	
-	public JSONObject deleteUser(Map<String, Object> paraMap);
+	public boolean deleteUser(Map<String, Object> paraMap);
 	
 	public List<Map<String, Object>> getPermissionList(String menuId, Map<String, Object> userMap);
 	

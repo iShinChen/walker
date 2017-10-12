@@ -37,7 +37,7 @@
 						{
 							window.location.href = "index.jsp";
 						} else{
-							Ext.Msg.alert("提示","用户名或密码错误！");
+							Ext.Msg.alert("提示",result.err_msg);
 						}
 					},
 					params : {

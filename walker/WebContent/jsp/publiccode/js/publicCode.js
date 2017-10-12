@@ -247,7 +247,7 @@ com.walker.publicCode.update=function(){
 					com.walker.publicCode.recData=result.data;
 					com.walker.publicCode.showRecordWin("字典-编辑");
 				}else{
-					Ext.Msg.alert("提示","获取字典信息失败!");
+					Ext.Msg.alert("提示",result.err_msg);
 				}
 		     },
 			failure: function(response) {
@@ -418,11 +418,11 @@ com.walker.publicCode.savePublicCodeInfo=function(){
 						});
 						com.walker.publicCode.queryPublicCode();
 					} else {
-						Ext.Msg.alert("提示", "字典"+action.result.desc);
+						Ext.Msg.alert("提示", "字典"+action.result.err_msg);
 					}
 			     },
 				 failure: function(form, action) {
-			    	 Ext.Msg.alert("提示","字典"+action.result.desc);
+			    	 Ext.Msg.alert("提示","字典保存失败");
 				 }
 			});
 			
@@ -452,13 +452,12 @@ com.walker.publicCode.deletePublicCode=function(){
 					if(result.success){
 						Ext.Msg.alert("提示","删除成功!");
 						com.walker.publicCode.queryPublicCode();
-					}else
-					{
-						Ext.Msg.alert("提示",result.errorMsg);
+					}else{
+						Ext.Msg.alert("提示",result.err_msg);
 					}
 				},
 				failure: function(response) {
-					Ext.Msg.alert("提示",result.errorMsg);
+					Ext.Msg.alert("提示","删除失败！");
 				}
 			});
 		};
@@ -477,7 +476,7 @@ com.walker.publicCode.flushBookConfig=function(){
 				if(result.success){
 					Ext.Msg.alert("提示","刷新成功!");
 				}else{
-					Ext.Msg.alert("提示","刷新失败!");
+					Ext.Msg.alert("提示",result.err_msg);
 				}
 		     },
 			failure: function(response) {
@@ -502,7 +501,7 @@ com.walker.publicCode.createContent=function(){
 					com.walker.publicCode.recData=result.data;
 					com.walker.publicCode.showContentRecordWin(com.walker.publicCode.recData.NAME+"—字典内容维护");
 				}else{
-					Ext.Msg.alert("提示","获取字典信息失败!");
+					Ext.Msg.alert("提示",result.err_msg);
 				}
 		     },
 			failure: function(response) {
@@ -759,7 +758,7 @@ com.walker.publicCode.updateContent=function(){
 					com.walker.publicCode.recData=result.data;
 					com.walker.publicCode.cshowRecordWin("字典项-编辑");
 				}else{
-					Ext.Msg.alert("提示","获取字典项信息失败!");
+					Ext.Msg.alert("提示",result.err_msg);
 				}
 		     },
 			failure: function(response) {
@@ -946,11 +945,11 @@ com.walker.publicCode.savePublicCodeContent=function(){
 						});
 						com.walker.publicCode.queryPublicCodeContent();
 					} else {
-						Ext.Msg.alert("提示", "字典项"+action.result.desc);
+						Ext.Msg.alert("提示", "字典项"+action.result.err_msg);
 					}
 			     },
 				 failure: function(form, action) {
-			    	 Ext.Msg.alert("提示","字典项"+action.result.desc);
+			    	 Ext.Msg.alert("提示","字典项保存失败");
 				 }
 			});
 			
@@ -980,13 +979,12 @@ com.walker.publicCode.deleteContent=function(){
 					if(result.success){
 						Ext.Msg.alert("提示","删除成功!");
 						com.walker.publicCode.queryPublicCodeContent();
-					}else
-					{
-						Ext.Msg.alert("提示",result.errorMsg);
+					}else{
+						Ext.Msg.alert("提示",result.err_msg);
 					}
 				},
 				failure: function(response) {
-					Ext.Msg.alert("提示",result.errorMsg);
+					Ext.Msg.alert("提示","删除失败!");
 				}
 			});
 		};

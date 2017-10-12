@@ -321,7 +321,7 @@ com.walker.systemConfig.saveSysConfigInfo=function(){
 					Ext.Msg.alert("提示","保存成功");
 					com.walker.systemConfig.systemConfigGridPnl.store.reload();
 				}else{
-					Ext.Msg.alert("提示","保存失败");
+					Ext.Msg.alert("提示",action.result.err_msg);
 				}
 				com.walker.systemConfig.editWin.close();
 		     },
@@ -336,14 +336,14 @@ com.walker.systemConfig.flushSysConfig=function(){
 	var sumBtn = function(btn){
 		if(btn!='yes'){return;}
 		Ext.Ajax.request({
-			url: '/walker/user/flushSysConfig.do',
+			url: '/walker/user/flushSysConfig',
 			success: function(response) {
 				var result = Ext.decode(response.responseText);
 				if(result.success){
 					Ext.Msg.alert("提示","刷新成功!");
 					com.walker.systemConfig.systemConfigGridPnl.store.reload();
 				}else{
-					Ext.Msg.alert("提示","刷新失败!");
+					Ext.Msg.alert("提示",result.err_msg);
 				}
 		     },
 			failure: function(response) {

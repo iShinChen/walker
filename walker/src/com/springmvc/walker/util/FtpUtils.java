@@ -542,7 +542,7 @@ public class FtpUtils {
 					logger.info("切换工作目录:" + workDir);
 					ftp.changeWorkingDirectory(workDir);
 					result = ftp.makeDirectory(path);
-					logger.info("创建FPT文件夹:" + path + "\t" + result);
+					logger.info("创建FTP文件夹:" + path + "\t" + result);
 					workDir += (path + "/");
 				}
 			}

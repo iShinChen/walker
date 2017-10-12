@@ -231,9 +231,8 @@ com.walker.roleManage.deleteRole = function() {
 						com.walker.roleManage.roleGridPnl.store.baseParams.roleName = Ext.getCmp("roleNameInput").getValue();
 						com.walker.roleManage.roleGridPnl.store.baseParams.roleId = Ext.getCmp("roleIdInput").getValue();
 						com.walker.roleManage.roleGridPnl.store.load();
-					}else
-					{
-						Ext.Msg.alert("提示","删除失败！");
+					}else{
+						Ext.Msg.alert("提示",result.err_msg);
 					}
 				},
 				failure: function(response) {
@@ -374,8 +373,10 @@ com.walker.roleManage.createRoleFormPnl = function(role) {
     				   url: '/walker/user/saveRole',
     				   success: function(response) {
     					   var result = Ext.util.JSON.decode(response.responseText);
-    						if(result.success == 'success'){
+    						if(result.success){
     							Ext.Msg.alert("提示","保存成功");
+    						}else{
+    							Ext.Msg.alert("提示",result.err_msg);
     						}
     						com.walker.roleManage.queryRole();
     						window.hide();

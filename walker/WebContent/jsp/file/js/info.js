@@ -483,7 +483,7 @@ com.walker.file.info.info_type = new Ext.data.Store({
 	url : '/walker/user/getPubCode?PUB_CODE_NAME=INFO_TYPE',
 	reader : new Ext.data.JsonReader({
 		fields : ["VALUE","CODE"],
-		root : 'data'
+		root : 'rows'
 	})
 });
 com.walker.file.info.info_type.load();

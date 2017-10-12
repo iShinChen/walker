@@ -423,8 +423,10 @@ com.walker.userManage.createUserFormPnl = function(user) {
     				   url: '/walker/user/saveUser',
     				   success: function(response) {
     					   var result = Ext.util.JSON.decode(response.responseText);
-    						if(result.success == 'success'){
+    						if(result.success){
     							Ext.Msg.alert("提示","保存成功");
+    						}else{
+    							Ext.Msg.alert("提示",result.err_msg);
     						}
     						com.walker.userManage.queryUser();
     						window.hide();
@@ -598,9 +600,9 @@ com.walker.userManage.updateUserPassword=function(){
 					var sumBtn = function(btn){
 						com.walker.userManage.editPasswordWin.close();
 					};
-					Ext.Msg.alert('提示', result.msg, sumBtn);
+					Ext.Msg.alert('提示', "修改密码成功。", sumBtn);
 				}else{
-					Ext.Msg.alert("提示", result.msg);
+					Ext.Msg.alert("提示", result.err_msg);
 				}
 		     },
 			 failure: function(response) {

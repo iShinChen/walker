@@ -10,7 +10,6 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.springmvc.walker.entity.JsonTreeNode;
 import com.springmvc.walker.entity.Menu;
 import com.springmvc.walker.entity.Page;
@@ -160,46 +159,24 @@ public class SysServiceImpl implements SysService{
 	}
 
 	@Override
-	public JSONObject updatePassword(Map<String, Object> paraMap) {
-		
-		JSONObject obj =new JSONObject();
-		try {
-			
-			Map<String, Object> map = sysMapper.getUserInfo(paraMap);
-			
-			if(map!=null){
-				if(paraMap != null){
-					if(paraMap.get("NPASSWORD") != null && !"".equals(paraMap.get("NPASSWORD"))){
-						paraMap.put("NPASSWORD", paraMap.get("NPASSWORD"));
-					}
-					sysMapper.updatePassword(paraMap);;
-					obj.put("success", true);
-					obj.put("msg", "修改成功");
+	public boolean updatePassword(Map<String, Object> paraMap) {
+		Map<String, Object> map = sysMapper.getUserInfo(paraMap);
+		if(map!=null){
+			if(paraMap != null){
+				if(paraMap.get("NPASSWORD") != null && !"".equals(paraMap.get("NPASSWORD"))){
+					paraMap.put("NPASSWORD", paraMap.get("NPASSWORD"));
 				}
+				sysMapper.updatePassword(paraMap);;
+				return true;
 			}
-		
-		} catch (Exception e) {
-			logger.error("修改密码 发生异常", e);
-			obj.put("success", false);
-			obj.put("msg", e.getMessage());
 		}
-		return obj;
+		return false;
 	}
 
 	@Override
-	public JSONObject deleteUser(Map<String, Object> paraMap) {
-		JSONObject obj =new JSONObject();
-		try{
-			sysMapper.deleteUser(paraMap);
-
-			obj.put("success", true);
-			obj.put("desc", "删除用户成功");
-		}catch(Exception e){
-			logger.error("删除用户 发生异常", e);	
-			obj.put("success", false);
-			obj.put("desc", "删除用户失败，失败原因："+e.getMessage());
-		}
-		return obj;
+	public boolean deleteUser(Map<String, Object> paraMap) {
+		sysMapper.deleteUser(paraMap);
+		return true;
 	}
 
 	@Override

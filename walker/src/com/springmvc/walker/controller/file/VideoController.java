@@ -45,7 +45,9 @@ public class VideoController {
 	private VideoService videoService;
 	
 	/**
-	 * 获取信息列表
+	 * 获取数据列表
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/getVideoListPage")
 	public void getVideoListPage(HttpServletRequest request,HttpServletResponse response) {
@@ -65,6 +67,11 @@ public class VideoController {
 		PrintWriterUtil.write(response, result);
 	}
 	
+	/**
+	 * 根据ID获取数据详情
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping(value = "/getVideoById")
 	public void getVideoById(HttpServletRequest request,HttpServletResponse response) {
 		ResultBean result = new ResultBean();
@@ -81,7 +88,9 @@ public class VideoController {
 	}
 	
 	/**
-	 * 保存信息
+	 * 保存数据
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/saveVideo")
 	public void saveVideo(HttpServletRequest request,HttpServletResponse response) {
@@ -100,7 +109,9 @@ public class VideoController {
 	}
 	
 	/**
-	 * 删除信息
+	 * 删除数据
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/deleteVideo")
 	public void deleteVideo(HttpServletRequest request,HttpServletResponse response) {
@@ -116,6 +127,12 @@ public class VideoController {
 		PrintWriterUtil.write(response, result);
 	}
 	
+	/**
+	 * 上传视频
+	 * @param request
+	 * @param response
+	 * @param mfile
+	 */
 	@RequestMapping(value = "/uploadVideo")
 	public void uploadVideo(HttpServletRequest request,HttpServletResponse response,
 			@RequestParam(value="filePath") MultipartFile mfile){
@@ -157,6 +174,11 @@ public class VideoController {
 		PrintWriterUtil.write_text_html(response, result);
 	}
 	
+	/**
+	 * 下载视频
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping(value = "/downloadVideo")
 	public void downloadVideo(HttpServletRequest request,HttpServletResponse response){
 		String localPath = Tools.getFolderPath();

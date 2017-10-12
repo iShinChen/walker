@@ -247,7 +247,7 @@ com.walker.customer.photo.getGridPnl = function(){
 							if(result.success){
 								com.walker.customer.photo.queryView();
 							}else{
-								Ext.Msg.alert("提示","操作失败！");
+								Ext.Msg.alert("提示",result.err_msg);
 							}
 						},
 						failure: function(response) {
@@ -295,6 +295,8 @@ com.walker.customer.photo.deletePhoto=function(){
 				if (result.success) {
 					Ext.Msg.alert("提示", "删除成功!");
 					com.walker.customer.photo.queryView();
+				}else{
+					Ext.Msg.alert("提示", result.err_msg);
 				}
 			},
 			failure : function(response) {

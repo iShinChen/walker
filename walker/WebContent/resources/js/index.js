@@ -201,8 +201,8 @@ com.walker.system.topTap = function() {
 					Ext.Ajax.request({
 						url : "/walker/user/getUserSession",
 						success : function(response, options) {
-							var data = Ext.decode(response.responseText);
-							jQuery("#username").append(data.USER_NAME);
+							var result = Ext.decode(response.responseText);
+							jQuery("#username").append(result.data.USER_NAME);
 						}
 					});
 					
@@ -248,14 +248,14 @@ function getHiddenFrame() {
 com.walker.system.userpermission = function() {
 	//查询请求后台
 	Ext.Ajax.request({
-		url : 'sysAction_getPermission.do',
+		url : '/walker/user/getPermission',
 		success : com.walker.system.loadPerSuccess
 	});
 };
 
 com.walker.system.loadPerSuccess = function(response) {
 	var result = Ext.util.JSON.decode(response.responseText);
-	com.walker.system.permissionStr = result.permission;
+	com.walker.system.permissionStr = result.data.permission;
 };
 
 com.walker.system.viewport  = function (){
@@ -271,13 +271,13 @@ com.walker.system.viewport  = function (){
 	Ext.Ajax.request({
 		url : "/walker/user/getLevelOneMenuList",
 		success : function(response, options) {
-			var data=Ext.decode(response.responseText);
-			for ( var i = 0; i < data.length; i++) {
+			var result =Ext.decode(response.responseText);
+			for ( var i = 0; i < result.rows.length; i++) {
 				var treeContainer = new Ext.Panel({
-					title : data[i].MENU_NAME,
+					title : result.rows[i].MENU_NAME,
 					collapsible : true,
 					collapsed: true,
-					treeRoot: data[i],
+					treeRoot: result.rows[i],
 					tools: [{
 						id: 'refresh',
 						handler: function(event, toolEl, panel) {
@@ -358,7 +358,7 @@ com.walker.system.viewport  = function (){
 				com.walker.system.tree.add(treeContainer);
 			}
 			com.walker.system.tree.doLayout();
-			if (data.length > 0) {
+			if (result.rows.length > 0) {
 				com.walker.system.tree.items.get(0).expand();
 			}
 		}

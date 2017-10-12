@@ -1,6 +1,5 @@
 package com.springmvc.walker.controller;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,15 +20,16 @@ import com.springmvc.walker.constant.GlobalConstant;
 import com.springmvc.walker.entity.JsonTreeNode;
 import com.springmvc.walker.entity.Menu;
 import com.springmvc.walker.entity.Page;
+import com.springmvc.walker.entity.PageResultBean;
+import com.springmvc.walker.entity.ResultBean;
 import com.springmvc.walker.service.SysService;
 import com.springmvc.walker.util.MapJsonUtil;
 import com.springmvc.walker.util.ParamUtil;
+import com.springmvc.walker.util.PrintWriterUtil;
 
 @Controller
 @RequestMapping("/user") 
 public class SysController {
-	
-	private static final long serialVersionUID = 1L;
 	
 	private final static Logger logger = Logger.getLogger(SysController.class);
 
@@ -38,44 +38,36 @@ public class SysController {
 	
 	/**
 	 * 获取用户列表
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/getUserListPage")
 	public void getUserListPage(HttpServletRequest request,HttpServletResponse response) {
-		PrintWriter writer = null;
-		Map<String, Object> jsonMap = new HashMap<String, Object>();
-		String[] fileds = { "start", "limit","userName","userId"};
+		PageResultBean result = new PageResultBean();
 		try {
-			writer = response.getWriter();
+			String[] fileds = { "start", "limit","userName","userId"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
 			
 			Page page = new Page();
 			List<Map<String, Object>> list = sysService.getUserListPage(paraMap,page);
-			jsonMap.put("total",page.getTotalRow());
-			jsonMap.put("rows",list);
-			jsonMap.put("page",page.getPageRow());
-			jsonMap.put("success", true);
-			
+			result.setPageResultBean(page.getTotalRow(), page.getPageRow(), list, true);
 		} catch (Exception e) {
-			logger.error(e);
-			jsonMap.put("success", false);
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("获取用户列表异常。");
 		}
-		
-		writer.write(JSONObject.toJSONString(jsonMap));
-		writer.flush();
-		writer.close();
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
 	 * 用户登录
-	 * @return
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/login")
 	public void login(HttpServletRequest request,HttpServletResponse response) {
-		
-		PrintWriter writer=null;
-		JSONObject json=new JSONObject();
+		ResultBean result = new ResultBean();
 		try {
-			writer = response.getWriter();
 			Map<String, Object> paraMap = new HashMap<String, Object>();
 			Map<String, Object> userMap = new HashMap<String, Object>();
 			
@@ -86,66 +78,73 @@ public class SysController {
 			if(userMap != null)
 			{
 				request.getSession().setAttribute("userMap", userMap);
-				json.put("success", true);
+				result.setSuccess(true);
 			} else{
-				json.put("success", false);
-				json.put("errorMSG", "Can not get Login UserMap");
+				result.setSuccess(false);
+				result.setErr_msg("用户名或密码错误。");
 			}
 		} catch (Exception e) {
 			logger.error("程序异常", e);
-		} finally {
-			writer.write(json.toString());
-			writer.flush();
-			writer.close();
+			result.setSuccess(false);
+			result.setErr_msg("用户登录异常。");
 		}
+		PrintWriterUtil.write(response, result);
 	}
 	
+	/**
+	 * 获取用户Session
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping(value = "/getUserSession")
 	public void getUserSession(HttpServletRequest request,HttpServletResponse response) {
-		PrintWriter writer=null;
-		JSONObject json=new JSONObject();
+		ResultBean result = new ResultBean();
 		try {
-			writer = response.getWriter();
+			@SuppressWarnings({"rawtypes", "unchecked" })
 			Map<String, Object> userMap = (Map)request.getSession().getAttribute("userMap");
 			if(userMap != null)
 			{
-				json.put("ROLE_NAME", userMap.get("ROLE_NAME"));
-				json.put("USER_NAME", userMap.get("USER_NAME"));
-				json.put("success", true);
+				result.setData(userMap);
+				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("获取用户Session失败。");
 			}
 		} catch (Exception e) {
 			logger.error("程序异常", e);
-			json.put("success", false);
-		} finally {
-			writer.write(json.toString());
-			writer.flush();
-			writer.close();
+			result.setSuccess(false);
+			result.setErr_msg("获取用户Session发生异常。");
 		}
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
 	 * 获取一级菜单
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/getLevelOneMenuList")
 	public void getLevelOneMenuList(HttpServletRequest request,HttpServletResponse response) {
-		PrintWriter writer=null;
+		PageResultBean result = new PageResultBean();
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
-			writer = response.getWriter();
+			@SuppressWarnings({"rawtypes", "unchecked" })
 			Map<String, Object> userMap = (Map)request.getSession().getAttribute("userMap");
 			list = sysService.getLevelOneMenuList(userMap);
-			
+			result.setRows(list);
+			result.setSuccess(true);
 		} catch (Exception e) {
-			logger.error(e);
-		} finally {
-			writer.write(JSONObject.toJSONString(list));
-			writer.flush();
-			writer.close();
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("获取一级菜单异常。");
 		}
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
 	 * 获取二级或三级菜单
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/getLevelTwoMenuList")
 	public void getLevelTwoMenuList(HttpServletRequest request,HttpServletResponse response) {
@@ -155,9 +154,9 @@ public class SysController {
 		String parentID=request.getParameter("trId");
 		try {
 			writer = response.getWriter();
+			@SuppressWarnings({"rawtypes", "unchecked" })
 			Map<String, Object> userMap = (Map)request.getSession().getAttribute("userMap");
 			menuList = sysService.getLevelTwoMenuList(parentID, userMap);
-			
 		} catch (Exception e) {
 			logger.error(e);
 		} finally {
@@ -169,32 +168,29 @@ public class SysController {
 	
 	/**
 	 * 保存角色信息
+	 * @param request
+	 * @param response
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/saveUser")
 	public void saveUser(HttpServletRequest request,HttpServletResponse response) {
-		PrintWriter writer=null;
-		JSONObject json=new JSONObject();
-		
+		ResultBean result = new ResultBean();
 		String userInfo = request.getParameter("userDataJson");
+		@SuppressWarnings("rawtypes")
 		Map map = MapJsonUtil.jsonStr2Map(userInfo);
 		try {
-			writer = response.getWriter();
-			
 			// 获取session中的用户信息
 			Map<String, Object> userMap = (Map<String, Object>)request.getSession().getAttribute("userMap");
 			map.put("CREATE_USER", userMap.get("ID"));
 			map.put("CREATE_USER_NAME", userMap.get("USER_NAME"));
-						
 			sysService.saveUser(map);
-			json.put("success", "success");
+			result.setSuccess(true);
 		} catch (Exception e) {
 			logger.error("程序异常", e);
-			json.put("error", e);
-		} finally {
-			writer.write(json.toString());
-			writer.flush();
-			writer.close();
+			result.setSuccess(false);
+			result.setErr_msg("保存角色信息过程发生异常。");
 		}
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
@@ -204,88 +200,87 @@ public class SysController {
 	 */
 	@RequestMapping(value = "/getRoleStore")
 	public void getRoleStore(HttpServletRequest request,HttpServletResponse response) {
-		PrintWriter writer=null;
-		JSONObject json=new JSONObject();
+		PageResultBean result = new PageResultBean();
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
-			writer = response.getWriter();
 			list = sysService.getRoleStore();
-			json.put("rows", list);
+			result.setRows(list);
 		} catch (Exception e) {
 			logger.error("程序异常", e);
-			json.put("error", e);
-		} finally {
-			writer.write(json.toString());
-			writer.flush();
-			writer.close();
+			result.setSuccess(false);
+			result.setErr_msg("获取数据列表异常。");
 		}
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
 	 * 修改密码
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/updatePassword")
 	public void updatePassword(HttpServletRequest request,HttpServletResponse response){
-		JSONObject obj = null;
-		String[] fileds = { "userId","NPASSWORD"};
-		
-		PrintWriter writer=null;
+		ResultBean result = new ResultBean();
 		try {
-			writer = response.getWriter();
+			String[] fileds = { "userId","NPASSWORD"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
 			
-			obj = sysService.updatePassword(paraMap);
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}finally{
-			if(writer!=null){
-				writer.write(obj.toString());
-				writer.flush();
-				writer.close();
+			if(sysService.updatePassword(paraMap)){
+				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("修改密码失败。");
 			}
+			
+		} catch (Exception e) {
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("修改密码发生异常。");
 		}
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
 	 * 删除用户
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/deleteUser")
 	public void deleteUser(HttpServletRequest request,HttpServletResponse response){
-		JSONObject obj = null;
-		String[] fileds = { "ids"};
-		
-		PrintWriter writer=null;
+		ResultBean result = new ResultBean();
 		try {
-			writer = response.getWriter();
+			String[] fileds = { "ids"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
-			
-			obj = sysService.deleteUser(paraMap);
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}finally{
-			if(writer!=null){
-				writer.write(obj.toString());
-				writer.flush();
-				writer.close();
+			if(sysService.deleteUser(paraMap)){
+				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("删除用户失败。");
 			}
+		} catch (Exception e) {
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("删除用户发生异常。");
 		}
+		PrintWriterUtil.write(response, result);
 	}
 	
+	/**
+	 * 获取按钮权限
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping(value = "/getPermission")
 	public void getPermission(HttpServletRequest request,HttpServletResponse response) {
-		PrintWriter writer=null;
-		JSONObject json=new JSONObject();
+		ResultBean result = new ResultBean();
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		Map<String, Object> userMap = (Map)request.getSession().getAttribute("userMap");
-		String menuId = request.getParameter("menuId");
-		System.out.println("菜单的ID为："+menuId);
+		Map<String, Object> paraMap = new HashMap<String, Object>();
+		System.out.println("菜单的ID为："+request.getParameter("menuId"));
 		try {
-			writer=response.getWriter();
 			String permissionStr = "";
-			list  = sysService.getPermissionList(menuId, userMap);
-			
+			list  = sysService.getPermissionList(request.getParameter("menuId"), userMap);
 			if(list != null && list.size() > 0)
 			{
 				for(int i=0;i<list.size();i++)
@@ -294,16 +289,22 @@ public class SysController {
 				}
 				permissionStr = permissionStr.substring(1);
 			}
-			json.put("permission", permissionStr);
+			paraMap.put("permission", permissionStr);
+			result.setData(paraMap);
+			result.setSuccess(true);
 		} catch (Exception e) {
-			logger.error(e);
-		} finally {
-			writer.write(json.toString());
-			writer.flush();
-			writer.close();
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("获取数据异常。");
 		}
+		PrintWriterUtil.write(response, result);
 	}
 	
+	/**
+	 * 根据角色获取权限树
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping(value = "/getTreeMenuPermissionListByRole")
 	public void getTreeMenuPermissionListByRole(HttpServletRequest request,HttpServletResponse response) {
 		PrintWriter writer=null;
@@ -323,15 +324,18 @@ public class SysController {
 		}
 	}
 	
+	/**
+	 * 保存角色权限信息
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping(value = "/saveRoleMenuPermission")
 	public void saveRoleMenuPermission(HttpServletRequest request,HttpServletResponse response) {
-		PrintWriter writer=null;
-		JSONObject json=new JSONObject();
+		ResultBean result = new ResultBean();
 		Map<String, Object> map = new HashMap<String, Object>();
 		String roleMenuPermission = request.getParameter("roleMenuPermission");
 		String roleId = request.getParameter("roleId");
 		try {
-			writer = response.getWriter();
 			sysService.deleteRoleMenuByRoleId(roleId);
 			roleMenuPermission = roleMenuPermission.substring(1);
 			String[] roleMenuArr = roleMenuPermission.split(",");
@@ -341,100 +345,91 @@ public class SysController {
 				map.put("ROLE_ID", roleId);
 				sysService.saveRoleMenu(map);
 			}
-			json.put("success", "success");
+			result.setSuccess(true);
 		} catch (Exception e) {
 			logger.error("程序异常", e);
-			json.put("error", e);
-		} finally {
-			writer.write(json.toString());
-			writer.flush();
-			writer.close();
+			result.setSuccess(false);
+			result.setErr_msg("保存角色权限信息异常。");
 		}
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
 	 * 获取角色列表
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/getRoleListPage")
 	public void getRoleListPage(HttpServletRequest request,HttpServletResponse response) {
-		PrintWriter writer = null;
-		String[] fileds = { "start", "limit","roleName","roleId"};
-		Map<String, Object> jsonMap = new HashMap<String, Object>();
+		PageResultBean result = new PageResultBean();
 		try {
-			writer = response.getWriter();
+			String[] fileds = { "start", "limit","roleName","roleId"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
 			
 			Page page = new Page();
 			List<Map<String, Object>> list = sysService.getRoleListPage(paraMap,page);
-			jsonMap.put("total",page.getTotalRow());
-			jsonMap.put("rows",list);
-			jsonMap.put("page",page.getPageRow());
-			jsonMap.put("success", true);
-			
+			result.setPageResultBean(page.getTotalRow(), page.getPageRow(), list, true);
 		} catch (Exception e) {
-			logger.error(e);
-			jsonMap.put("success", false);
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("获取角色列表异常。");
 		}
-		
-		writer.write(JSONObject.toJSONString(jsonMap));
-		writer.flush();
-		writer.close();
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
 	 * 删除角色
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/deleteRole")
 	public void deleteRole(HttpServletRequest request,HttpServletResponse response){
-		PrintWriter writer=null;
-		JSONObject json=new JSONObject();
+		ResultBean result = new ResultBean();
 		try {
-			writer = response.getWriter();
-			
 			String[] fileds = { "ids"};
-			
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
-			
 			sysService.deleteRole(paraMap);
-			
-			json.put("success", "success");
+			result.setSuccess(true);
 		} catch (Exception e) {
 			logger.error("程序异常", e);
-			json.put("error", e);
-		} finally {
-			writer.write(json.toString());
-			writer.flush();
-			writer.close();
+			result.setSuccess(false);
+			result.setErr_msg("删除角色发生异常。");
 		}
+		PrintWriterUtil.write(response, result);
 	}
 	
+	/**
+	 * 保存角色信息
+	 * @param request
+	 * @param response
+	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/saveRole")
 	public void saveRole(HttpServletRequest request,HttpServletResponse response) {
-		PrintWriter writer=null;
-		JSONObject json=new JSONObject();
-		
+		ResultBean result = new ResultBean();
 		String roleInfo = request.getParameter("roleDataJson");
+		@SuppressWarnings("rawtypes")
 		Map map = MapJsonUtil.jsonStr2Map(roleInfo);
 		try {
-			writer = response.getWriter();
-			
 			// 获取session中的用户信息
 			Map<String, Object> userMap = (Map<String, Object>)request.getSession().getAttribute("userMap");
 			map.put("CREATE_USER", userMap.get("ID"));
 			map.put("CREATE_USER_NAME", userMap.get("USER_NAME"));
-			
 			sysService.saveRole(map);
-			json.put("success", "success");
+			result.setSuccess(true);
 		} catch (Exception e) {
 			logger.error("程序异常", e);
-			json.put("error", e);
-		} finally {
-			writer.write(json.toString());
-			writer.flush();
-			writer.close();
+			result.setSuccess(false);
+			result.setErr_msg("保存角色信息异常。");
 		}
+		PrintWriterUtil.write(response, result);
 	}
 	
+	/**
+	 * 获取权限树
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping(value = "/getTreeMenuPermissionList")
 	public void getTreeMenuPermissionList(HttpServletRequest request,HttpServletResponse response) {
 		PrintWriter writer=null;
@@ -452,49 +447,49 @@ public class SysController {
 		}
 	}
 	
+	/**
+	 * 根据ID删除菜单数据
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping(value = "/deleteMenu")
 	public void deleteMenu(HttpServletRequest request,HttpServletResponse response) {
-		PrintWriter writer=null;
-		JSONObject json=new JSONObject();
-		String menuId = request.getParameter("MENU_ID");
+		ResultBean result = new ResultBean();
 		try {
-			writer=response.getWriter();
-			sysService.deleteMenuById(menuId);
-			json.put("success", "success");
+			sysService.deleteMenuById(request.getParameter("MENU_ID"));
+			result.setSuccess(true);
 		} catch (Exception e) {
 			logger.error("程序异常", e);
-			json.put("success", "fail");
-		} finally {
-			writer.write(json.toString());
-			writer.flush();
-			writer.close();
+			result.setSuccess(false);
+			result.setErr_msg("删除菜单数据异常。");
 		}
+		PrintWriterUtil.write(response, result);
 	}
 	
+	/**
+	 * 保存功能菜单信息
+	 * @param request
+	 * @param response
+	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/saveMenu")
 	public void saveMenu(HttpServletRequest request,HttpServletResponse response) {
-		PrintWriter writer=null;
-		JSONObject json=new JSONObject();
-		String menuInfo = request.getParameter("menuPermissionDataJson");
-		Map map = MapJsonUtil.jsonStr2Map(menuInfo);
+		ResultBean result = new ResultBean();
+		@SuppressWarnings("rawtypes")
+		Map map = MapJsonUtil.jsonStr2Map(request.getParameter("menuPermissionDataJson"));
 		try {
-			writer=response.getWriter();
-			
 			// 获取session中的用户信息
 			Map<String, Object> userMap = (Map<String, Object>)request.getSession().getAttribute("userMap");
 			map.put("CREATE_USER", userMap.get("ID"));
-			map.put("CREATE_USER_NAME", userMap.get("USER_NAME"));
-						
+			map.put("CREATE_USER_NAME", userMap.get("USER_NAME"));			
 			sysService.saveMenu(map);
-			json.put("success", "success");
+			result.setSuccess(true);
 		} catch (Exception e) {
 			logger.error("程序异常", e);
-			json.put("success", "fail");
-		} finally {
-			writer.write(json.toString());
-			writer.flush();
-			writer.close();
+			result.setSuccess(false);
+			result.setErr_msg("保存功能菜单异常。");
 		}
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
@@ -502,84 +497,65 @@ public class SysController {
 	 */
 	@RequestMapping(value = "/getSysConfigListPage")
 	public void getSysConfigListPage(HttpServletRequest request,HttpServletResponse response){
-		PrintWriter writer = null;
-		Map<String, Object> jsonMap = new HashMap<String, Object>();
-		String[] fileds = { "start", "limit","code","name"};
+		PageResultBean result = new PageResultBean();
 		try {
-			writer = response.getWriter();
+			String[] fileds = { "start", "limit","code","name"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
 			
 			Page page = new Page();
 			List<Map<String, Object>> list = sysService.getSysConfigListPage(paraMap,page);
-			
-			jsonMap.put("total",page.getTotalRow());
-			jsonMap.put("rows",list);
-			jsonMap.put("page",page.getPageRow());
-			jsonMap.put("success", true);
-			
+			result.setPageResultBean(page.getTotalRow(), page.getPageRow(), list, true);
 		} catch (Exception e) {
-			logger.error(e);
-			jsonMap.put("success", false);
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("获取系统配置列表异常。");
 		}
-		
-		writer.write(JSONObject.toJSONString(jsonMap));
-		writer.flush();
-		writer.close();
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
 	 * 保存系统配置
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/saveSysConfigInfo")
 	public void saveSysConfigInfo(HttpServletRequest request,HttpServletResponse response){
-		PrintWriter writer = null;
-		Map<String, Object> jsonMap = new HashMap<String, Object>();
-		String[] fileds = {"ID","CODE","NAME","VALUE"};
+		ResultBean result = new ResultBean();
 		try {
-			writer = response.getWriter();
+			String[] fileds = {"ID","CODE","NAME","VALUE"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
-			
 			int updateCount = sysService.saveSysConfigInfo(paraMap);
 			if(updateCount > 0)
 			{
 				GlobalConstant.SYS_MAP.put(String.valueOf(paraMap.get("CODE")), String.valueOf(paraMap.get("VALUE")));
 				logger.info("更新系统缓存["+String.valueOf(paraMap.get("CODE"))+"]成功");
 			}
-			
-			jsonMap.put("success", true);
-			
+			result.setSuccess(true);
 		} catch (Exception e) {
-			logger.error(e);
-			jsonMap.put("success", false);
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("获取数据异常。");
 		}
-		
-		writer.write(JSONObject.toJSONString(jsonMap));
-		writer.flush();
-		writer.close();
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
 	 * 刷新缓存
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/flushSysConfig")
 	public void flushSysConfig(HttpServletRequest request,HttpServletResponse response){
-		PrintWriter writer = null;
-		JSONObject jsonObj = new JSONObject();
+		ResultBean result = new ResultBean();
 		try {
-			writer = response.getWriter();
-
 			GlobalConstant.initSysConfig();
-			
-			jsonObj.put("success", true);
-			
+			result.setSuccess(true);
 		} catch (Exception e) {
-			logger.error(e);
-			jsonObj.put("success", false);
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("刷新缓存发生异常。");
 		}
-		
-		writer.write(jsonObj.toJSONString());
-		writer.flush();
-		writer.close();
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
@@ -587,196 +563,179 @@ public class SysController {
 	 */
 	@RequestMapping(value = "/getPublicCodeListPage")
 	public void getPublicCodeListPage(HttpServletRequest request,HttpServletResponse response){
-		PrintWriter writer = null;
-		Map<String, Object> jsonMap = new HashMap<String, Object>();
-		String[] fileds = { "start", "limit","name","parentId","code","value"};
+		PageResultBean result = new PageResultBean();
 		try {
-			writer = response.getWriter();
+			String[] fileds = { "start", "limit","name","parentId","code","value"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
 
 			Page page = new Page();
 			List<Map<String, Object>> list = sysService.getPublicCodeListPage(paraMap, page);
-			jsonMap.put("total", page.getTotalRow());
-			jsonMap.put("rows", list);
-			jsonMap.put("page", page.getPageRow());
-			jsonMap.put("success", true);
-
+			result.setPageResultBean(page.getTotalRow(), page.getPageRow(), list, true);
 		} catch (Exception e) {
-			logger.error("查询公共代码列表 发生异常",e);
-			jsonMap.put("success", false);
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("查询公共代码列表发生异常。");
 		}
-		writer.write(JSONObject.toJSONString(jsonMap));
-		writer.flush();
-		writer.close();
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
 	 * 获取公共代码名称
-	 * */
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping(value = "/getCodeNameInfo")
 	public void getCodeNameInfo(HttpServletRequest request,HttpServletResponse response){
-		PrintWriter writer = null;
-		JSONObject jsonObj = new JSONObject();
-		String isFirstBlank = request.getParameter("isFirstBlank");
+		PageResultBean result = new PageResultBean();
 		try{
-			writer = response.getWriter();
 			List<Map<String, Object>> list = sysService.getCodeNameInfo();
-			if("1".equals(isFirstBlank))
+			if("1".equals(request.getParameter("isFirstBlank")))
 			{
 				Map<String,Object> map= new HashMap<String, Object>();
 				map.put("ID", "");
 				map.put("TEXT", "　");
 				list.add(0, map);
 			}
-			jsonObj.put("rows", list);
-		}catch(Exception e){
-			logger.error("获取所属类型 异常", e);
-			jsonObj.put("error", e);
+			result.setRows(list);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("获取公共代码名称异常。");
 		}
-		writer.write(jsonObj.toJSONString());
-		writer.flush();
-		writer.close();
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
 	 * 保存公共代码信息
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/savePublicCodeInfo")
 	public void savePublicCodeInfo(HttpServletRequest request,HttpServletResponse response){
-		PrintWriter writer = null;
-		JSONObject obj = new JSONObject();
-		
-		String[] fileds = { "ID","VALUE","CODE","PARENT_ID","ORDERINDEX","NAME","DESC"};
+		ResultBean result = new ResultBean();
 		try {
-			writer = response.getWriter();
+			String[] fileds = { "ID","VALUE","CODE","PARENT_ID","ORDERINDEX","NAME","DESC"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request,fileds);
-			
 			boolean isExists = sysService.checkCode(paraMap);
 			if(isExists){
-				obj.put("desc", "编码已存在!");
+				result.setSuccess(false);
+				result.setErr_msg("编码已存在。");
 			}else{
 				sysService.savePublicCodeInfo(paraMap);
-				obj.put("success", true);
+				result.setSuccess(true);
 			}
 		} catch (Exception e) {
-			logger.error("保存发生异常", e);
-			obj.put("success", false);
+			logger.error("发生异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("保存公共代码信息异常。");
 		}
-		writer.write(obj.toJSONString());
-		writer.flush();
-		writer.close();
-	}
-	/**
-	 * 删除公共代码信息
-	 */
-	@RequestMapping(value = "/deletePublicCodeInfo")
-	public void deletePublicCodeInfo(HttpServletRequest request,HttpServletResponse response){
-		JSONObject obj = new JSONObject();
-		PrintWriter writer = null;
-		obj.put("success", false);
-		String codeId = request.getParameter("codeId");
-		
-		try {
-			writer = response.getWriter();
-			boolean success = sysService.deletePublicCodeInfo(codeId);
-			if (success) {
-				obj.put("success", true);
-			}
-		} catch (IOException e) {
-			logger.error("删除发生异常", e);
-		}
-		writer.write(obj.toJSONString());
-		writer.flush();
-		writer.close();
-	}
-	/**
-	 * 根据ID查询公共代码信息
-	 */
-	@RequestMapping(value = "/selectPublicCodeInfoById")
-	public void selectPublicCodeInfoById(HttpServletRequest request,HttpServletResponse response){
-		JSONObject obj = new JSONObject();
-		PrintWriter writer = null;
-		obj.put("success", false);
-		String[] fileds = { "ID"};
-		try {
-			writer = response.getWriter();
-			Map<String,Object> result = new HashMap<String, Object>();
-			Map<String, Object> paraMap = ParamUtil.getParamMap(request,fileds);
-			result = sysService.selectPublicCodeInfoById(paraMap);
-			obj.put("success", true);
-			obj.put("data", result);
-		} catch (IOException e) {
-			logger.error("查询发生异常", e);
-		}
-		writer.write(obj.toJSONString());
-		writer.flush();
-		writer.close();
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
-	 * 刷新缓存
+	 * 删除公共代码信息
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "/deletePublicCodeInfo")
+	public void deletePublicCodeInfo(HttpServletRequest request,HttpServletResponse response){
+		ResultBean result = new ResultBean();
+		try {
+			if (sysService.deletePublicCodeInfo(request.getParameter("codeId"))) {
+				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("删除公共代码信息错误。");
+			}
+		} catch (Exception e) {
+			logger.error("删除发生异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("删除公共代码信息异常。");
+		}
+		PrintWriterUtil.write(response, result);
+	}
+	
+	/**
+	 * 根据ID查询公共代码信息
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "/selectPublicCodeInfoById")
+	public void selectPublicCodeInfoById(HttpServletRequest request,HttpServletResponse response){
+		ResultBean result = new ResultBean();
+		try {
+			String[] fileds = {"ID"};
+			Map<String,Object> resultMap = new HashMap<String, Object>();
+			Map<String, Object> paraMap = ParamUtil.getParamMap(request,fileds);
+			resultMap = sysService.selectPublicCodeInfoById(paraMap);
+			result.setData(resultMap);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("查询公共代码信息异常。");
+		}
+		PrintWriterUtil.write(response, result);
+	}
+	
+	/**
+	 *  刷新缓存
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/flushBookConfig")
 	public void flushBookConfig(HttpServletRequest request,HttpServletResponse response){
-		PrintWriter writer = null;
-		JSONObject jsonObj = new JSONObject();
+		ResultBean result = new ResultBean();
 		try {
-			writer = response.getWriter();
 			GlobalConstant.initSysBook();
-			jsonObj.put("success", true);
+			result.setSuccess(true);
 		} catch (Exception e) {
-			logger.error("刷新缓存 发生异常",e);
-			jsonObj.put("success", false);
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("刷新缓存发生异常。");
 		}
-		writer.write(jsonObj.toJSONString());
-		writer.flush();
-		writer.close();
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
 	 * 获取CODE对应名称信息
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/getPubCode")
 	public void getPubCode(HttpServletRequest request,HttpServletResponse response) {
-		PrintWriter writer = null;
+		PageResultBean result = new PageResultBean();
 		String PUB_CODE_NAME = request.getParameter("PUB_CODE_NAME");
-		JSONObject jsonObj = new JSONObject();
 		try {
-			writer = response.getWriter();
 			List<Map<String, Object>> list = GlobalConstant.SYS_BOOK.get(PUB_CODE_NAME);
-			jsonObj.put("success", true);
-			jsonObj.put("data", list);
+			result.setRows(list);
+			result.setSuccess(true);
 		} catch (Exception e) {
-			logger.error("获取公共字典数据发生异常");
-			jsonObj.put("success", false);
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("获取CODE对应名称信息异常。");
 		}
-		writer.write(jsonObj.toJSONString());
-		writer.flush();
-		writer.close();
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
 	 * 用户登出
-	 * @return
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/loginOut")
 	public void loginOut(HttpServletRequest request,HttpServletResponse response) {
-		
-		PrintWriter writer=null;
-		JSONObject json=new JSONObject();
-		json.put("success", false);
+		ResultBean result = new ResultBean();
 		try {
-			writer = response.getWriter();
-			
 			HttpSession session = request.getSession();
 			session.setAttribute("userMap", null);
-			json.put("success", true);
+			result.setSuccess(true);
 		} catch (Exception e) {
 			logger.error("程序异常", e);
-		} finally {
-			writer.write(json.toString());
-			writer.flush();
-			writer.close();
+			result.setSuccess(false);
+			result.setErr_msg("用户登出发生异常。");
 		}
+		PrintWriterUtil.write(response, result);
 	}
 }

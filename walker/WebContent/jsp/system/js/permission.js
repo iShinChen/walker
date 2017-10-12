@@ -16,7 +16,7 @@ com.walker.permission.userpermission = function(menuId) {
 
 com.walker.permission.loadPerSuccess = function(response) {
 	var result = Ext.util.JSON.decode(response.responseText);
-	var permission = result.permission;
+	var permission = result.data.permission;
 	if(permission != null && permission != '')
 	{
 		var buttonArr = permission.split(",");
@@ -114,6 +114,11 @@ com.walker.permission.showRolePermissionTree = function(roleId){
             	   url: '/walker/user/saveRoleMenuPermission',
             	   success: function(response) {
             		   var result = Ext.util.JSON.decode(response.responseText);
+            		   if(result.success){
+            			   Ext.Msg.alert("提示","保存成功。");
+            		   }else{
+            			   Ext.Msg.alert("提示",success.err_msg);
+            		   }
             		   com.walker.permission.rolePermissionTree.getRootNode().reload();
             	   },
             	   params : {

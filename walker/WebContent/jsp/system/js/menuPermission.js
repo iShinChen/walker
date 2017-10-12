@@ -338,10 +338,9 @@ com.walker.menuPermission.deleteTreeNode = function() {
 			   },
 			   success: function(response) {
 				   var result = Ext.util.JSON.decode(response.responseText);
-					if(result.success == 'success'){
+					if(result.success){
 						Ext.Msg.alert("提示","删除成功！");
 						com.walker.menuPermission.treeRoot.reload();
-						
 						com.walker.menuPermission.currSelectedNode = null;
 						com.walker.menuPermission.contentPnl.find("name","PARENT_ID")[0].setValue();
 						com.walker.menuPermission.contentPnl.find("name","MENU_ID")[0].setValue();
@@ -352,9 +351,8 @@ com.walker.menuPermission.deleteTreeNode = function() {
 						com.walker.menuPermission.contentPnl.find("name","MENU_ORDER")[0].setValue();
 						com.walker.menuPermission.nodeFormLevel = null;
 					}else{
-						Ext.Msg.alert("提示","删除失败！");
-					}
-					
+						Ext.Msg.alert("提示",result.err_msg);
+					}	
 			   },
 			   failure: function(response) {
 					Ext.Msg.alert("提示","保存失败");
@@ -394,7 +392,7 @@ com.walker.menuPermission.saveTreeNode = function() {
 		   url: '/walker/user/saveMenu.do',
 		   success: function(response) {
 			   var result = Ext.util.JSON.decode(response.responseText);
-				if(result.success == 'success'){
+				if(result.success){
 					Ext.Msg.alert("提示","保存成功");
 					com.walker.menuPermission.treeRoot.reload();
 					
@@ -408,7 +406,7 @@ com.walker.menuPermission.saveTreeNode = function() {
 					com.walker.menuPermission.contentPnl.find("name","MENU_ORDER")[0].setValue();
 					com.walker.menuPermission.nodeFormLevel = null;
 				}else{
-					Ext.Msg.alert("提示","保存失败");
+					Ext.Msg.alert("提示",result.err_msg);
 				}
 		   },
 		   failure: function(response) {
