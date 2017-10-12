@@ -9,9 +9,9 @@ public interface PhotoService {
 	
 	public List<Map<String, Object>> getPhotoPage(Map<String, Object> paraMap, Page page);
 
-	public int savePhoto(Map<String, Object> paraMap);
+	public boolean savePhoto(Map<String, Object> paraMap);
 	
-	public int deletePhoto(String ids);
+	public boolean deletePhoto(String ids);
 	
 	public Map<String, Object> getPhotoById(String id);
 }

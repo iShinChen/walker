@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface ImportExcelService {
 
-	public void insertIntoTMessage(List<String> values);
+	public boolean insertIntoTMessage(List<String> values);
 }

@@ -5,11 +5,11 @@ import java.util.Map;
 
 public interface PhotoMapper {
 
-	public int insertPhoto(Map<String, Object> paraMap);
+	public boolean insertPhoto(Map<String, Object> paraMap);
 	
-	public int updatePhoto(Map<String, Object> paraMap);
+	public boolean updatePhoto(Map<String, Object> paraMap);
 	
-	public int deletePhoto(String id);
+	public boolean deletePhoto(String id);
 	
 	public int getPhotoCount(Map<String, Object> paraMap);
 	

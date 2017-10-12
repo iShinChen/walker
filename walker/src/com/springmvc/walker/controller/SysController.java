@@ -183,8 +183,13 @@ public class SysController {
 			Map<String, Object> userMap = (Map<String, Object>)request.getSession().getAttribute("userMap");
 			map.put("CREATE_USER", userMap.get("ID"));
 			map.put("CREATE_USER_NAME", userMap.get("USER_NAME"));
-			sysService.saveUser(map);
-			result.setSuccess(true);
+			boolean saveResult = sysService.saveUser(map);
+			if(saveResult){
+				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("保存不成功。");
+			}
 		} catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);
@@ -224,14 +229,12 @@ public class SysController {
 		try {
 			String[] fileds = { "userId","NPASSWORD"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
-			
 			if(sysService.updatePassword(paraMap)){
 				result.setSuccess(true);
 			}else{
 				result.setSuccess(false);
 				result.setErr_msg("修改密码失败。");
 			}
-			
 		} catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);
@@ -388,8 +391,13 @@ public class SysController {
 		try {
 			String[] fileds = { "ids"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
-			sysService.deleteRole(paraMap);
-			result.setSuccess(true);
+			boolean delResult = sysService.deleteRole(paraMap);
+			if(delResult){
+				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("删除不成功。");
+			}
 		} catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);
@@ -415,8 +423,13 @@ public class SysController {
 			Map<String, Object> userMap = (Map<String, Object>)request.getSession().getAttribute("userMap");
 			map.put("CREATE_USER", userMap.get("ID"));
 			map.put("CREATE_USER_NAME", userMap.get("USER_NAME"));
-			sysService.saveRole(map);
-			result.setSuccess(true);
+			boolean saveResult = sysService.saveRole(map);
+			if(saveResult){
+				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("保存不成功。");
+			}
 		} catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);
@@ -456,8 +469,13 @@ public class SysController {
 	public void deleteMenu(HttpServletRequest request,HttpServletResponse response) {
 		ResultBean result = new ResultBean();
 		try {
-			sysService.deleteMenuById(request.getParameter("MENU_ID"));
-			result.setSuccess(true);
+			boolean delResult = sysService.deleteMenuById(request.getParameter("MENU_ID"));
+			if(delResult){
+				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("删除不成功。");
+			}
 		} catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);
@@ -482,8 +500,13 @@ public class SysController {
 			Map<String, Object> userMap = (Map<String, Object>)request.getSession().getAttribute("userMap");
 			map.put("CREATE_USER", userMap.get("ID"));
 			map.put("CREATE_USER_NAME", userMap.get("USER_NAME"));			
-			sysService.saveMenu(map);
-			result.setSuccess(true);
+			boolean saveResult = sysService.saveMenu(map);
+			if(saveResult){
+				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("保存不成功。");
+			}
 		} catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);
@@ -524,8 +547,8 @@ public class SysController {
 		try {
 			String[] fileds = {"ID","CODE","NAME","VALUE"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
-			int updateCount = sysService.saveSysConfigInfo(paraMap);
-			if(updateCount > 0)
+			boolean updResult = sysService.saveSysConfigInfo(paraMap);
+			if(updResult)
 			{
 				GlobalConstant.SYS_MAP.put(String.valueOf(paraMap.get("CODE")), String.valueOf(paraMap.get("VALUE")));
 				logger.info("更新系统缓存["+String.valueOf(paraMap.get("CODE"))+"]成功");
@@ -622,8 +645,13 @@ public class SysController {
 				result.setSuccess(false);
 				result.setErr_msg("编码已存在。");
 			}else{
-				sysService.savePublicCodeInfo(paraMap);
-				result.setSuccess(true);
+				boolean saveResult = sysService.savePublicCodeInfo(paraMap);
+				if(saveResult){
+					result.setSuccess(true);
+				}else{
+					result.setSuccess(false);
+					result.setErr_msg("保存不成功。");
+				}
 			}
 		} catch (Exception e) {
 			logger.error("发生异常", e);

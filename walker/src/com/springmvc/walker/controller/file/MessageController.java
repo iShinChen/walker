@@ -105,8 +105,13 @@ public class MessageController {
 		try {
 			String[] fileds = {"id","version","name","age","sex","birth","address"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
-			messageService.saveMessage(paraMap);
-			result.setSuccess(true);
+			boolean saveResult = messageService.saveMessage(paraMap);
+			if(saveResult){
+				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("保存不成功。");
+			}
 		} catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);
@@ -124,8 +129,13 @@ public class MessageController {
 	public void deleteMessage(HttpServletRequest request,HttpServletResponse response) {
 		ResultBean result = new ResultBean();
 		try {
-			messageService.deleteMessage(request.getParameter("ids"));
-			result.setSuccess(true);
+			boolean delResult = messageService.deleteMessage(request.getParameter("ids"));
+			if(delResult){
+				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("删除不成功。");
+			}	
 		} catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);
@@ -174,8 +184,7 @@ public class MessageController {
 				values = ExcelUtil.readExcelVer2007(file);
 			}
 			//导入数据库
-	        importExcelService.insertIntoTMessage(values);
-	        result.setSuccess(true);
+	        result.setSuccess(importExcelService.insertIntoTMessage(values));
 		}catch(IOException e){
 			logger.error("程序异常", e);
 			result.setSuccess(false);

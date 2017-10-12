@@ -11,15 +11,15 @@ public interface VideoService {
 	
 	public List<Map<String, Object>> getVideoListByIds(String ids);
 
-	public void saveVideo(Map<String, Object> paraMap);
+	public boolean saveVideo(Map<String, Object> paraMap);
 	
-	public void deleteVideo(String ids);
+	public boolean deleteVideo(String ids);
 	
 	public Map<String, Object> getVideoById(String id);
 	
 	public Map<String, Object> getVideoByUrl(String url);
 	
-	public void updVideoFlagById(String id,String flag);
+	public boolean updVideoFlagById(String id,String flag);
 	
-	public void updVideoStatusById(String id,String status);
+	public boolean updVideoStatusById(String id,String status);
 }

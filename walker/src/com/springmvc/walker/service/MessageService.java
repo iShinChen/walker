@@ -9,9 +9,9 @@ public interface MessageService {
 	
 	public List<Map<String, Object>> getMessagePage(Map<String, Object> paraMap, Page page);
 
-	public int saveMessage(Map<String, Object> userMap);
+	public boolean saveMessage(Map<String, Object> userMap);
 	
-	public void deleteMessage(String ids);
+	public boolean deleteMessage(String ids);
 	
 	public Map<String, Object> getMessageById(String id);
 	

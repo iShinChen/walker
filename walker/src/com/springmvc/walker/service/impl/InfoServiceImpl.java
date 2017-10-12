@@ -45,51 +45,33 @@ public class InfoServiceImpl implements InfoService{
 	}
 
 	@Override
-	public void saveInfo(Map<String, Object> paraMap) {
-		if(null == paraMap){
-			return;
-		}
-		try {
-			if(null != paraMap.get("id") && !"".equals(paraMap.get("id"))){
-				logger.info("更新咨询数据"+paraMap.toString());
-				infoMapper.updateInfo(paraMap);
-				logger.info("更新咨询数据成功");
-			}else{
-				paraMap.put("id", UUIDUtil.getUUID());
-				logger.info("插入咨询数据"+paraMap.toString());
-				infoMapper.insertInfo(paraMap);
-				logger.info("插入咨询数据成功");
-			}
-			
-		} catch (Exception e) {
-			logger.error("保存发生异常", e);
+	public boolean saveInfo(Map<String, Object> paraMap) {
+		if(null == paraMap) return false;
+		if(null != paraMap.get("id") && !"".equals(paraMap.get("id"))){
+			logger.info("更新咨询数据"+paraMap.toString());
+			return infoMapper.updateInfo(paraMap);
+		}else{
+			paraMap.put("id", UUIDUtil.getUUID());
+			logger.info("插入咨询数据"+paraMap.toString());
+			return infoMapper.insertInfo(paraMap);
 		}
 	}
 
 	@Override
-	public void deleteInfo(String ids) {
-		try {
-			if(null != ids && !"".equals(ids)){
-				String[] id = ids.split(",");
-				infoMapper.deleteInfo(id);
-				logger.info("删除数据成功");
-			}
-		} catch (Exception e) {
-			logger.error("操作发生异常", e);
+	public boolean deleteInfo(String ids) {
+		if(null != ids && !"".equals(ids)){
+			String[] id = ids.split(",");
+			return infoMapper.deleteInfo(id);
 		}
+		return false;
 	}
 
 	@Override
 	public Map<String, Object> getInfoById(String id) {
 		Map<String, Object> file = new HashMap<String, Object>();
-		try {
-			logger.info("查询单条咨询id:" + id);
-			file = infoMapper.getInfoById(id);
-			logger.info("查询单条咨询成功:" + file.toString());
-		} catch (Exception e) {
-			logger.error("查询单条咨询发生异常", e);
-			file = null;
-		}
+		logger.info("查询单条咨询id:" + id);
+		file = infoMapper.getInfoById(id);
+		logger.info("查询单条咨询成功:" + file.toString());
 		return file;
 	}
 

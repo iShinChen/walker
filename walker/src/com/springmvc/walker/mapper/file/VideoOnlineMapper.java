@@ -5,13 +5,13 @@ import java.util.Map;
 
 public interface VideoOnlineMapper {
 
-	public void insertVideoOnline(Map<String, Object> paraMap);
+	public boolean insertVideoOnline(Map<String, Object> paraMap);
 	
-	public void updateVideoOnline(Map<String, Object> paraMap);
+	public boolean updateVideoOnline(Map<String, Object> paraMap);
 	
-	public void deleteVideoOnline(String[] ids);
+	public boolean deleteVideoOnline(String[] ids);
 	
-	public void updVideoOnlineStatus(Map<String, Object> paraMap);
+	public boolean updVideoOnlineStatus(Map<String, Object> paraMap);
 	
 	public int getVideoOnlineCount(Map<String, Object> paraMap);
 	

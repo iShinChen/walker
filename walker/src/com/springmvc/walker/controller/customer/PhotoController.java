@@ -87,9 +87,12 @@ public class PhotoController {
 		try {
 			String[] fileds = {"id","version","name","age","sex","birth","address"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
-			int saveResult = photoService.savePhoto(paraMap);
-			if(saveResult > 0){
+			boolean saveResult = photoService.savePhoto(paraMap);
+			if(saveResult){
 				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("保存不成功。");
 			}
 		}catch (Exception e) {
 			logger.error("程序异常", e);

@@ -41,79 +41,58 @@ public class FileServiceImpl implements FileService{
 		} catch (Exception e) {
 			logger.error("查询信息集合发生异常", e);
 		}
-		return list;}
-
-	@Override
-	public void saveFile(Map<String, Object> paraMap) {
-		if(null == paraMap){
-			return;
-		}
-		try {
-			if(null != paraMap.get("id") && !"".equals(paraMap.get("id"))){
-				logger.info("更新文件数据"+paraMap.toString());
-				fileMapper.updateFile(paraMap);
-				logger.info("更新文件数据成功");
-			}else{
-				paraMap.put("id", UUIDUtil.getUUID());
-				logger.info("插入文件数据"+paraMap.toString());
-				fileMapper.insertFile(paraMap);
-				logger.info("插入文件数据成功");
-			}
-			
-		} catch (Exception e) {
-			logger.error("保存发生异常", e);
-		}
+		return list;
 	}
 
 	@Override
-	public void deleteFile(String ids) {
-		try {
-			if(null != ids && !"".equals(ids)){
-				logger.info("逻辑删除信息数据");
-				String[] id = ids.split(",");
-//				fileMapper.deleteFile(id);
-				fileMapper.deleteCompletely(id);
-				logger.info("删除数据成功");
-			}else{
-				logger.info("物理删除信息数据");
-				String[] id = ids.split(",");
-				fileMapper.deleteCompletely(id);
-				logger.info("删除数据成功");
-			}
-		} catch (Exception e) {
-			logger.error("操作发生异常", e);
+	public boolean saveFile(Map<String, Object> paraMap) {
+		if(null == paraMap){
+			return false;
 		}
+		if(null != paraMap.get("id") && !"".equals(paraMap.get("id"))){
+			logger.info("更新文件数据"+paraMap.toString());
+			return fileMapper.updateFile(paraMap);
+		}else{
+			paraMap.put("id", UUIDUtil.getUUID());
+			logger.info("插入文件数据"+paraMap.toString());
+			return fileMapper.insertFile(paraMap);
+		}
+		
+	}
+
+	@Override
+	public boolean deleteFile(String ids) {
+		if(null != ids && !"".equals(ids)){
+			logger.info("逻辑删除信息数据");
+			String[] id = ids.split(",");
+//			return fileMapper.deleteFile(id);
+			return fileMapper.deleteCompletely(id);
+		}else{
+			logger.info("物理删除信息数据");
+			String[] id = ids.split(",");
+			return fileMapper.deleteCompletely(id);
+		}
+
 	}
 
 	@Override
 	public Map<String, Object> getFileById(String id) {
 		Map<String, Object> file = new HashMap<String, Object>();
-		try {
-			logger.info("查询单条信息id:" + id);
-			file = fileMapper.getFileById(id);
-			logger.info("查询单条信息成功:" + file.toString());
-		} catch (Exception e) {
-			logger.error("查询单条信息发生异常", e);
-			file = null;
-		}
+		logger.info("查询单条信息id:" + id);
+		file = fileMapper.getFileById(id);
+		logger.info("查询单条信息成功:" + file.toString());
 		return file;
 	}
 
 	@Override
 	public Map<String, Object> getFileByName(String name) {
 		Map<String, Object> file = new HashMap<String, Object>();
-		try {
-			logger.info("查询同名信息:" + name);
-			file = fileMapper.getFileByName(name);
-			if(null!=file){
-				logger.info("查询同名信息成功:" + file.toString());
-			}else{
-				logger.info("查询同名信息成功:无同名数据");
-			}
-			
-		} catch (Exception e) {
-			logger.error("查询同名信息发生异常", e);
-			file = null;
+		logger.info("查询同名信息:" + name);
+		file = fileMapper.getFileByName(name);
+		if(null!=file){
+			logger.info("查询同名信息成功:" + file.toString());
+		}else{
+			logger.info("查询同名信息成功:无同名数据");
 		}
 		return file;
 	}

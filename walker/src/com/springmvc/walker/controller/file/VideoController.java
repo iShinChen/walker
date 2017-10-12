@@ -98,8 +98,13 @@ public class VideoController {
 		try {
 			String[] fileds = {"id","name","video_size","duration","url","flag"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
-			videoService.saveVideo(paraMap);
-			result.setSuccess(true);
+			boolean saveResult = videoService.saveVideo(paraMap);
+			if(saveResult){
+				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("保存不成功。");
+			}
 		}catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);
@@ -117,8 +122,13 @@ public class VideoController {
 	public void deleteVideo(HttpServletRequest request,HttpServletResponse response) {
 		ResultBean result = new ResultBean();
 		try {
-			videoService.deleteVideo(request.getParameter("ids"));
-			result.setSuccess(true);
+			boolean delResult = videoService.deleteVideo(request.getParameter("ids"));
+			if(delResult){
+				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("删除不成功。");
+			}
 		} catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);

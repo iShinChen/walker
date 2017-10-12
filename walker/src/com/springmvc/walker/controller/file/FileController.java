@@ -112,15 +112,19 @@ public class FileController {
 				//如果改名成功,则更新数据
 				if(ftp.reNameFile(paraMap.get("url").toString(), paraMap.get("name").toString())){
 					paraMap.put("url", paraMap.get("url").toString().substring(0, paraMap.get("url").toString().lastIndexOf("/")+1) + paraMap.get("name").toString());
-					fileService.saveFile(paraMap);
-					result.setSuccess(true);
+					if(fileService.saveFile(paraMap)){
+						result.setSuccess(true);
+					}else{
+						result.setSuccess(false);
+						result.setErr_msg("保存未成功。");
+					}
 				}
 				ftp.disconnect();
 			}
 		}catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);
-			result.setErr_msg("保存发生错误。");
+			result.setErr_msg("保存发生异常。");
 		}
 		return result;
 	}
@@ -245,8 +249,12 @@ public class FileController {
 	public void deleteFile(HttpServletRequest request,HttpServletResponse response) {
 		ResultBean result = new ResultBean();
 		try {
-			fileService.deleteFile(request.getParameter("ids"));
-			result.setSuccess(true);
+			if(fileService.deleteFile(request.getParameter("ids"))){
+				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("删除不成功。");
+			}			
 		} catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);

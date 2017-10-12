@@ -13,5 +13,5 @@ public interface SysConfigService {
 	
 	List<Map<String, Object>> getSysBookByParent(String PARENT_ID);
 	
-	public void updateSysTaskState();
+	public boolean updateSysTaskState();
 }

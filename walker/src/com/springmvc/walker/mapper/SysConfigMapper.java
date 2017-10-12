@@ -15,6 +15,6 @@ public interface SysConfigMapper {
 	
 	List<Map<String, Object>> getFtpConfigList();
 	
-	void updateSysTaskState();
+	boolean updateSysTaskState();
 
 }

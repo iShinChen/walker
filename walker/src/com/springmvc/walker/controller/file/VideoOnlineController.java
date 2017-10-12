@@ -81,8 +81,13 @@ public class VideoOnlineController {
 		try {
 			String[] fileds = {"id","name","tags","video_url","flash_url","embed_url","status"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
-			videoOnlineService.saveVideoOnline(paraMap);
-			result.setSuccess(true);
+			boolean saveResult = videoOnlineService.saveVideoOnline(paraMap);
+			if(saveResult){
+				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("保存不成功。");
+			}
 		}catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);
@@ -100,8 +105,13 @@ public class VideoOnlineController {
 	public void deleteVideoOnline(HttpServletRequest request,HttpServletResponse response) {
 		ResultBean result = new ResultBean();
 		try {
-			videoOnlineService.deleteVideoOnline(request.getParameter("ids"));
-			result.setSuccess(true);
+			boolean delResult = videoOnlineService.deleteVideoOnline(request.getParameter("ids"));
+			if(delResult){
+				result.setSuccess(true);
+			}else{
+				result.setSuccess(false);
+				result.setErr_msg("删除不成功。");
+			}
 		} catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);

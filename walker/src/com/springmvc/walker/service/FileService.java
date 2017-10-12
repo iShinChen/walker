@@ -9,9 +9,9 @@ public interface FileService {
 
 	public List<Map<String, Object>> getFilePage(Map<String, Object> paraMap, Page page);
 
-	public void saveFile(Map<String, Object> paraMap);
+	public boolean saveFile(Map<String, Object> paraMap);
 	
-	public void deleteFile(String ids);
+	public boolean deleteFile(String ids);
 	
 	public Map<String, Object> getFileById(String id);
 	

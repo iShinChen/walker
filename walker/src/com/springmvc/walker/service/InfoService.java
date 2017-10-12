@@ -9,9 +9,9 @@ public interface InfoService {
 
 	public List<Map<String, Object>> getInfoPage(Map<String, Object> paraMap, Page page);
 
-	public void saveInfo(Map<String, Object> paraMap);
+	public boolean saveInfo(Map<String, Object> paraMap);
 	
-	public void deleteInfo(String ids);
+	public boolean deleteInfo(String ids);
 	
 	public Map<String, Object> getInfoById(String id);
 }

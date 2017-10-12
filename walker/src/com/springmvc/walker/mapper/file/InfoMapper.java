@@ -5,15 +5,15 @@ import java.util.Map;
 
 public interface InfoMapper {
 
-	void insertInfo(Map<String, Object> paraMap);
+	public boolean insertInfo(Map<String, Object> paraMap);
 	
-	void updateInfo(Map<String, Object> paraMap);
+	public boolean updateInfo(Map<String, Object> paraMap);
 	
-	void deleteInfo(String[] ids);
+	public boolean deleteInfo(String[] ids);
 	
-	int getInfoCount(Map<String, Object> paraMap);
+	public int getInfoCount(Map<String, Object> paraMap);
 	
-	List<Map<String, Object>> getInfoPage(Map<String, Object> paraMap);
+	public List<Map<String, Object>> getInfoPage(Map<String, Object> paraMap);
 	
-	Map<String, Object> getInfoById(String id);
+	public Map<String, Object> getInfoById(String id);
 }

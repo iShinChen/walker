@@ -9,12 +9,12 @@ public interface VideoOnlineService {
 
 	public List<Map<String, Object>> getVideoOnlinePage(Map<String, Object> paraMap, Page page);
 
-	public void saveVideoOnline(Map<String, Object> paraMap);
+	public boolean saveVideoOnline(Map<String, Object> paraMap);
 	
-	public void deleteVideoOnline(String ids);
+	public boolean deleteVideoOnline(String ids);
 	
 	public Map<String, Object> getVideoOnlineById(String id);
 	
-	public void updVideoOnlineStatusById(String id,String status);
+	public boolean updVideoOnlineStatusById(String id,String status);
 	
 }

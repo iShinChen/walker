@@ -26,8 +26,8 @@ public class ImportExcelServiceImpl implements ImportExcelService{
 	 */
 	@Override
 	@Transactional
-	public void insertIntoTMessage(List<String> values) {
-		if(null == values) return;
+	public boolean insertIntoTMessage(List<String> values) {
+		if(null == values) return false;
 		for(int i = 0;i < values.size();i++){
 	    	String[] val = values.get(i).split(",");
 			//判断该行数据是否为空
@@ -38,7 +38,7 @@ public class ImportExcelServiceImpl implements ImportExcelService{
 				}
 			}
 			if(spaceFlag){
-				return;
+				continue;
 			}
 			//数据映射
 			Map<String, Object> paraMap = new HashMap<String, Object>();
@@ -53,6 +53,7 @@ public class ImportExcelServiceImpl implements ImportExcelService{
 			paraMap.put("address", val[5]);
 			messageService.saveMessage(paraMap);		
 	    }
+		return true;
 	}
 
 }

@@ -5,19 +5,19 @@ import java.util.Map;
 
 public interface FileMapper {
 
-	void insertFile(Map<String, Object> paraMap);
+	public boolean insertFile(Map<String, Object> paraMap);
 	
-	void updateFile(Map<String, Object> paraMap);
+	public boolean updateFile(Map<String, Object> paraMap);
 	
-	void deleteCompletely(String[] ids);
+	public boolean deleteCompletely(String[] ids);
 	
-	void deleteFile(String[] ids);
+	public boolean deleteFile(String[] ids);
 	
-	int getFileCount(Map<String, Object> paraMap);
+	public int getFileCount(Map<String, Object> paraMap);
 	
-	List<Map<String, Object>> getFilePage(Map<String, Object> paraMap);
+	public List<Map<String, Object>> getFilePage(Map<String, Object> paraMap);
 	
-	Map<String, Object> getFileById(String id);
+	public Map<String, Object> getFileById(String id);
 	
-	Map<String, Object> getFileByName(String name);
+	public Map<String, Object> getFileByName(String name);
 }
