@@ -248,7 +248,7 @@ com.walker.file.info.editInfo = function(types) {
 						com.walker.file.info.title="修改资讯";
 						com.walker.file.info.showRecordWin();
 					}else{
-						Ext.Msg.alert("提示","获取失败!");
+						Ext.Msg.alert("提示",result.err_msg);
 					}
 			     },
 				failure: function(response) {		
@@ -407,7 +407,7 @@ com.walker.file.info.saveInfo=function(){
 							});
 							com.walker.file.info.queryInfo();
 						} else {
-							Ext.Msg.alert("提示", "保存失败");
+							Ext.Msg.alert("提示", action.result.err_msg);
 						}
 				     },
 				 failure: function(form, action) {
@@ -444,6 +444,8 @@ com.walker.file.info.deleteInfo=function(){
 				if (result.success) {
 					Ext.Msg.alert("提示", "删除成功!");
 					com.walker.file.info.queryInfo();
+				}else{
+					Ext.Msg.alert("提示", result.success);
 				}
 			},
 			failure : function(response) {

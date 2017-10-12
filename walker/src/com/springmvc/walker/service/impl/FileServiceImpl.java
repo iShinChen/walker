@@ -105,7 +105,12 @@ public class FileServiceImpl implements FileService{
 		try {
 			logger.info("查询同名信息:" + name);
 			file = fileMapper.getFileByName(name);
-			logger.info("查询同名信息成功:" + file.toString());
+			if(null!=file){
+				logger.info("查询同名信息成功:" + file.toString());
+			}else{
+				logger.info("查询同名信息成功:无同名数据");
+			}
+			
 		} catch (Exception e) {
 			logger.error("查询同名信息发生异常", e);
 			file = null;

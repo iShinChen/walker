@@ -31,6 +31,7 @@ public class Tools {
 		return rootPath;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static String getLocalPath(){
 		JFrame frame = new JFrame();
 		FileDialog fileDialog = new FileDialog(frame);  
@@ -60,11 +61,6 @@ public class Tools {
 				}
 			}
 		}
-//		try {
-//			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
 		
 		//文件选择器
 		JFileChooser fileChooser = new JFileChooser("D://");

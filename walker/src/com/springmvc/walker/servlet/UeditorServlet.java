@@ -7,8 +7,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -164,12 +162,5 @@ public class UeditorServlet extends HttpServlet {
 			}
 		}
 
-	}
-
-	private String getDate() {
-		Calendar calendar = Calendar.getInstance();
-		calendar = Calendar.getInstance();
-		String str = (new SimpleDateFormat("yyyyMMdd").format(calendar.getTime()));
-		return str;
 	}
 }

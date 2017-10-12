@@ -292,7 +292,8 @@ public class MapJsonUtil {
      * @param subClass   子映射class
      * @return  Object
      */
-    public static Object jsonStr2Object(String jsonString,Class<?> pojoCalss,Map subClass)
+    @SuppressWarnings("rawtypes")
+	public static Object jsonStr2Object(String jsonString,Class<?> pojoCalss,Map subClass)
     {
     	Object pojo; 
         JSONObject jsonObject = JSONObject.fromObject( jsonString ); 
@@ -306,7 +307,8 @@ public class MapJsonUtil {
      * @param jsonString String
      * @return Map
      */ 
-    public static Map jsonStr2Map(String jsonString){ 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Map jsonStr2Map(String jsonString){ 
         JSONObject jsonObject = JSONObject.fromObject( jsonString ); 
         Iterator keyIter = jsonObject.keys(); 
         String key; 
@@ -360,7 +362,8 @@ public class MapJsonUtil {
      * @param subClass   Map
      * @return List<?>
      */ 
-    public static List<?> jsonStr2List(String jsonString, Class<?> pojoClass,Map subClass){ 
+    @SuppressWarnings("rawtypes")
+	public static List<?> jsonStr2List(String jsonString, Class<?> pojoClass,Map subClass){ 
     	net.sf.json.JSONArray jsonArray = net.sf.json.JSONArray.fromObject(jsonString); 
         JSONObject jsonObject; 
         Object pojoValue; 

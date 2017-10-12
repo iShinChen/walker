@@ -3,8 +3,6 @@ package com.springmvc.walker.mapper;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONObject;
-
 public interface SysMapper {
 
 	int countUserList(Map<String, Object> paraMap);

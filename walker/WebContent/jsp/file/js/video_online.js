@@ -263,7 +263,7 @@ com.walker.file.video_online.editVideoOnline = function(types) {
 						com.walker.file.video_online.title="修改视频";
 						com.walker.file.video_online.showRecordWin();
 					}else{
-						Ext.Msg.alert("提示","获取失败!");
+						Ext.Msg.alert("提示",result.err_msg);
 					}
 			     },
 				failure: function(response) {		
@@ -429,7 +429,7 @@ com.walker.file.video_online.saveVdieoOnline=function(){
 							});
 							com.walker.file.video_online.queryView();
 						} else {
-							Ext.Msg.alert("提示", "保存失败");
+							Ext.Msg.alert("提示", action.result.err_msg);
 						}
 				     },
 				 failure: function(form, action) {
@@ -466,6 +466,8 @@ com.walker.file.video_online.deleteVideoOnline=function(){
 				if (result.success) {
 					Ext.Msg.alert("提示", "删除成功!");
 					com.walker.file.video_online.queryView();
+				}else{
+					Ext.Msg.alert("提示", result.err_msg);
 				}
 			},
 			failure : function(response) {

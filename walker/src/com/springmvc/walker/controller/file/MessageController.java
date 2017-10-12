@@ -3,7 +3,6 @@ package com.springmvc.walker.controller.file;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,25 +20,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import com.alibaba.fastjson.JSONObject;
 import com.itextpdf.text.pdf.AcroFields;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.springmvc.walker.constant.GlobalConstant;
 import com.springmvc.walker.entity.Page;
+import com.springmvc.walker.entity.PageResultBean;
+import com.springmvc.walker.entity.ResultBean;
 import com.springmvc.walker.service.FileService;
 import com.springmvc.walker.service.ImportExcelService;
 import com.springmvc.walker.service.MessageService;
 import com.springmvc.walker.util.ContinueFTP;
 import com.springmvc.walker.util.ExcelUtil;
 import com.springmvc.walker.util.ParamUtil;
+import com.springmvc.walker.util.PrintWriterUtil;
 import com.springmvc.walker.util.StringUtils;
 
 @Controller
 @RequestMapping("/file") 
 public class MessageController {
-	
-	private static final long serialVersionUID = 1L;
 	
 	private final static Logger logger = Logger.getLogger(MessageController.class);
 	
@@ -53,119 +52,120 @@ public class MessageController {
 	private FileService fileService;
 	
 	/**
-	 * 获取信息列表
+	 * 获取数据列表
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/getMessageListPage")
 	public void getMessageListPage(HttpServletRequest request,HttpServletResponse response) {
-		PrintWriter writer = null;
-		Map<String, Object> jsonMap = new HashMap<String, Object>();
-		String[] fileds = { "start", "limit","name"};
+		PageResultBean result = new PageResultBean();		
 		try {
-			writer = response.getWriter();
+			String[] fileds = { "start", "limit","name"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
 			
 			Page page = new Page();
 			List<Map<String, Object>> list = messageService.getMessagePage(paraMap, page);
-			jsonMap.put("total",page.getTotalRow());
-			jsonMap.put("rows",list);
-			jsonMap.put("page",page.getPageRow());
-			jsonMap.put("success", true);
-			
+			result.setPageResultBean(page.getTotalRow(), page.getPageRow(), list, true);
 		} catch (Exception e) {
 			logger.error(e);
-			jsonMap.put("success", false);
+			result.setSuccess(false);
+			result.setErr_msg("获取数据列表异常。");
 		}
-		
-		writer.write(JSONObject.toJSONString(jsonMap));
-		writer.flush();
-		writer.close();
-	}
-	
-	@RequestMapping(value = "/getMessageById")
-	public void getMessageById(HttpServletRequest request,HttpServletResponse response) {
-		PrintWriter writer=null;
-		JSONObject jsonObj = new JSONObject();
-		String id = request.getParameter("id");
-		try {
-			writer = response.getWriter();
-			Map<String, Object> resultMap = messageService.getMessageById(id);
-			jsonObj.put("data", resultMap);
-			jsonObj.put("success", true);
-		} catch (Exception e) {
-			logger.error("程序异常", e);
-			jsonObj.put("error", e);
-		} finally {
-			writer.write(jsonObj.toString());
-			writer.flush();
-			writer.close();
-		}	
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
-	 * 保存信息
+	 * 根据ID获取具体数据
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "/getMessageById")
+	public void getMessageById(HttpServletRequest request,HttpServletResponse response) {
+		ResultBean result = new ResultBean();
+		try {
+			Map<String, Object> resultMap = messageService.getMessageById(request.getParameter("id"));
+			result.setData(resultMap);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("获取数据异常。");
+		}
+		PrintWriterUtil.write(response, result);
+	}
+	
+	/**
+	 * 保存上数据
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/saveMessage")
 	public void saveMessage(HttpServletRequest request,HttpServletResponse response) {
-		PrintWriter writer=null;
-		JSONObject jsonObj = new JSONObject();
-		String[] fileds = {"id","version","name","age","sex","birth","address"};
+		ResultBean result = new ResultBean();
 		try {
-			writer = response.getWriter();
+			String[] fileds = {"id","version","name","age","sex","birth","address"};
 			Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
 			messageService.saveMessage(paraMap);
-			jsonObj.put("success", true);
+			result.setSuccess(true);
 		} catch (Exception e) {
 			logger.error("程序异常", e);
-			jsonObj.put("success", false);
-		} finally {
-			writer.write(jsonObj.toString());
-			writer.flush();
-			writer.close();
+			result.setSuccess(false);
+			result.setErr_msg("保存过程发生异常。");
 		}
+		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
-	 * 删除信息
+	 * 删除数据
+	 * @param request
+	 * @param response
 	 */
 	@RequestMapping(value = "/deleteMessage")
 	public void deleteMessage(HttpServletRequest request,HttpServletResponse response) {
-		PrintWriter writer=null;
-		JSONObject jsonObj = new JSONObject();
-		String ids = request.getParameter("ids");
+		ResultBean result = new ResultBean();
 		try {
-			writer = response.getWriter();
-			messageService.deleteMessage(ids);
-			jsonObj.put("success", true);
+			messageService.deleteMessage(request.getParameter("ids"));
+			result.setSuccess(true);
 		} catch (Exception e) {
 			logger.error("程序异常", e);
-			jsonObj.put("error", e);
-		} finally {
-			writer.write(jsonObj.toString());
-			writer.flush();
-			writer.close();
-		}	
+			result.setSuccess(false);
+			result.setErr_msg("删除过程发生异常。");
+		}
+		PrintWriterUtil.write(response, result);
 	}
 	
+	/**
+	 * 导入数据
+	 * @param request
+	 * @param response
+	 * @param mfile
+	 */
 	@RequestMapping(value = "/importExcel")
 	public void importExcel(HttpServletRequest request,HttpServletResponse response,
 			@RequestParam(value="filePath") MultipartFile mfile){
-
-  		JSONObject jsonObj = new JSONObject();
-  		PrintWriter writer=null;
-  		response.setContentType("text/html;charset=utf-8");
-  		
+		ResultBean result = new ResultBean();
   		String uploadPath = request.getSession().getServletContext().getRealPath("/upload/");
-  		File url = new File(uploadPath);
+  		result = importExcel_process(uploadPath,mfile,result);
+		PrintWriterUtil.write_text_html(response, result);
+	}
+	
+	/**
+	 * 导入数据-使用Excel格式导入
+	 * @param uploadPath
+	 * @param mfile
+	 * @param result
+	 * @return
+	 */
+	private ResultBean importExcel_process(String uploadPath,MultipartFile mfile,ResultBean result){
+		File url = new File(uploadPath);
   		if (!url.exists()) {
   			url.mkdirs();
 		}
 		String name = mfile.getOriginalFilename();
         CommonsMultipartFile cf= (CommonsMultipartFile)mfile;
         File file = new File(uploadPath+"/"+name);
-
 		try {
 			cf.getFileItem().write(file); 
-			writer = response.getWriter();
 			//判断并解析excel文件
 			List<String> values = new ArrayList<String>();
 			if(ExcelUtil.isExcel2003(name)){
@@ -175,30 +175,41 @@ public class MessageController {
 			}
 			//导入数据库
 	        importExcelService.insertIntoTMessage(values);
-	        jsonObj.put("success", true);
+	        result.setSuccess(true);
 		}catch(IOException e){
 			logger.error("程序异常", e);
-			jsonObj.put("success", false);
+			result.setSuccess(false);
+			result.setErr_msg("IO传输发生异常！");
 		}catch (Exception e){
 			logger.error("程序异常", e);
-			jsonObj.put("success", false);
-		}finally {
-			writer.write(jsonObj.toString());
-			writer.flush();
-			writer.close();
+			result.setSuccess(false);
+			result.setErr_msg("数据导入发生异常！");
 		}
-  		
+		return result;
 	}
 	
+	/**
+	 * 导出数据
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping(value = "/exportExcel")
 	public void exportExcel(HttpServletRequest request,HttpServletResponse response){
-		JSONObject jsonObj = new JSONObject();
-  		PrintWriter writer=null;
-  		String ids = request.getParameter("ids");
-  		try {  	  
-			writer = response.getWriter();
-			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-			list = messageService.getMessageByIds(ids);
+		ResultBean result = new ResultBean();
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		list = messageService.getMessageByIds(request.getParameter("ids"));
+		result = exportExcel_process(list,result);
+  		PrintWriterUtil.write(response, result);
+	}
+	
+	/**
+	 * 导出数据-导出数据到Excel
+	 * @param list
+	 * @param result
+	 * @return
+	 */
+	private ResultBean exportExcel_process(List<Map<String, Object>> list,ResultBean result){
+		try {  	  
 			if(null!= list){
 				XSSFWorkbook workbook = ExcelUtil.exportExcelVer2007(list);
 				String fileName = "";
@@ -223,24 +234,40 @@ public class MessageController {
 					}	
 				}
 				ftp.disconnect();
-				jsonObj.put("success", flag);
+				result.setSuccess(flag);
+				if(!flag){
+					result.setErr_msg("导出Excel文件失败。");
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			jsonObj.put("success", false);
+			result.setSuccess(false);
+			result.setErr_msg("导出Excel文件过程发生异常。");
 		}
-  		writer.write(jsonObj.toString());
-		writer.flush();
-		writer.close();
+		return result;
 	}
 	
+	/**
+	 * 导出数据（PDF）
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping(value = "/exportPDF")
 	public void exportPDF(HttpServletRequest request,HttpServletResponse response){
-		JSONObject jsonObj = new JSONObject();
-  		PrintWriter writer=null;
+		ResultBean result = new ResultBean();
   		String id = request.getParameter("id");
-  		try {
-  			writer = response.getWriter();
+  		result = exportPDF_process(id,result);
+  		PrintWriterUtil.write(response, result);
+	}
+	
+	/**
+	 * 导出数据（PDF）-根据Excel模板导出数据详情
+	 * @param id
+	 * @param result
+	 * @return
+	 */
+	private ResultBean exportPDF_process(String id,ResultBean result){
+		try {
   			ContinueFTP ftp = new ContinueFTP();
   			String fileName = "";
 			boolean connected = ftp.connect(GlobalConstant.SYS_MAP.get(GlobalConstant.FTP_TARGET_IP),
@@ -283,25 +310,41 @@ public class MessageController {
 				fileService.saveFile(paraMap);
 			}
 			ftp.disconnect();
-  			jsonObj.put("success", flag);
+			result.setSuccess(flag);
+			if(!flag){
+				result.setErr_msg("导出PDF文件失败。");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			jsonObj.put("success", false);
+			result.setSuccess(false);
+			result.setErr_msg("导出PDF文件发生异常。");
 		}
-  		writer.write(jsonObj.toString());
-		writer.flush();
-		writer.close();
+		return result;
 	}
 	
+	/**
+	 * 导出数据列表（PDF）
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping(value = "/exportListPDF")
 	public void exportListPDF(HttpServletRequest request,HttpServletResponse response){
-		JSONObject jsonObj = new JSONObject();
-  		PrintWriter writer=null;
+		ResultBean result = new ResultBean();
   		String ids = request.getParameter("ids");
-  		try {
-  			writer = response.getWriter();
+  		result = exportListPDF_process(ids,result);
+  		PrintWriterUtil.write(response, result);
+	}
+	
+	/**
+	 * 导出数据列表（PDF）-根据模板文件导出数据表格
+	 * @param ids
+	 * @param result
+	 * @return
+	 */
+	private ResultBean exportListPDF_process(String ids,ResultBean result){
+		try {
   			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-			list = messageService.getMessageByIds(ids);
+  			list = messageService.getMessageByIds(ids);
   			String[] id = ids.split(",");
   			int pageNo = 0;
 			if (id.length >= 2 && id.length % 2 == 0) {  
@@ -354,13 +397,15 @@ public class MessageController {
 				fileService.saveFile(paraMap);
 			}	
 			ftp.disconnect();
-  			jsonObj.put("success", flag);
+			result.setSuccess(flag);
+			if(!flag){
+				result.setErr_msg("导出PDF文件失败。");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			jsonObj.put("success", false);
+			result.setSuccess(false);
+			result.setErr_msg("导出PDF文件发生异常。");
 		}
-  		writer.write(jsonObj.toString());
-		writer.flush();
-		writer.close();
+		return result;
 	}
 }

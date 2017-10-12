@@ -82,7 +82,7 @@ public class RequestUtils {
 	 * @param name
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes" })
 	public static Map getMapParameter(ServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Enumeration params = request.getParameterNames();
@@ -308,7 +308,7 @@ public class RequestUtils {
 	 * @param length
 	 * 			     字符串长度
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes" })
 	public static String getStringParameter(HttpServletRequest request,
 			String name, String regex, int length) {
 		String value = request.getParameter(name);
@@ -493,7 +493,7 @@ public class RequestUtils {
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public static String getRequestURL(HttpServletRequest request)
 			throws IllegalArgumentException {
 		String requestUrl = request.getRequestURL().toString();

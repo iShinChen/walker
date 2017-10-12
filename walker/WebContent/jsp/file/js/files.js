@@ -220,7 +220,7 @@ com.walker.file.files.getGridPnl = function(){
 							if(result.success){
 								com.walker.file.files.queryMessage();
 							}else{
-								Ext.Msg.alert("提示","操作失败！");
+								Ext.Msg.alert("提示",result.err_msg);
 							}
 						},
 						failure: function(response) {
@@ -353,7 +353,7 @@ com.walker.file.files.fileInput=function(){
 				});
 				com.walker.file.files.queryMessage();
 			}else{
-				Ext.Msg.alert("提示","文件上传失败!");
+				Ext.Msg.alert("提示",action.result.err_msg);
 			}
 	    },
 		failure: function(response) {
@@ -388,7 +388,7 @@ com.walker.file.files.fileOutput=function(){
 		    		Ext.Msg.alert("提示","文件下载成功!");
 		    		com.walker.file.files.queryMessage();
 		    	}else{
-					Ext.Msg.alert("提示","文件下载失败!");
+					Ext.Msg.alert("提示",result.err_msg);
 				}
 		    },
 		    failure : function(response){

@@ -61,7 +61,8 @@ public class LoginFilter extends HttpServlet implements Filter{
         
         String userId = "";
         
-        Map<String, Object> userMap = (Map) session.getAttribute("userMap");
+        @SuppressWarnings("rawtypes")
+		Map<String, Object> userMap = (Map) session.getAttribute("userMap");
         if(userMap != null)
         {
         	userId = String.valueOf(userMap.get("ID"));

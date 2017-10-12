@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.springmvc.walker.service.ImportExcelService;
 import com.springmvc.walker.service.MessageService;
@@ -24,6 +25,7 @@ public class ImportExcelServiceImpl implements ImportExcelService{
 	 * @return JSONObject
 	 */
 	@Override
+	@Transactional
 	public void insertIntoTMessage(List<String> values) {
 		if(null == values) return;
 		for(int i = 0;i < values.size();i++){

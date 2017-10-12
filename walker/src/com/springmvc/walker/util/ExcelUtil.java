@@ -2,7 +2,6 @@ package com.springmvc.walker.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -46,6 +45,7 @@ public class ExcelUtil {
 	 * @param file File
 	 * @return List<String>
 	 */
+	@SuppressWarnings("deprecation")
 	public static List<String> readExcelVer2003(File file){
 		List<String> values = new ArrayList<String>();
 		try {
