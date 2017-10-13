@@ -3,7 +3,10 @@ package com.springmvc.walker.controller.file;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.AcroFields;
+import com.itextpdf.text.pdf.PdfCopy;
+import com.itextpdf.text.pdf.PdfImportedPage;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.springmvc.walker.constant.GlobalConstant;
@@ -198,29 +204,54 @@ public class MessageController {
 	}
 	
 	/**
-	 * 导出数据
+	 * 导出数据到本地
 	 * @param request
 	 * @param response
 	 */
 	@RequestMapping(value = "/exportExcel")
 	public void exportExcel(HttpServletRequest request,HttpServletResponse response){
+		try{
+			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+			list = messageService.getMessageByIds(request.getParameter("ids"));
+			//导出表格
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
+			OutputStream stream = ExcelUtil.initialize(response,dateFormat.format(new Date()) + ".xlsx");
+			XSSFWorkbook workbook = new XSSFWorkbook();
+			workbook = ExcelUtil.exportExcelVer2007(workbook,list);
+			if(null!=stream){
+				workbook.write(stream);
+				stream.close();
+			}
+		}catch(Exception e){
+			logger.error("程序异常"+e.getMessage());
+		}
+	}
+	
+	/**
+	 * 导出数据到FTP
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "/exportExcelToFtp")
+	public void exportExcelToFtp(HttpServletRequest request,HttpServletResponse response){
 		ResultBean result = new ResultBean();
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		list = messageService.getMessageByIds(request.getParameter("ids"));
-		result = exportExcel_process(list,result);
+		result = exportExcelToFtp_process(list,result);
   		PrintWriterUtil.write(response, result);
 	}
 	
 	/**
-	 * 导出数据-导出数据到Excel
+	 * 导出数据到FTP-Excel格式导出
 	 * @param list
 	 * @param result
 	 * @return
 	 */
-	private ResultBean exportExcel_process(List<Map<String, Object>> list,ResultBean result){
+	private ResultBean exportExcelToFtp_process(List<Map<String, Object>> list,ResultBean result){
 		try {  	  
 			if(null!= list){
-				XSSFWorkbook workbook = ExcelUtil.exportExcelVer2007(list);
+				XSSFWorkbook workbook = new XSSFWorkbook();
+				workbook = ExcelUtil.exportExcelVer2007(workbook,list);
 				String fileName = "";
 				//连接ftp
 				ContinueFTP ftp = new ContinueFTP();
@@ -257,53 +288,95 @@ public class MessageController {
 	}
 	
 	/**
-	 * 导出数据（PDF）
+	 * 导出数据（PDF）到本地
 	 * @param request
 	 * @param response
 	 */
 	@RequestMapping(value = "/exportPDF")
 	public void exportPDF(HttpServletRequest request,HttpServletResponse response){
-		ResultBean result = new ResultBean();
-  		String id = request.getParameter("id");
-  		result = exportPDF_process(id,result);
-  		PrintWriterUtil.write(response, result);
+		//获取流
+		Map<String, Object> resultMap = messageService.getMessageById(request.getParameter("id"));
+		ByteArrayOutputStream[] bos = pdfStream(resultMap);
+		OutputStream out = ExcelUtil.initialize(response,resultMap.get("name").toString() + ".pdf");
+		try{
+			Document doc = new Document();  
+	        PdfCopy pdfCopy = new PdfCopy(doc, out);  
+	        doc.open();
+	        PdfImportedPage impPage = null;  
+	        //取出之前保存的每页内容  
+	        logger.info("导出文件页数：" + 1);
+	        for (int i = 0; i < 1; i++) { 
+	            impPage = pdfCopy.getImportedPage(new PdfReader(bos[i]  
+	                    .toByteArray()), 1);
+	            if(null!= impPage){
+	            	pdfCopy.addPage(impPage);  
+	            }
+	        }  
+	        doc.close();//当文件拷贝  记得关闭doc
+			out.close();
+		}catch(Exception e){
+			logger.error("程序异常"+e.getMessage());
+		}
 	}
 	
 	/**
-	 * 导出数据（PDF）-根据Excel模板导出数据详情
+	 * 导出数据（PDF）到ftp
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "/exportPDFToFtp")
+	public void exportPDFToFtp(HttpServletRequest request,HttpServletResponse response){
+		ResultBean result = new ResultBean();
+  		String id = request.getParameter("id");
+  		result = exportPDFToFtp_process(id,result);
+  		PrintWriterUtil.write(response, result);
+	}
+	
+	private ByteArrayOutputStream[] pdfStream(Map<String, Object> resultMap){
+		try{
+			PdfReader reader = new PdfReader("D://ftp/export/pdf_model/调查兵团.pdf"); 			
+			ByteArrayOutputStream[] bos = new ByteArrayOutputStream[1];
+			bos[0] = new ByteArrayOutputStream();
+			PdfStamper ps = new PdfStamper(reader, bos[0]);
+			AcroFields fields = ps.getAcroFields();
+		
+			if("1".equals(resultMap.get("sex"))){
+				resultMap.put("sex", "男");
+			}else if("2".equals(resultMap.get("sex"))){
+				resultMap.put("sex", "女");
+			}
+			//遍历结果集并将对象映射到PDF的相应域中
+			for(String key: resultMap.keySet()){
+				String value =  resultMap.get(key).toString();
+				fields.setField(key, value);
+			}
+			ps.setFormFlattening(true);
+			ps.close();
+			return bos;
+		}catch(Exception e){
+			logger.error("程序异常"+e.getMessage());
+			return null;
+		}	
+	}
+	
+	/**
+	 * 导出数据（PDF）到ftp-根据PDF模板导出数据详情
 	 * @param id
 	 * @param result
 	 * @return
 	 */
-	private ResultBean exportPDF_process(String id,ResultBean result){
+	private ResultBean exportPDFToFtp_process(String id,ResultBean result){
 		try {
+			//获取流
+			Map<String, Object> resultMap = messageService.getMessageById(id);
+			ByteArrayOutputStream[] bos = pdfStream(resultMap);
+			
   			ContinueFTP ftp = new ContinueFTP();
   			String fileName = "";
 			boolean connected = ftp.connect(GlobalConstant.SYS_MAP.get(GlobalConstant.FTP_TARGET_IP),
 					Integer.valueOf(GlobalConstant.SYS_MAP.get(GlobalConstant.FTP_TARGET_PORT)),
 					GlobalConstant.SYS_MAP.get(GlobalConstant.FTP_TARGET_USER),
 					GlobalConstant.SYS_MAP.get(GlobalConstant.FTP_TARGET_PASSWORD));
-			
-			PdfReader reader = new PdfReader("D://ftp/export/pdf_model/调查兵团.pdf"); 			
-	  		
-  			ByteArrayOutputStream[] bos = new ByteArrayOutputStream[1];
-  			bos[0] = new ByteArrayOutputStream();
-  			PdfStamper ps = new PdfStamper(reader, bos[0]);
-  			AcroFields fields = ps.getAcroFields();
-  			Map<String, Object> resultMap = messageService.getMessageById(id);
-  			if("1".equals(resultMap.get("sex"))){
-  				resultMap.put("sex", "男");
-  			}else if("2".equals(resultMap.get("sex"))){
-  				resultMap.put("sex", "女");
-  			}
-  			//遍历结果集并将对象映射到PDF的相应域中
-  			for(String key: resultMap.keySet()){
-  				String value =  resultMap.get(key).toString();
-  				fields.setField(key, value);
-  			}
-  			ps.setFormFlattening(true);
-  			ps.close();
-  			
   			boolean flag = false;
 			if(connected){
 				fileName =  GlobalConstant.SYS_MAP.get(GlobalConstant.EXPORT_PDF) 
@@ -330,44 +403,60 @@ public class MessageController {
 		}
 		return result;
 	}
-	
 	/**
-	 * 导出数据列表（PDF）
+	 * 导出数据列表（PDF）到本地
 	 * @param request
 	 * @param response
 	 */
 	@RequestMapping(value = "/exportListPDF")
 	public void exportListPDF(HttpServletRequest request,HttpServletResponse response){
-		ResultBean result = new ResultBean();
-  		String ids = request.getParameter("ids");
-  		result = exportListPDF_process(ids,result);
-  		PrintWriterUtil.write(response, result);
+		String ids = request.getParameter("ids");
+		List<Map<String, Object>> list = messageService.getMessageByIds(request.getParameter("ids"));
+		String[] id = ids.split(",");
+		int pageNo = 0;
+		if (id.length >= 2 && id.length % 2 == 0) {  
+			pageNo = id.length / 2;
+        } else {  
+        	pageNo = id.length / 2 + 1;
+        }
+		ByteArrayOutputStream bos[] = pdfListStream(list,ids,pageNo);
+		OutputStream out = ExcelUtil.initialize(response,"统计表" + StringUtils.getDateTime() +".pdf");
+		try{
+			Document doc = new Document();  
+	        PdfCopy pdfCopy = new PdfCopy(doc, out);  
+	        doc.open();
+	        PdfImportedPage impPage = null;  
+	        //取出之前保存的每页内容  
+	        for (int i = 0; i < pageNo; i++) { 
+	            impPage = pdfCopy.getImportedPage(new PdfReader(bos[i]
+	                    .toByteArray()), 1);
+	            if(null!= impPage){
+	            	pdfCopy.addPage(impPage);
+	            }
+	        }
+	        doc.close();//当文件拷贝  记得关闭doc
+			out.close();
+		}catch(Exception e){
+			logger.error("程序异常"+e.getMessage());
+		}
 	}
 	
 	/**
-	 * 导出数据列表（PDF）-根据模板文件导出数据表格
-	 * @param ids
-	 * @param result
-	 * @return
+	 * 导出数据列表（PDF）到ftp
+	 * @param request
+	 * @param response
 	 */
-	private ResultBean exportListPDF_process(String ids,ResultBean result){
+	@RequestMapping(value = "/exportListPDFToFtp")
+	public void exportListPDFToFtp(HttpServletRequest request,HttpServletResponse response){
+		ResultBean result = new ResultBean();
+  		String ids = request.getParameter("ids");
+  		result = exportListPDFToFtp_process(ids,result);
+  		PrintWriterUtil.write(response, result);
+	}
+	
+	private ByteArrayOutputStream[] pdfListStream(List<Map<String, Object>> list,String ids,int pageNo){
 		try {
-  			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-  			list = messageService.getMessageByIds(ids);
-  			String[] id = ids.split(",");
-  			int pageNo = 0;
-			if (id.length >= 2 && id.length % 2 == 0) {  
-				pageNo = id.length / 2;  
-            } else {  
-            	pageNo = id.length / 2 + 1;  
-            }
-			String fileName = "";
-			ContinueFTP ftp = new ContinueFTP();
-			boolean connected = ftp.connect(GlobalConstant.SYS_MAP.get(GlobalConstant.FTP_TARGET_IP),
-					Integer.valueOf(GlobalConstant.SYS_MAP.get(GlobalConstant.FTP_TARGET_PORT)),
-					GlobalConstant.SYS_MAP.get(GlobalConstant.FTP_TARGET_USER),
-					GlobalConstant.SYS_MAP.get(GlobalConstant.FTP_TARGET_PASSWORD));
-
+			String[] id = ids.split(",");
 			//用于存储每页生成PDF流
 			ByteArrayOutputStream bos[] = new ByteArrayOutputStream[pageNo];
 			//向PDF模板中插入数据
@@ -391,6 +480,39 @@ public class MessageController {
 				ps.setFormFlattening(true);
 	  			ps.close();
 			}
+			return bos;
+		} catch (Exception e) {
+			logger.error("程序异常"+e.getMessage());
+			return null;
+		}
+	}
+	
+	/**
+	 * 导出数据列表（PDF）-根据模板文件导出数据表格
+	 * @param ids
+	 * @param result
+	 * @return
+	 */
+	private ResultBean exportListPDFToFtp_process(String ids,ResultBean result){
+		try {
+			String[] id = ids.split(",");
+  			int pageNo = 0;
+			if (id.length >= 2 && id.length % 2 == 0) {  
+				pageNo = id.length / 2;  
+            } else {  
+            	pageNo = id.length / 2 + 1;  
+            }
+  			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+  			list = messageService.getMessageByIds(ids);
+  			ByteArrayOutputStream bos[] = pdfListStream(list,ids,pageNo);
+  			
+			String fileName = "";
+			ContinueFTP ftp = new ContinueFTP();
+			boolean connected = ftp.connect(GlobalConstant.SYS_MAP.get(GlobalConstant.FTP_TARGET_IP),
+					Integer.valueOf(GlobalConstant.SYS_MAP.get(GlobalConstant.FTP_TARGET_PORT)),
+					GlobalConstant.SYS_MAP.get(GlobalConstant.FTP_TARGET_USER),
+					GlobalConstant.SYS_MAP.get(GlobalConstant.FTP_TARGET_PASSWORD));
+
 			boolean flag = false;
 			if(connected){
 				fileName =  GlobalConstant.SYS_MAP.get(GlobalConstant.EXPORT_PDF) 

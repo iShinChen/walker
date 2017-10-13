@@ -838,6 +838,7 @@ public class ContinueFTP {
 	}
 	
 	public boolean exportPDF(String fileUrl,ByteArrayOutputStream[] bos,int pageNo){
+		if(null == bos) return false;
 		String remoteFileName = fileUrl;
 		if(fileUrl.contains("/")){  
             remoteFileName = fileUrl.substring(fileUrl.lastIndexOf("/")+1);  

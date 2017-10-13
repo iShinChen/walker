@@ -762,7 +762,7 @@ public class SysController {
 		} catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);
-			result.setErr_msg("用户登出发生异常。");
+			result.setErr_msg("用户登出时发生异常。");
 		}
 		PrintWriterUtil.write(response, result);
 	}

@@ -3,6 +3,7 @@ package com.springmvc.walker.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -37,6 +40,27 @@ public class ExcelUtil {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * 导出Excel初始化
+	 * @param response
+	 * @param fileName
+	 * @return
+	 */
+	public static OutputStream initialize(HttpServletResponse response,String fileName){
+		try {
+			fileName = new String(fileName.getBytes("gb2312"), "iso8859-1");
+			OutputStream stream = response.getOutputStream();
+			response.reset();// 清空输出流
+			response.setHeader("Content-disposition", "attachment; filename="
+				+ fileName);// 设定输出文件头
+			response.setContentType("application/msexcel");// 定义输出类型
+			return stream;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	/**
@@ -172,9 +196,7 @@ public class ExcelUtil {
 		return values;
 	}
 	
-	public static XSSFWorkbook exportExcelVer2007(List<Map<String, Object>> list){
-		// 声明一个工作薄  
-        XSSFWorkbook workbook = new XSSFWorkbook();  
+	public static XSSFWorkbook exportExcelVer2007(XSSFWorkbook workbook,List<Map<String, Object>> list){ 
         // 生成一个表格  
         XSSFSheet sheet = workbook.createSheet("sheet1");  
         // 设置表格默认列宽度为10个字节  
@@ -186,6 +208,9 @@ public class ExcelUtil {
         	XSSFCell cell = row.createCell(i);
         	XSSFRichTextString text = new XSSFRichTextString(title[i]);  
             cell.setCellValue(text);
+        }
+        if(null == list){
+        	return workbook;
         }
 		//写入数据行
         for(int rowNo=1; rowNo <= list.size();rowNo++ ){
@@ -199,25 +224,32 @@ public class ExcelUtil {
         	//姓名
         	cell = row.createCell(cellNo++);
         	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-        	cell.setCellValue(list.get(rowNo-1).get("name").toString());
+        	cell.setCellValue(checkNullOrEmpty(list.get(rowNo-1).get("name")));
         	//性别
         	cell = row.createCell(cellNo++);
         	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-        	cell.setCellValue(list.get(rowNo-1).get("sex").toString());
+        	cell.setCellValue(checkNullOrEmpty(list.get(rowNo-1).get("sex")));
         	//年龄
         	cell = row.createCell(cellNo++);
         	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-        	cell.setCellValue(list.get(rowNo-1).get("age").toString());
+        	cell.setCellValue(checkNullOrEmpty(list.get(rowNo-1).get("age")));
         	//生日
         	cell = row.createCell(cellNo++);
         	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-        	cell.setCellValue(list.get(rowNo-1).get("birth").toString());
+        	cell.setCellValue(checkNullOrEmpty(list.get(rowNo-1).get("birth")));
         	//住址
         	cell = row.createCell(cellNo++);
         	cell.setCellType(XSSFCell.CELL_TYPE_STRING);
-        	cell.setCellValue(list.get(rowNo-1).get("address").toString());	
+        	cell.setCellValue(checkNullOrEmpty(list.get(rowNo-1).get("address")));	
         }
         return workbook;
+	}
+	
+	private static String checkNullOrEmpty(Object obj){
+		if(null != obj){
+			return obj.toString();
+		}
+		return "";
 	}
 	
 }

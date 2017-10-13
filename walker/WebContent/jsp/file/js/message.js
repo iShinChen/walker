@@ -47,24 +47,66 @@ com.walker.file.message.mainPanel=function(obj){
 			iconCls : 'btnExcelPage',
 			id : "2000105",
 			hidden : true,
-			handler : function() {
-				com.walker.file.message.exportExcel();
+			menu: {
+	            items: [
+					{
+					    text: '到本地',
+						iconCls : 'btnExcelPage',
+					    handler : function() {
+					    	com.walker.file.message.exportExcel();
+						}
+					}, {
+	                    text: '到FTP',
+	        			iconCls : 'btnExcelPage',
+	        			handler : function() {
+	        				com.walker.file.message.exportExcelToFtp();
+	        			}
+	                }
+	             ]              
 			}
 		},'-',{
 			text : '导出PDF',
 			iconCls : 'btnPdf',
 			id : "2000106",
 			hidden : true,
-			handler : function() {
-				com.walker.file.message.exportPDF();
+			menu: {
+	            items: [
+					{
+					    text: '到本地',
+						iconCls : 'btnPdf',
+					    handler : function() {
+					    	com.walker.file.message.exportPDF();
+						}
+					}, {
+	                    text: '到FTP',
+	        			iconCls : 'btnPdf',
+	        			handler : function() {
+	        				com.walker.file.message.exportPDFToFtp();
+	        			}
+	                }
+	             ]              
 			}
 		},'-',{
 			text : '导出统计表PDF',
 			iconCls : 'btnPdf',
 			id : "2000107",
 			hidden : true,
-			handler : function() {
-				com.walker.file.message.exportListPDF();
+			menu: {
+	            items: [
+					{
+					    text: '到本地',
+						iconCls : 'btnPdf',
+					    handler : function() {
+					    	com.walker.file.message.exportListPDF();
+						}
+					}, {
+	                    text: '到FTP',
+	        			iconCls : 'btnPdf',
+	        			handler : function() {
+	        				com.walker.file.message.exportListPDFToFtp();
+	        			}
+	                }
+	             ]              
 			}
 		},'->',{
 			xtype : 'button',
@@ -580,6 +622,26 @@ com.walker.file.message.fileInput=function(){
 };
 
 com.walker.file.message.exportExcel=function(){
+	var records = com.walker.common.getSelectRecord(com.walker.file.message.messageGridPnl,false);
+	if(records.length > 0)
+	{
+		var sumBtn = function(btn){
+			if(btn!='yes'){return;}
+			
+			var ids="";
+			for (var i = 0; i < records.length; i++) {
+				ids += ","+records[i].data.id;
+			}
+			var exportUrl = "/walker/file/exportExcel?ids="+ ids.substring(1);
+			window.location.href = exportUrl;
+		};
+		Ext.Msg.confirm('系统提示',"确定导出Excel文件吗?",sumBtn);
+	}else{
+		Ext.Msg.alert("提示","请至少选择一条记录！");
+	}
+}
+
+com.walker.file.message.exportExcelToFtp=function(){
 	var selRecords= com.walker.common.getSelectRecord(com.walker.file.message.messageGridPnl,false);
 	if(!selRecords){
 		return;
@@ -598,7 +660,7 @@ com.walker.file.message.exportExcel=function(){
 			return;
 		}
 		Ext.Ajax.request( {
-			url : '/walker/file/exportExcel',
+			url : '/walker/file/exportExcelToFtp',
 			success : function(response) {
 				var result = Ext.decode(response.responseText);
 				if (result.success) {
@@ -619,7 +681,21 @@ com.walker.file.message.exportExcel=function(){
 	Ext.Msg.confirm('系统提示',"确定导出Excel文件吗?",sumBtn);
 };
 
-com.walker.file.message.exportPDF = function() {
+com.walker.file.message.exportPDF=function(){
+	var rec = com.walker.common.getSelectRecord(com.walker.file.message.messageGridPnl,true);
+	if(rec){
+		var sumBtn = function(btn){
+			if(btn!='yes'){return;}
+			var exportUrl = "/walker/file/exportPDF?id=" + rec.get('id');
+			window.location.href = exportUrl;
+		};
+		Ext.Msg.confirm('系统提示',"确定导出PDF文件吗?",sumBtn);
+	}else{
+		Ext.Msg.alert("提示","请至少选择一条记录！");
+	}
+}
+
+com.walker.file.message.exportPDFToFtp = function() {
 	var rec = com.walker.common.getSelectRecord(com.walker.file.message.messageGridPnl,true);
 	if(rec){
 		var sumBtn = function(btn){
@@ -627,7 +703,7 @@ com.walker.file.message.exportPDF = function() {
 				return;
 			}
 			Ext.Ajax.request({
-				url: '/walker/file/exportPDF',
+				url: '/walker/file/exportPDFToFtp',
 				params : {
 					id:rec.get('id')
 				},
@@ -649,6 +725,25 @@ com.walker.file.message.exportPDF = function() {
 };
 
 com.walker.file.message.exportListPDF=function(){
+	var records = com.walker.common.getSelectRecord(com.walker.file.message.messageGridPnl,false);
+	if(records.length > 0)
+	{
+		var sumBtn = function(btn){
+			if(btn!='yes'){return;}
+			var ids="";
+			for (var i = 0; i < records.length; i++) {
+				ids += ","+records[i].data.id;
+			}
+			var exportUrl = "/walker/file/exportListPDF?ids="+ ids.substring(1);
+			window.location.href = exportUrl;
+		};
+		Ext.Msg.confirm('系统提示',"确定导出Excel文件吗?",sumBtn);
+	}else{
+		Ext.Msg.alert("提示","请至少选择一条记录！");
+	}
+}
+
+com.walker.file.message.exportListPDFToFtp=function(){
 	var selRecords= com.walker.common.getSelectRecord(com.walker.file.message.messageGridPnl,false);
 	if(!selRecords){
 		return;
@@ -656,10 +751,6 @@ com.walker.file.message.exportListPDF=function(){
 	
 	var ids="";
 	for ( var i = 0; i < selRecords.length; i++) {
-		
-		if(selRecords[i].data.code!=null){
-			
-		}
 		ids += ","+selRecords[i].data.id;
 	}
 	var sumBtn = function(btn){
@@ -667,7 +758,7 @@ com.walker.file.message.exportListPDF=function(){
 			return;
 		}
 		Ext.Ajax.request( {
-			url : '/walker/file/exportListPDF',
+			url : '/walker/file/exportListPDFToFtp',
 			success : function(response) {
 				var result = Ext.decode(response.responseText);
 				if (result.success) {
