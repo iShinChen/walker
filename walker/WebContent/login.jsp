@@ -1,173 +1,282 @@
-<%@ page pageEncoding="utf-8" contentType="text/html; charset=UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 	<head>
-		<title>调查兵团</title>
+		<title>全媒体内容管理平台</title>
 		<link rel="shortcut icon" href="favicon.ico" />
 		<link rel="icon" href="favicon.ico" type="image/ico" />
-		<%@include file="loader/loader.jsp"%>
-		<script type="text/javascript" src="<%=basePath%>/resources/ext3.3.1/ux/Ext.util.MD5.js"></script>
+		<base href="<%=basePath%>">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="cache-control" content="no-cache">
+		<meta http-equiv="expires" content="0">
+		<script type="text/javascript" src="resources/jquery/jquery.min.js"></script>
+		<script type="text/javascript" src="resources/jquery/ux/jquery.md5.js"></script>
 		
-		<script type="text/javascript">
-			if (top.location != window.location) {
-				top.location.reload(true);
+		<style type="text/css">
+			body {
+				background: url("resources/images/login/bg.jpg") repeat-x #EAEAEA;
+				overflow: hidden;
+				text-align: center;
 			}
 			
-			function login() {
-				var loginName = document.getElementById("id").value;
-				var password = document.getElementById("pwd").value;
+			#login_form {
+				position: absolute;
+				top: 66px;
+				width: 521px;
+				height: 392px;
+				background: url("resources/images/login/form_bg.png") no-repeat;
+			}
+			
+			#logo {
+				position: absolute;
+				top: 44px;
+				left: 35px;
+				width: 198px;
+				height: 32px;
+				background: url("resources/images/login/title.png") no-repeat;
+			}
+			
+			input {
+				position: absolute;
+				width: 250px;
+				height: 35px;
+				font-size: 20px;
+				line-height: 20px;
+				color: #555555;
+				border-width: 2px;
+				border-style: solid;
+				border-color: white;
+				padding-left: 10px;
+				*padding-top: 5px;
+			}
+			
+			input.x-form-focus {
+				border-color: #4D90EF;
+			}
+			
+			#loginName {
+				top: 118px;
+				left: 138px;
+			}
+			
+			#password {
+				top: 169px;
+				left: 138px;
+			}
+			
+			#authCode {
+				top: 220px;
+				left: 138px;
+				width: 164px;
+			}
+		
+			#authCodeImage {
+				position: absolute;
+				top: 220px;
+				left: 313px;
+				width: 75px;
+				height: 35px;
+				cursor: pointer;
+			}
+			
+			#btn_login {
+				position: absolute;
+				top: 300px;
+				left: 34px;
+				width: 200px;
+				height: 32px;
+				background: url("resources/images/login/btn_login.png");
+				cursor: pointer;
+			}
+			
+			#btn_reset {
+				position: absolute;
+				top: 300px;
+				left: 286px;
+				width: 200px;
+				height: 32px;
+				background: url("resources/images/login/btn_reset.png");
+				cursor: pointer;
+			}
+			
+			div.required-tip {
+				background: url("resources/images/login/tip-required.png") no-repeat;
+			}
+			
+			#loginNameError {
+				position: absolute;
+				width: 75px;
+				height: 20px;
+				left: 400px;
+				top: 125px;
+			}
+			
+			#loginNameError.error-tip {
+				background: url("resources/images/login/error-loginName.png") no-repeat;
+			}
+			
+			#passwordError {
+				position: absolute;
+				width: 75px;
+				height: 20px;
+				left: 400px;
+				top: 176px;
+			}
+			
+			#passwordError.error-tip {
+				background: url("resources/images/login/error-password.png") no-repeat;
+			}
+			
+			#authCodeError {
+				position: absolute;
+				width: 75px;
+				height: 20px;
+				left: 400px;
+				top: 226px;
+			}
+			
+			#authCodeError.error-tip {
+				background: url("resources/images/login/error-authcode.png") no-repeat;
+			}
+		</style>
+		<script type="text/javascript">
+			if (top.location != window.location) {
+				top.location.href = window.location.href;
+			}
+			
+			function refreshAuthCode() {
+				document.getElementById("authCodeImage").src = "servlet/VerifyCodeServlet?t=" + Math.random();
+			}
+			
+			function doLogin() {
+				var loginName = $("#loginName").val();
+				var password = $("#password").val();
+				var authCode = $("#authCode").val();
 				
-				if(loginName.replace(/(^s*)|(s*$)/g, "").length == 0)
-				{
-					Ext.Msg.alert("提示","请输入用户名！");
-					return false;
+				$('#loginNameError').removeClass("required-tip").removeClass("error-tip");
+				$('#passwordError').removeClass("required-tip").removeClass("error-tip");
+				$('#authCodeError').removeClass("required-tip").removeClass("error-tip");
+				
+				if(loginName == '') {
+					$('#loginNameError').addClass("required-tip");
+					return;
 				}
 				
-				if(password.replace(/(^s*)|(s*$)/g, "").length == 0)
-				{
-					Ext.Msg.alert("提示","请输入密码！");
-					return false;
+				if(password == '') {
+					$('#passwordError').addClass("required-tip");
+					return;
 				}
 				
-				Ext.Ajax.request({
+				if(authCode == '') {
+					$('#authCodeError').addClass("required-tip");
+					return;
+				}
+				
+				$.ajax({
 					url : '/walker/user/login',
-					success : function(response){
-						var result = Ext.util.JSON.decode(response.responseText);
+					method : 'post',
+					dataType : 'json',
+					data : {
+						loginName: loginName,
+						password: $.md5(password),
+						verifyCode: authCode
+					},
+					success : function(result){
 						if(result.success)
 						{
 							window.location.href = "index.jsp";
 						} else{
-							Ext.Msg.alert("提示",result.err_msg);
+							var errorCode = result.err_msg;
+							if(errorCode == 'LGN') {
+								$('#loginNameError').addClass("error-tip");
+								$("#loginName").focus();
+							}
+							else if(errorCode == 'PWD') {
+								$('#passwordError').addClass("error-tip");
+								refreshAuthCode();
+								$("#password").val('').focus();
+							}
+							else if(errorCode == 'AUC') {
+								$('#authCodeError').addClass("error-tip");
+								refreshAuthCode();
+								$("#authCode").val('').focus();
+							}
+							else {
+								alert("登录发生异常。");
+							}
 						}
-					},
-					params : {
-						loginName : loginName,
-						password : Ext.util.MD5(password)
 					}
 				});
 			}
-			var ENTER_ACTION = login;
-
-			jQuery(document).ready(function(){
-				jQuery("#id").focus();
+			
+			function resetForm() {
+				$("#loginName").val('');
+				$("#password").val('');
+				$("#authCode").val('');
+				refreshAuthCode();
+			}
+			
+			$(document).ready(function() {
+				$("input").blur(function() {
+					$(this).removeClass("x-form-focus");
+					var val = $(this).val();
+					if(val != '') {
+						$(this).next('div').removeClass('required-tip');
+					}
+					else {
+						$(this).next('div').addClass('required-tip');
+					}
+				});
+				
+				$("input").focus(function() {
+					 $(this).addClass("x-form-focus");
+				});
+				
+				var formCenter = function () {
+					$('#login_form').css({
+						left: ($(document).width() - $('#login_form').outerWidth())/2
+					});
+				};
+				
+				$(window).resize(function() {
+					formCenter();
+				});
+				
+				$(window).keydown(function(e) {
+					if(e.keyCode == 13) {
+						doLogin();
+					}
+				});
+				
+				//初始化函数
+				formCenter();
+				
+				$("#loginName").focus();
 			});
 		</script>
-		
-		<style type="text/css">
-			body {
-				margin-left: 0px;
-				margin-top: 0px;
-				margin-right: 0px;
-				margin-bottom: 0px;
-				font-size:12px;
-				font-family:Verdana;
-				background: url("resources/images/login/bg_4.jpg") repeat-x top;
-		 	}
-		 	
-			#bgTable {
-				background: url("resources/images/login/bg.jpg") #eeeeee repeat-x;
-			}
-			
-			#titleTD {
-				height: 45px;
-				*height: 40px;
-			}
-			
-			#systemname {
-				color: white;
-				font-family: 隶书;
-				font-size: 30px;
-				font-weight: bold;
-			}
-		</style>
 	</head>
-	<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0"
-		marginheight="0">
-		<table width="421" border="0" align="center" cellpadding="0" id="bgTable"
-			cellspacing="0"
-			style="margin-top: 15%">
-			<tr>
-				<td width="13" align="left" valign="top">
-					<img src="resources/images/login/left.jpg" width="13" height="251" />
-				</td>
-				<td align="left" valign="top">
-					<table width="100%" border="0" cellspacing="0" cellpadding="0">
-						<tr>
-							<td height="11" align="left" valign="top">
-								<img src="resources/images/login/dian.jpg" width="1" height="1" />
-							</td>
-						</tr>
-						<tr>
-							<td align="center" valign="middle" id="titleTD">
-								<span id="systemname">芒果TV福建内容中转平台</span>
-							</td>
-						</tr>
-						<tr>
-							<td height="163" align="left" valign="top">
-								<table width="100%" border="0" cellspacing="0" cellpadding="0">
-									<tr>
-										<td width="146" height="163" align="left" valign="middle"
-											style="padding-left: 12px;">
-											<img src="resources/images/logo/cy_logo.png" width="124"
-												height="125" />
-										</td>
-										<td width="249">
-											<input type="hidden" name="regname" id="regname" value="" />
-											<table width="100%" height="118" border="0" cellpadding="0"
-												cellspacing="0" style="border-left: 1px solid #489b9b;">
-												<tr>
-													<td width="27%" align="right" valign="middle"
-														style="font-weight: bold; color: #000; font-size: 12px;">
-														用户名：
-													</td>
-													<td width="73%">
-														<input type=text id="id"
-															style="width: 157px; height: 19px; border: 1px solid #000;"
-															value="" />
-													</td>
-												</tr>
-												<tr>
-													<td align="right" valign="middle"
-														style="font-weight: bold; color: #000; font-size: 12px;">
-														密&nbsp;&nbsp; 码：
-													</td>
-													<td>
-														<input type="password" id="pwd" type="password"
-															style="width: 157px; height: 19px; border: 1px solid #000;" />
-													</td>
-												</tr>
-												<tr>
-													<td colspan="2" align="center" valign="middle">
-														<input type="button" name="button" id="button" value="登 录"
-															onclick="login()" />
-															&nbsp;&nbsp;
-															<input type="button" name="button2" id="button2"
-																value="重 置" onclick="clear()" />
-													</td>
-												</tr>
-												<tr>
-												</tr>
-											</table>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-						<tr>
-							<td height="21" align="center" valign="middle"
-								style="font-size: 12px; color: #222222; letter-spacing: 2px;">
-								Copyright 南京昌亚智能科技有限公司
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td width="13" align="right" valign="top">
-					<img src="resources/images/login/right.jpg" width="13" height="251" />
-				</td>
-			</tr>
-		</table>
+
+	<body>
+		<div id="login_form">
+			<div id="logo"></div>
+			<input type="text" id="loginName" />
+			<div id="loginNameError"></div>
+			<input type="password" id="password" />
+			<div id="passwordError"></div>
+			<input type="text" id="authCode" maxlength="4" autocomplete="off" />
+			<div id="authCodeError"></div>
+			<img id="authCodeImage" align="top" src="servlet/VerifyCodeServlet" title="点击刷新"
+				onclick="refreshAuthCode(); return false;" />
+			<div id="btn_login" onclick="doLogin(); return false;"></div>
+			<div id="btn_reset" onclick="resetForm(); return false;"></div>
+		</div>
 	</body>
 </html>
-
-
-

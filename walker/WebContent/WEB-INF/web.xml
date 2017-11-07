@@ -68,6 +68,16 @@
     	<servlet-name>ueditorUpload</servlet-name>
     	<url-pattern>/servlet/ueditorUpload</url-pattern>
   	</servlet-mapping>
+  	
+  	<!-- 配置VerifyCodeServlet -->
+	<servlet>
+    	<servlet-name>VerifyCodeServlet</servlet-name>
+    	<servlet-class> com.springmvc.walker.servlet.VerifyCodeServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+    	<servlet-name>VerifyCodeServlet</servlet-name>
+    	<url-pattern>/servlet/VerifyCodeServlet</url-pattern>
+  	</servlet-mapping>
   
 	<!-- Spring和mybatis的配置文件 -->  
   	<context-param>  

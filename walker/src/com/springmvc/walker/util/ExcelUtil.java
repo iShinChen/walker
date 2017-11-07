@@ -43,7 +43,7 @@ public class ExcelUtil {
 	}
 	
 	/**
-	 * 导出Excel初始化
+	 * 导出文件初始化
 	 * @param response
 	 * @param fileName
 	 * @return

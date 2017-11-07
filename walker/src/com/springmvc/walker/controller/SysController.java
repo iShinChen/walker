@@ -70,6 +70,17 @@ public class SysController {
 		try {
 			Map<String, Object> paraMap = new HashMap<String, Object>();
 			Map<String, Object> userMap = new HashMap<String, Object>();
+			HttpSession session = request.getSession();
+			String sessionVerifyCode = (String) session.getAttribute("VERIFY_CODE");
+			String verifyCode = request.getParameter("verifyCode");
+			if (verifyCode == null
+					|| !verifyCode.equalsIgnoreCase(sessionVerifyCode)) {
+				result.setSuccess(false);
+				result.setErr_msg("AUC");
+				logger.info(JSONObject.toJSONString(result));
+				PrintWriterUtil.write(response, result);
+				return;
+			}
 			
 			paraMap.put("loginName",  request.getParameter("loginName"));
 			paraMap.put("password", request.getParameter("password"));
@@ -77,17 +88,19 @@ public class SysController {
 			
 			if(userMap != null)
 			{
-				request.getSession().setAttribute("userMap", userMap);
+				session.setAttribute("userMap", userMap);
+				session.setAttribute("VERIFY_CODE", null);
 				result.setSuccess(true);
 			} else{
 				result.setSuccess(false);
-				result.setErr_msg("用户名或密码错误。");
+				result.setErr_msg("PWD");
 			}
 		} catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);
-			result.setErr_msg("用户登录异常。");
+			result.setErr_msg("LGN");
 		}
+		JSONObject.toJSONString(result);
 		PrintWriterUtil.write(response, result);
 	}
 	
