@@ -5,7 +5,7 @@
 	<head>
 		<link rel="shortcut icon" href="favicon.ico" />
 		<link rel="icon" href="favicon.ico" type="image/ico" />
-		<title>芒果TV福建内容中转平台</title>
+		<title>漫步君-小试身手</title>
 		<%@include file="loader/loader.jsp"%>
 
 		<style type="text/css">
@@ -47,11 +47,26 @@
 				text-decoration: underline;
 			}
 			
-			#item_cy_logo .x-panel-body {
-				background: url('resources/images/logo/cy_logo_h60.png') no-repeat;
-				_background:none; 
-				_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="resources/images/logo/cy_logo_h60.png");
+			.x-panel-copyright .x-panel-body {
+				text-align: center;
+				font-size: 12px;
+				padding-top: 3px;
+				background-color: #D9E7F8;
 			}
+			
+			#item_cy_logo .x-panel-body {
+				padding-left: 150px;
+				background: url('resources/images/logo/logo.png') no-repeat;
+				_background:none; 
+				_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="resources/images/logo/logo.png");
+			}
+			
+/* 			body
+				{
+				background: url('resources/images/background.jpg') no-repeat;
+				_background:none; 
+				_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="resources/images/background.jpg");
+				}  */
 		</style>
 
 		<script type="text/javascript" src="resources/js/index.js"></script>

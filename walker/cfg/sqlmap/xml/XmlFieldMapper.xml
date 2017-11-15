@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.walker.mapper.XmlFieldMapper" >
+
+	<select id="listCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		select count(ID) 
+		from t_xml_field
+		where 1=1
+		<if test="name != null and name != ''">
+			and NAME LIKE concat('%', #{name}, '%')
+		</if>
+		<if test="code != null and code != ''">
+			and CODE = #{code}
+		</if>
+		<if test="parentId != null and parentId != ''">
+			and PARENT_ID = #{parentId}
+		</if>
+	</select>
+	
+	<select id="listPage" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select  
+			ID,
+			CODE,
+			NAME,
+			VALUE,
+			PARENT_ID,
+			STATUS,
+			DESCRIPTION,
+			ORDERINDEX
+		from t_xml_field
+		where 1=1
+		<if test="name != null and name != ''">
+			and NAME LIKE concat('%', #{name}, '%')
+		</if>
+		<if test="code != null and code != ''">
+			and CODE = #{code}
+		</if>
+		<if test="parentId != null and parentId != ''">
+			and PARENT_ID = #{parentId}
+		</if>
+		ORDER BY 
+			PARENT_ID,
+			ORDERINDEX ASC
+		LIMIT ${start},${limit}
+	</select>
+	
+	<select id="selectById" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT 
+			t.ID,
+			t.CODE,
+			t.NAME,
+			t.VALUE,
+			t.PARENT_ID,
+			t.ORDERINDEX,
+			t.DESCRIPTION,
+			t.STATUS 
+		FROM t_xml_field t 
+		WHERE t.ID = #{id}
+	</select>
+	
+	<insert id="insert" parameterType="java.util.Map">
+		INSERT INTO t_xml_field(
+			ID, 
+			CODE,
+			NAME,
+			PARENT_ID,
+			<if test="VALUE != null and VALUE != ''">
+				VALUE,
+			</if>
+			<if test="ORDERINDEX != null and ORDERINDEX != ''">
+				ORDERINDEX,
+			</if>
+			<if test="DESCRIPTION != null and DESCRIPTION != ''">
+				DESCRIPTION,
+			</if>
+			STATUS
+		) VALUES (
+			#{ID}, 
+			#{CODE},
+			#{NAME},
+			#{PARENT_ID},
+			<if test="VALUE != null and VALUE != ''">
+				#{VALUE},
+			</if>
+			<if test="ORDERINDEX != null and ORDERINDEX != ''">
+				#{ORDERINDEX},
+			</if>
+			<if test="DESCRIPTION != null and DESCRIPTION != ''">
+				#{DESCRIPTION},
+			</if>
+			#{STATUS}
+		)
+	</insert>
+	
+	<update id="update" parameterType="java.util.Map">
+		UPDATE t_xml_field
+		set
+			<if test="NAME != null and NAME != ''">
+				NAME=#{NAME},
+			</if>
+			<if test="CODE != null and CODE != ''">
+				CODE=#{CODE},
+			</if>
+			<if test="VALUE != null and VALUE != ''">
+				VALUE=#{VALUE},
+			</if>
+			<if test="ORDERINDEX != null and ORDERINDEX != ''">
+				ORDERINDEX=#{ORDERINDEX},
+			</if>
+			<if test="DESCRIPTION != null and DESCRIPTION != ''">
+				DESCRIPTION=#{DESCRIPTION},
+			</if>
+			<if test="STATUS != null and STATUS != ''">
+				STATUS=#{STATUS},
+			</if>
+			PARENT_ID=#{PARENT_ID}
+		WHERE 
+			ID = #{ID}
+	</update>
+	
+	<update id="deleteById" parameterType="java.lang.String">
+		delete from t_xml_field WHERE ID =#{id}
+	</update>
+	
+	<update id="deleteByParentId" parameterType="java.lang.String">
+		delete from t_xml_field WHERE PARENT_ID =#{parentId}
+	</update>
+	
+	<!-- 唯一性校验 -->
+	<select id="checkCode" resultType="java.lang.Integer" parameterType="java.util.Map">
+	   SELECT COUNT(1) FROM t_bas_pubcode 
+	    WHERE CODE = #{CODE} AND PARENT_ID = #{PARENT_ID}
+	   <if test="ID != null and ID != ''">
+	    	ID != #ID#
+	   </if>
+	 </select>
+    
+    <select id="child" parameterType="java.util.Map" resultType="java.util.HashMap">
+        SELECT b.ID, b.CODE, b.NAME, b.STATUS 
+		FROM t_bas_pubcode a 
+		INNER JOIN t_bas_pubcode b ON a.ID = b.PARENT_ID
+		where a.CODE = #{code}
+		<if test="status != null and status != ''">
+			b.STATUS = #{status}
+		</if>
+		ORDER BY b.ORDERINDEX
+    </select>
+</mapper>

@@ -64,8 +64,9 @@
 	</head>
 
 	<body>
-		<p>昌亚全媒体内容中转平台</p>
+		<p>漫步君-小试身手</p>
 		<hr style="height:1px;border:none;border-top:1px solid #555555;" />
+		<img src="resources/images/index.jpg"  alt="欢迎页" width="100%" height="140%" />
 		<!-- <button onclick="parseXml();">采集上游</button> -->
 	</body>
 </html>

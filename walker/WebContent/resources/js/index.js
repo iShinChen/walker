@@ -229,6 +229,15 @@ com.walker.system.topTap = function() {
 	return p;
 };
 
+com.walker.system.bottomPnl = new Ext.Panel( {
+	region : "south",
+	height: 22,
+	margins : '4 0 0 0',
+	cls: 'x-panel-copyright',
+	html : 'Copyright&copy2017 漫步君-版权所有'
+});
+
+
 function getHiddenFrame() {
 	var id = Ext.id();
 	var frame = document.createElement('iframe');
@@ -265,7 +274,8 @@ com.walker.system.viewport  = function (){
        items:[
             com.walker.system.topTap(),
             com.walker.system.tree,
-            com.walker.system.tabPanel
+            com.walker.system.tabPanel,
+            com.walker.system.bottomPnl
    	   ]
 	});
 	Ext.Ajax.request({

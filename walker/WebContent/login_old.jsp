@@ -2,7 +2,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 	<head>
-		<title>调查兵团</title>
+		<title>漫步君-小试身手</title>
 		<link rel="shortcut icon" href="favicon.ico" />
 		<link rel="icon" href="favicon.ico" type="image/ico" />
 		<%@include file="loader/loader.jsp"%>
