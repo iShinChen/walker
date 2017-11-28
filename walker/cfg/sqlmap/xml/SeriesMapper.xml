@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.walker.mapper.xml.SeriesMapper" >
+
+	 <select id="getSeriesById" parameterType="java.lang.String" resultType="com.springmvc.walker.xml.entity.SeriesEntity">
+		SELECT 
+			SERIES_ID,ORIGINAL_ID,CP_ID,IMPORT_SOURCE,EPISODE_TYPE,TYPE,TYPE_NAME,NAME,FULLSPELL,SIMPLESPELL,
+			ALIAS_NAME,EN_NAME,LANGUAGE,CAPTION,RELEASE_TIME,AREA,PROGRAM_COUNT,NEW_PROGRAM,DIRECTOR,PRODUCER,
+			ADAPTOR,ACTOR,AWARDS,DESCRIPTION,KEYWORDS,KIND,TAGS,CLARITY,COPYRIGHT,
+			date_format(COPYRIGHT_DATE, '%Y-%m-%d %H:%i:%s') COPYRIGHT_DATE,
+			date_format(CREATE_TIME, '%Y-%m-%d %H:%i:%s') CREATE_TIME,
+			date_format(MODIFY_TIME, '%Y-%m-%d %H:%i:%s') MODIFY_TIME,
+			date_format(CDN_TIME, '%Y-%m-%d %H:%i:%s') CDN_TIME,CDN_ID,STATUS,
+			date_format(ONLINE_TIME, '%Y-%m-%d %H:%i:%s') ONLINE_TIME,
+			date_format(UNLINE_TIME, '%Y-%m-%d %H:%i:%s') UNLINE_TIME,REAL_PROGRAM_COUNT,ONLINE_PROGRAM_COUNT,
+			IS_LACK_PROGRAM,PLATFORM_ID
+	    FROM t_vod_series
+	    WHERE SERIES_ID = #{SERIES_ID}
+     </select>
+     
+      <select id="getPicturesBySeriesId" parameterType="java.lang.String" resultType="com.springmvc.walker.xml.entity.PictureEntity">
+		SELECT 
+			PICTURE_ID,
+			ORIGINAL_ID,
+			SERIES_ID,
+			TYPE,
+			FILE_URL,
+			MD5,
+			FILE_SIZE,
+			RESLOUTION,
+			STATUS,
+			date_format(CREATE_TIME, '%Y-%m-%d %H:%i:%s') CREATE_TIME,
+			PLATFORM_ID
+	    FROM t_vod_picture
+	    WHERE SERIES_ID = #{SERIES_ID}
+	    	AND	STATUS = '01'
+     </select>
+     
+     <select id="listCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		SELECT count(1)
+        FROM t_vod_series
+        WHERE	1=1
+		<if test="SERIES_ID != null and SERIES_ID != ''">
+               AND SERIES_ID = #{SERIES_ID}
+        </if>
+		<if test="NAME != null and NAME != ''">
+               AND NAME LIKE #{NAME}
+       	</if>
+       	<if test="TYPE != null and TYPE != ''">
+               AND TYPE = #{TYPE}
+       	</if>
+      	<if test="STATUS != null and STATUS != ''">
+               AND STATUS = #{STATUS}
+       	</if>
+      	<if test="CDN_TIME != null and CDN_TIME != ''">
+               AND CDN_TIME BETWEEN '${CDN_TIME} 00:00:00' AND '${CDN_TIME} 23:59:59'
+       	</if>
+	</select>
+	
+	<select id="getPageList" parameterType="java.util.Map" resultType="java.util.HashMap">
+		SELECT s.SERIES_ID, s.ORIGINAL_ID, s.CP_ID, s.EPISODE_TYPE, s.TYPE, s.TYPE_NAME
+			, s.NAME, s.FULLSPELL, s.SIMPLESPELL, s.ALIAS_NAME, s.EN_NAME, s.LANGUAGE
+			, s.CAPTION, s.RELEASE_TIME, s.AREA, s.PROGRAM_COUNT, s.NEW_PROGRAM
+			, s.DIRECTOR, s.PRODUCER, s.ADAPTOR, s.ACTOR, s.AWARDS, s.DESCRIPTION, s.KEYWORDS
+			, s.KIND, s.TAGS, s.CLARITY, s.COPYRIGHT, s.COPYRIGHT_DATE, s.IMPORT_SOURCE
+			, s.STATUS, s.CDN_ID
+		    , date_format(s.CREATE_TIME, '%Y-%m-%d %H:%i:%s') CREATE_TIME
+			, date_format(s.CDN_TIME, '%Y-%m-%d %H:%i:%s') CDN_TIME
+			, date_format(s.ONLINE_TIME, '%Y-%m-%d %H:%i:%s') ONLINE_TIME
+			, date_format(s.UNLINE_TIME, '%Y-%m-%d %H:%i:%s') UNLINE_TIME
+		    , CASE WHEN s.REAL_PROGRAM_COUNT IS NULL THEN 0 ELSE s.REAL_PROGRAM_COUNT END REAL_PROGRAM_COUNT
+		    , CASE WHEN s.ONLINE_PROGRAM_COUNT IS NULL THEN 0 ELSE s.ONLINE_PROGRAM_COUNT END ONLINE_PROGRAM_COUNT
+		    , CASE WHEN s.IS_LACK_PROGRAM IS NULL THEN 0 ELSE s.IS_LACK_PROGRAM END IS_LACK_PROGRAM
+		FROM t_vod_series s
+        WHERE 	1=1
+		<if test="SERIES_ID != null and SERIES_ID != ''">
+               AND SERIES_ID = #{SERIES_ID}
+        </if>
+		<if test="NAME != null and NAME != ''">
+               AND NAME LIKE #{NAME}
+       	</if>
+       	<if test="TYPE != null and TYPE != ''">
+               AND TYPE = #{TYPE}
+       	</if>
+      	<if test="STATUS != null and STATUS != ''">
+               AND STATUS = #{STATUS}
+       	</if>
+      	<if test="CDN_TIME != null and CDN_TIME != ''">
+               AND CDN_TIME BETWEEN '${CDN_TIME} 00:00:00' AND '${CDN_TIME} 23:59:59'
+       	</if>
+		ORDER BY s.CREATE_TIME DESC
+		LIMIT ${start},${limit}
+	</select>
+</mapper>

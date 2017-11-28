@@ -10,7 +10,7 @@ com.walker.xml.xmlField.getQueryForm = function() {
 		height : 70,
 		bodyStyle : 'padding-top: 10px;',
 		margins : '0 0 4 0',
-		border: false,
+//		border: false,
 		style: 'border-bottom-width: 1px;',
 		tbar : [ {
 			text : '新增',
@@ -166,7 +166,7 @@ com.walker.xml.xmlField.getGridPnl = function() {
 		store : store,
 		stripeRows : true,
 		region : 'center',
-		border: false,
+//		border: false,
 		style: 'border-top-width: 1px;',
 		bbar : new Ext.PagingToolbar( {
 			pageSize : 15,
@@ -232,6 +232,7 @@ com.walker.xml.xmlField.update = function() {
 									com.walker.xml.xmlField.formPanel.find("name", "ID")[0].setValue(result.data.ID);
 									com.walker.xml.xmlField.formPanel.find("name", "NAME")[0].setValue(result.data.NAME);
 									com.walker.xml.xmlField.formPanel.find("name", "CODE")[0].setValue(result.data.CODE);
+									com.walker.xml.xmlField.formPanel.find("name", "VALUE")[0].setValue(result.data.VALUE);
 									com.walker.xml.xmlField.formPanel.find("name", "DESCRIPTION")[0].setValue(result.data.DESCRIPTION);
 								} else {
 									Ext.Msg.alert("提示", "获取字段信息失败!");
@@ -342,7 +343,7 @@ com.walker.xml.xmlField.save = function() {
 					}
 				},
 				failure : function(form, action) {
-					Ext.Msg.alert("提示", "字段" + action.result.desc);
+					Ext.Msg.alert("提示", "字段操作失败。");
 				}
 			});
 
@@ -571,7 +572,7 @@ com.walker.xml.xmlField.getContentGridPnl = function() {
 		align : 'center',
 		renderer : function(value) {
 			if (value == '01') {
-				return '启用';
+				return '<font color="green">启用</font>';
 			} else if (value == '00') {
 				return '停用';
 			}
@@ -656,7 +657,7 @@ com.walker.xml.xmlField.updateContent = function() {
 			modal : true,
 			constrain : true,
 			closeAction : 'close',
-			title : "新增字段项",
+			title : "修改字段项",
 			tbar : [ {
 				text : '保存',
 				iconCls : 'btnIconSave',
@@ -754,7 +755,7 @@ com.walker.xml.xmlField.contenEditWinForm = function() {
 			fieldLabel : "工单字段",
 			anchor : '85%',
 			name : 'VALUE',
-			allowBlank : false,
+			allowBlank : true,
 			regex : /^[a-zA-Z0-9_]{1,50}$/,
 			regexText : '只能输入数字、字母、下划线且长度不超过50'
 		}, {

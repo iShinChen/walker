@@ -27,4 +27,16 @@
     <update id="updateSysTaskState">
 		update t_sys_task set TASK_STATE = '0'
 	</update>
+	
+	 <select id="getXmlBookType" resultType="java.util.HashMap" >
+        SELECT distinct PARENT_ID FROM t_xml_field WHERE STATUS = '01' AND PARENT_ID != '0'
+    </select>
+    
+     <select id="getXmlBookByParent" parameterType="java.lang.String" resultType="java.util.HashMap" >
+        SELECT CODE,VALUE FROM t_xml_field WHERE PARENT_ID = #{PARENT_ID} AND STATUS = '01' ORDER BY ORDERINDEX
+    </select>
+    
+    <select id="getXmlBookById" parameterType="java.lang.String" resultType="java.util.HashMap" >
+        SELECT CODE,VALUE FROM t_xml_field WHERE ID = #{ID}
+    </select>
 </mapper>

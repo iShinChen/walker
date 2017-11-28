@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.walker.mapper.xml.XmlConfigMapper" >
+
+	<select id="getConfigList" resultType="java.util.HashMap">
+		select
+			ID,
+			CODE,
+			NAME,
+			XML_TYPE,
+			STATUS
+		from
+			t_xml_config
+	</select>
+	
+	<select id="getXMlElements" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select
+			ID,
+			CODE,
+			NAME
+		from
+			t_xml_config
+		where
+			XML_TYPE = #{XML_TYPE}
+			and	STATUS = '01'
+	</select>
+	
+	<select id="getConfigById" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select
+			CODE,
+			NAME,
+			XML_TYPE,
+			STATUS
+		from
+			t_xml_config
+		where
+			ID = #{ID}
+	</select>
+	
+	<update id="updConfig" parameterType="java.util.Map">
+		update t_xml_config
+		set
+			<if test="XML_TYPE != null and XML_TYPE != ''">
+				XML_TYPE=#{XML_TYPE},
+			</if>
+			<if test="STATUS != null and STATUS != ''">
+				STATUS=#{STATUS},
+			</if>
+			ID = #{ID}
+		where
+			ID = #{ID}
+	</update>
+</mapper>

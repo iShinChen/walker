@@ -1,4 +1,4 @@
-package com.springmvc.walker.service.impl;
+package com.springmvc.walker.service.xml.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.springmvc.walker.entity.Page;
-import com.springmvc.walker.mapper.XmlFieldMapper;
-import com.springmvc.walker.service.XmlFieldService;
+import com.springmvc.walker.mapper.xml.XmlFieldMapper;
+import com.springmvc.walker.service.xml.XmlFieldService;
 import com.springmvc.walker.util.UUIDUtil;
 
 @Service("xmlFieldService")
@@ -74,10 +74,9 @@ public class XmlFieldServiceImpl implements XmlFieldService{
 	@Transactional
 	public boolean delete(String parentId) {
 		logger.info("删除字典信息 START");
-		boolean success = false;
-		success = xmlFieldMapper.deleteById(parentId) 
-				|| xmlFieldMapper.deleteByParentId(parentId);
-		return success;
+		boolean success1 = xmlFieldMapper.deleteById(parentId);
+		boolean success2 = xmlFieldMapper.deleteByParentId(parentId);
+		return success1 || success2;
 	}
 
 	@Override

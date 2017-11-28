@@ -69,3 +69,78 @@ com.walker.common.getChildNodes = function(parentNode,nodeObj){
 		com.walker.common.getChildNodes(nodes[i],nodeObj);
 	}
 }
+
+com.walker.common.getPubCodeStore = function(parentCode, needBlank) {
+	if(needBlank !== '0') {
+		needBlank = '1';
+	}
+	var store = new Ext.data.Store( {
+		url : 'pubcode_childForSelect.do',
+		reader : new Ext.data.JsonReader( {
+			fields : [ 
+			    "CODE", "NAME"
+			],
+			root : 'rows'
+		}),
+		baseParams : {
+			parentCode : parentCode,
+			needBlank : needBlank
+		},
+		listeners : {
+			load : function() {
+				this.dataLoaded = true;
+			}
+		}
+	});
+	store.dataLoaded = false;
+	store.load();
+	return store;
+};
+
+com.walker.common.renderer = {
+		getComboValue : function(store, value, colors) {
+			if(!value) {
+				return "";
+			}
+			
+			if(store && store.data) {
+				for(var i = 0; i < store.data.length; i++) {
+					var record = store.data.get(i);
+					if(record.get("CODE") === value) {
+						if(colors && colors[value]) {
+							return '<font color="' + colors[value] + '">' + record.get("NAME") + '</font>';
+						}
+						return record.get("NAME");
+					}
+				}
+			}
+			if(store.dataLoaded === false) {
+				var fontId = Ext.id();
+				
+				var val = function(s) {
+					var font = jQuery("#" + fontId);
+					for(var i = 0; i < s.data.length; i++) {
+						var record = s.data.get(i);
+						if(record.get("CODE") === value) {
+							if(colors && colors[value]) {
+								font.css("color", colors[value]);
+							}
+
+							font.html(record.get("NAME"));
+						}
+					}
+					
+					store.un("load", val);
+				};
+				
+				store.on("load", val);
+				
+				return "<div id='" + fontId +  "'></div>";
+			}
+			
+			return "";
+		},
+		combo : {
+			options : []
+		}
+	};

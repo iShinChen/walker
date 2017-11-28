@@ -11,10 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.springmvc.walker.constant.GlobalConstant;
 import com.springmvc.walker.entity.Page;
 import com.springmvc.walker.entity.PageResultBean;
 import com.springmvc.walker.entity.ResultBean;
-import com.springmvc.walker.service.XmlFieldService;
+import com.springmvc.walker.service.xml.XmlFieldService;
 import com.springmvc.walker.util.ParamUtil;
 import com.springmvc.walker.util.PrintWriterUtil;
 
@@ -63,6 +64,7 @@ public class XmlFieldController {
 		Map<String, Object> paraMap = ParamUtil.getParamMap(request, fileds);
 		try {
 			if(xmlFieldService.save(paraMap)){
+				GlobalConstant.initXmlBook();
 				result.setSuccess(true);
 			}else{
 				result.setSuccess(false);
@@ -87,6 +89,7 @@ public class XmlFieldController {
 		try {
 			logger.info("ID" + request.getParameter("ID"));
 			if(xmlFieldService.delete(request.getParameter("ID"))){
+				GlobalConstant.initXmlBook();
 				result.setSuccess(true);
 			}else{
 				result.setSuccess(false);

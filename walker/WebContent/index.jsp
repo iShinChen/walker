@@ -56,9 +56,9 @@
 			
 			#item_cy_logo .x-panel-body {
 				padding-left: 150px;
-				background: url('resources/images/logo/logo.png') no-repeat;
+				background: url('resources/images/logo/logo2.png') no-repeat;
 				_background:none; 
-				_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="resources/images/logo/logo.png");
+				_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="resources/images/logo/logo2.png");
 			}
 			
 /* 			body

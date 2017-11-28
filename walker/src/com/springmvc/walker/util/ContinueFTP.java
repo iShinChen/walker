@@ -664,23 +664,55 @@ public class ContinueFTP {
     	return UploadStatus.Upload_New_File_Success;
     }
     
+    public UploadStatus uploadXML(org.dom4j.Document document, String fileUrl) throws IOException{  
+    	
+//    	//设置被动模式  
+//    	ftpClient.enterLocalPassiveMode();
+//    	targetClient.enterLocalPassiveMode();
+    	boolean exitFlag = deleteFile(fileUrl);
+    	if(exitFlag){
+    		logger.info("存在目标文件，并删除成功。");
+    	}
+    	InputStream in = new ByteArrayInputStream(document.asXML().getBytes("utf-8"));
+    	if(CreateDirecroty(fileUrl, ftpClient)==UploadStatus.Create_Directory_Fail){  
+		    return UploadStatus.Create_Directory_Fail;  
+		}
+    	String remoteFileName = fileUrl.substring(fileUrl.lastIndexOf("/")+1);
+		ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+        OutputStream out = ftpClient.appendFileStream(new String(remoteFileName.getBytes("GBK"),"iso-8859-1"));
+    	
+        try {
+    		byte[] bytes = new byte[1024];
+        	int c;
+        	while((c = in.read(bytes))!= -1){
+        		out.write(bytes, 0, c);
+        	}
+		} catch (Exception e) {
+			logger.error("操作发生异常", e);
+		} finally {
+			try {
+				Thread.sleep(2000);
+				in.close();
+				out.flush();
+	    		out.close();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			logger.info("XML已经写入指定路径");
+		}
+        
+    	return UploadStatus.Upload_New_File_Success;
+    }
+    
     public UploadStatus uploadXML(String xml, String fileUrl) throws IOException{
     	InputStream in = new ByteArrayInputStream(xml.getBytes("UTF-8"));  
-    	logger.info("XML存储路径："+fileUrl);
-    	logger.info("先删除现有文件！");
-    	ftpClient.sendCommand("DELE " + fileUrl + "\r\n");
-    	//对远程目录的处理  
-        String remoteFileName = fileUrl;  
-        if(fileUrl.contains("/")){  
-            remoteFileName = fileUrl.substring(fileUrl.lastIndexOf("/")+1);  
-            //创建服务器远程目录结构，创建失败直接返回  
-            if(CreateDirecroty(fileUrl, ftpClient)==UploadStatus.Create_Directory_Fail){  
-                return UploadStatus.Create_Directory_Fail;  
-            }  
-        }
-        ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-        OutputStream out = ftpClient.appendFileStream(new String(remoteFileName.getBytes("GBK"),"iso-8859-1"));  
-    	
+    	if(CreateDirecroty(fileUrl, ftpClient)==UploadStatus.Create_Directory_Fail){  
+		    return UploadStatus.Create_Directory_Fail;  
+		}
+    	String remoteFileName = fileUrl.substring(fileUrl.lastIndexOf("/")+1);
+		ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+        OutputStream out = ftpClient.appendFileStream(new String(remoteFileName.getBytes("GBK"),"iso-8859-1"));
+
         try {
     		byte[] bytes = new byte[1024];
         	int c;

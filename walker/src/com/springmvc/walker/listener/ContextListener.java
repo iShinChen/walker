@@ -13,6 +13,8 @@ public class ContextListener extends ContextLoaderListener{
 		super.contextInitialized(event);
 		GlobalConstant.initSysConfig();
 		GlobalConstant.initSysBook();
+		GlobalConstant.initXmlBook();
+		GlobalConstant.initXmlElements();
 		GlobalConstant.resetTaskState();
 	}
 

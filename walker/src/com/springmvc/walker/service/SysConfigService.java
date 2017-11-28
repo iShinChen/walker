@@ -14,4 +14,10 @@ public interface SysConfigService {
 	List<Map<String, Object>> getSysBookByParent(String PARENT_ID);
 	
 	public boolean updateSysTaskState();
+	
+	List<Map<String, Object>> getXmlBookType();
+	
+	Map<String, Object> getXmlBookById(String ID);
+	
+	List<Map<String, Object>> getXmlBookByParent(String PARENT_ID);
 }

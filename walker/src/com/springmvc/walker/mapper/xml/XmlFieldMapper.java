@@ -1,4 +1,4 @@
-package com.springmvc.walker.mapper;
+package com.springmvc.walker.mapper.xml;
 
 import java.util.List;
 import java.util.Map;

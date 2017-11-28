@@ -16,5 +16,11 @@ public interface SysConfigMapper {
 	List<Map<String, Object>> getFtpConfigList();
 	
 	boolean updateSysTaskState();
+	
+	List<Map<String, Object>> getXmlBookType();
+	
+	Map<String, Object> getXmlBookById(String ID);
+	
+	List<Map<String, Object>> getXmlBookByParent(String PARENT_ID);
 
 }

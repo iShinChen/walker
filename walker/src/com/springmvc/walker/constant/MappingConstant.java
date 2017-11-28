@@ -34,5 +34,10 @@ public class MappingConstant {
 	public static final String ASSET_OPERATION_DEL = "2";
 	public static final String ASSET_OPERATION_CANCEL = "3";
 	
-	
+	/**
+	 * 工单模式
+	 */
+	public static final String ACTION_REGIST = "REGIST";
+	public static final String ACTION_UPDATE = "UPDATE";
+	public static final String ACTION_DELETE = "DELETE";
 }

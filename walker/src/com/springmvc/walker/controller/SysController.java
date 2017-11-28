@@ -564,6 +564,7 @@ public class SysController {
 			if(updResult)
 			{
 				GlobalConstant.SYS_MAP.put(String.valueOf(paraMap.get("CODE")), String.valueOf(paraMap.get("VALUE")));
+				GlobalConstant.initSysConfig();
 				logger.info("更新系统缓存["+String.valueOf(paraMap.get("CODE"))+"]成功");
 			}
 			result.setSuccess(true);

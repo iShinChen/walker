@@ -12,6 +12,7 @@ import org.springframework.web.context.ContextLoader;
 
 import com.springmvc.walker.entity.TSysConfig;
 import com.springmvc.walker.service.SysConfigService;
+import com.springmvc.walker.service.xml.XmlConfigService;
 
 public class GlobalConstant {
 	private static final Logger logger = Logger.getLogger(GlobalConstant.class);
@@ -45,6 +46,14 @@ public class GlobalConstant {
 	
 	public static final String FTP_TARGET_ROOTPATH = "FTP_TARGET_ROOTPATH";
 	
+	public static final String XML_BOOK_SERIES = "SERIES";
+	public static final String XML_BOOK_PROGRAM = "PROGRAM";
+	public static final String XML_BOOK_MOVIE = "MOVIE";
+	public static final String XML_BOOK_PICTURE = "PICTURE";
+	
+	public static Map<String, List<Map<String, Object>>> XML_BOOK = new HashMap<String, List<Map<String, Object>>>();
+	
+	public static Map<String, List<Map<String, Object>>> XML_ELEMENTS = new HashMap<String, List<Map<String, Object>>>();
 		
 	public static void initSysConfig() {
 		logger.info("系统配置加载中...");
@@ -84,6 +93,41 @@ public class GlobalConstant {
 			logger.error("加载数据字典异常", e);
 		}
 		logger.info("数据字典加载完成!");
+	}
+	
+	public static void initXmlBook() {
+		logger.info("加载工单属性配置中...");
+		List<Map<String, Object>> typeList = new ArrayList<Map<String, Object>>();
+		try {
+			ApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
+			SysConfigService sysConfigService = (SysConfigService) context.getBean("sysConfigService");
+			typeList = sysConfigService.getXmlBookType();
+			if(typeList != null)
+			{
+				for(Map<String, Object> map:typeList)
+				{
+					GlobalConstant.XML_BOOK.put(sysConfigService.getXmlBookById(map.get("PARENT_ID").toString()).get("CODE").toString(),
+							sysConfigService.getXmlBookByParent((map.get("PARENT_ID").toString())));
+				}
+			}
+		} catch (Exception e) {
+			logger.error("加载工单属性配置异常", e);
+		}
+		logger.info("数据工单属性配置完成!");
+	}
+	
+	public static void initXmlElements(){
+		logger.info("加载工单项目配置中...");
+		try {
+			ApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
+			XmlConfigService xmlConfigService = (XmlConfigService) context.getBean("xmlConfigService");
+			GlobalConstant.XML_ELEMENTS.put(GlobalConstant.XML_BOOK_SERIES, xmlConfigService.getXMlElements("SERIES"));
+			GlobalConstant.XML_ELEMENTS.put(GlobalConstant.XML_BOOK_PROGRAM, xmlConfigService.getXMlElements("PROGRAM"));
+			GlobalConstant.XML_ELEMENTS.put(GlobalConstant.XML_BOOK_MOVIE, xmlConfigService.getXMlElements("MOVIE"));
+		} catch (Exception e) {
+			logger.error("加载工单项目配置异常", e);
+		}
+		logger.info("数据工单项目配置完成!");
 	}
 	
 	public static void resetTaskState() {

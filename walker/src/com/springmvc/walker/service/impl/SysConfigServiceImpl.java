@@ -42,4 +42,19 @@ public class SysConfigServiceImpl implements SysConfigService{
 		return sysConfigMapper.updateSysTaskState();
 	}
 
+	@Override
+	public List<Map<String, Object>> getXmlBookType() {
+		return sysConfigMapper.getXmlBookType();
+	}
+
+	@Override
+	public List<Map<String, Object>> getXmlBookByParent(String PARENT_ID) {
+		return sysConfigMapper.getXmlBookByParent(PARENT_ID);
+	}
+
+	@Override
+	public Map<String, Object> getXmlBookById(String ID) {
+		return sysConfigMapper.getXmlBookById(ID);
+	}
+
 }
