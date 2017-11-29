@@ -3,7 +3,7 @@ package com.springmvc.walker.thread.xml;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
-import com.springmvc.walker.constant.GlobalConstant;
+import com.springmvc.framework.constant.GlobalConstant;
 import com.springmvc.walker.service.xml.SeriesService;
 import com.springmvc.walker.xml.entity.XmlEntity;
 import com.springmvc.walker.xml.util.BuildXmlFile;

@@ -5,11 +5,11 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.springmvc.walker.constant.GlobalConstant;
+import com.springmvc.framework.constant.GlobalConstant;
+import com.springmvc.framework.constant.UploadStatus;
+import com.springmvc.framework.util.ContinueFTP;
 import com.springmvc.walker.constant.MappingConstant;
-import com.springmvc.walker.constant.UploadStatus;
 import com.springmvc.walker.service.VideoService;
-import com.springmvc.walker.util.ContinueFTP;
 
 public class UploadVideo2FtpThread extends Thread{
 

@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import com.springmvc.walker.constant.GlobalConstant;
-import com.springmvc.walker.entity.Page;
-import com.springmvc.walker.entity.PageResultBean;
-import com.springmvc.walker.entity.ResultBean;
+import com.springmvc.framework.constant.GlobalConstant;
+import com.springmvc.framework.entity.Page;
+import com.springmvc.framework.entity.PageResultBean;
+import com.springmvc.framework.entity.ResultBean;
+import com.springmvc.framework.util.ContinueFTP;
+import com.springmvc.framework.util.ParamUtil;
+import com.springmvc.framework.util.PrintWriterUtil;
 import com.springmvc.walker.service.PhotoService;
-import com.springmvc.walker.util.ContinueFTP;
-import com.springmvc.walker.util.ParamUtil;
-import com.springmvc.walker.util.PrintWriterUtil;
 
 @Controller
 @RequestMapping("/photo") 

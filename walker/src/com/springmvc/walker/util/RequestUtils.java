@@ -16,6 +16,8 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import com.springmvc.framework.util.StringUtils;
+
 /**
  * 针对ServletRequest提供的Util类
  * <p>

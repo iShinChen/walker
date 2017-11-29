@@ -11,10 +11,10 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.springmvc.walker.entity.Page;
+import com.springmvc.framework.entity.Page;
+import com.springmvc.framework.util.UUIDUtil;
 import com.springmvc.walker.mapper.xml.XmlFieldMapper;
 import com.springmvc.walker.service.xml.XmlFieldService;
-import com.springmvc.walker.util.UUIDUtil;
 
 @Service("xmlFieldService")
 public class XmlFieldServiceImpl implements XmlFieldService{

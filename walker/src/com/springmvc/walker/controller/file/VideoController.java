@@ -18,18 +18,18 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
-import com.springmvc.walker.constant.GlobalConstant;
+import com.springmvc.framework.constant.GlobalConstant;
+import com.springmvc.framework.entity.Page;
+import com.springmvc.framework.entity.PageResultBean;
+import com.springmvc.framework.entity.ResultBean;
+import com.springmvc.framework.util.ParamUtil;
+import com.springmvc.framework.util.PrintWriterUtil;
+import com.springmvc.framework.util.StringUtils;
 import com.springmvc.walker.constant.MappingConstant;
-import com.springmvc.walker.entity.Page;
-import com.springmvc.walker.entity.PageResultBean;
-import com.springmvc.walker.entity.ResultBean;
 import com.springmvc.walker.service.VideoService;
 import com.springmvc.walker.thread.DownloadVideo2LocalThread;
 import com.springmvc.walker.thread.FixedThreadExecutor;
 import com.springmvc.walker.thread.UploadVideo2FtpThread;
-import com.springmvc.walker.util.ParamUtil;
-import com.springmvc.walker.util.PrintWriterUtil;
-import com.springmvc.walker.util.StringUtils;
 import com.springmvc.walker.util.Tools;
 
 import it.sauronsoftware.jave.Encoder;

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.walker.mapper.xml.PictureMapper" >
+
+	<insert id="insertPicture" parameterType="com.springmvc.walker.xml.entity.PictureEntity">
+		insert into t_vod_picture(
+			PICTURE_ID,
+			ORIGINAL_ID,
+			SERIES_ID,
+			TYPE,
+			FILE_URL,
+			MD5,
+			FILE_SIZE,
+			RESLOUTION,
+			STATUS,
+			CREATE_TIME,
+			PLATFORM_ID
+		)values(
+			#{PICTURE_ID},
+			#{ORIGINAL_ID},
+			#{SERIES_ID},
+			#{TYPE},
+			#{FILE_URL},
+			#{MD5},
+			#{FILE_SIZE},
+			#{RESLOUTION},
+			#{STATUS},
+			#{CREATE_TIME},
+			#{PLATFORM_ID}
+		)
+	</insert>
+	
+	<update id="updatePicture" parameterType="com.springmvc.walker.xml.entity.PictureEntity">
+		update t_vod_picture
+		set
+			ORIGINAL_ID = #{ORIGINAL_ID},
+			SERIES_ID = #{SERIES_ID},
+			TYPE = #{TYPE},
+			FILE_URL = #{FILE_URL},
+			MD5 = #{MD5},
+			FILE_SIZE = #{FILE_SIZE},
+			RESLOUTION = #{RESLOUTION},
+			STATUS = #{STATUS},
+			CREATE_TIME = #{CREATE_TIME},
+			PLATFORM_ID = #{PLATFORM_ID}
+		where
+			PICTURE_ID = #{PICTURE_ID}
+	</update>
+	
+	<update id="updateStatusById" parameterType="java.util.Map">
+		update t_vod_picture
+		set
+			STATUS = #{STATUS}
+		where
+			PICTURE_ID = #{PICTURE_ID}
+	</update>
+	
+	<select id="getPictureById" parameterType="java.lang.String" resultType="com.springmvc.walker.xml.entity.SeriesEntity">
+		select
+			PICTURE_ID,
+			ORIGINAL_ID,
+			SERIES_ID,
+			TYPE,
+			FILE_URL,
+			MD5,
+			FILE_SIZE,
+			RESLOUTION,
+			STATUS,
+			CREATE_TIME,
+			PLATFORM_ID
+		from
+			t_vod_picture
+		where
+			PICTURE_ID = #{PICTURE_ID}
+	</select>
+	
+	<select id="getPictureByOriginalId" parameterType="java.lang.String" resultType="com.springmvc.walker.xml.entity.SeriesEntity">
+		select
+			PICTURE_ID,
+			ORIGINAL_ID,
+			SERIES_ID,
+			TYPE,
+			FILE_URL,
+			MD5,
+			FILE_SIZE,
+			RESLOUTION,
+			STATUS,
+			CREATE_TIME,
+			PLATFORM_ID
+		from
+			t_vod_picture
+		where
+			ORIGINAL_ID = #{ORIGINAL_ID}
+	</select>
+	
+</mapper>

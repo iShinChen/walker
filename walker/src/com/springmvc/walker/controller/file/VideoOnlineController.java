@@ -11,12 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.springmvc.walker.entity.Page;
-import com.springmvc.walker.entity.PageResultBean;
-import com.springmvc.walker.entity.ResultBean;
+import com.springmvc.framework.entity.Page;
+import com.springmvc.framework.entity.PageResultBean;
+import com.springmvc.framework.entity.ResultBean;
+import com.springmvc.framework.util.ParamUtil;
+import com.springmvc.framework.util.PrintWriterUtil;
 import com.springmvc.walker.service.VideoOnlineService;
-import com.springmvc.walker.util.ParamUtil;
-import com.springmvc.walker.util.PrintWriterUtil;
 
 @Controller
 @RequestMapping("/videoOnline") 

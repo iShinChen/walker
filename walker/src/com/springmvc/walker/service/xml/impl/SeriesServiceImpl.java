@@ -1,6 +1,7 @@
 package com.springmvc.walker.service.xml.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +10,7 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.springmvc.walker.entity.Page;
+import com.springmvc.framework.entity.Page;
 import com.springmvc.walker.mapper.xml.SeriesMapper;
 import com.springmvc.walker.service.xml.SeriesService;
 import com.springmvc.walker.xml.entity.PictureEntity;
@@ -52,4 +53,25 @@ public class SeriesServiceImpl implements SeriesService{
 		return list;
 	}
 
+	@Override
+	public boolean saveSeries(SeriesEntity series) {
+		SeriesEntity seriesEntity = seriesMapper.getSeriesByOriginalId(series.getORIGINAL_ID());
+		if(null != seriesEntity){
+			logger.info("存在对应数据，进行更新操作："+seriesEntity.toString());
+			series.setSERIES_ID(seriesEntity.getSERIES_ID());
+			return seriesMapper.updateSeries(series);
+		}else{
+			logger.info("不存在对应数据，进行插入操作："+series.toString());
+			return seriesMapper.insertSeries(series);
+		}
+	}
+
+	@Override
+	public boolean updateStatusById(String seriesId, String status) {
+		logger.info("更新seriesId："+seriesId+"的状态为："+status);
+		Map<String, Object> paraMap = new HashMap<String, Object>();
+		paraMap.put("SERIES_ID", seriesId);
+		paraMap.put("STATUS", status);
+		return seriesMapper.updateStatusById(paraMap);
+	}
 }

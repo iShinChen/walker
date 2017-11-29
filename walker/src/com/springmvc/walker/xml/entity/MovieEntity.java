@@ -34,6 +34,7 @@ public class MovieEntity {
 	private String ONLINE_TIME;
 	private String UNLINE_TIME;
 	private String PLATFORM_ID;
+	
 	public String getMOVIE_ID() {
 		return MOVIE_ID;
 	}

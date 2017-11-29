@@ -10,10 +10,10 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.springmvc.walker.entity.Page;
+import com.springmvc.framework.entity.Page;
+import com.springmvc.framework.util.UUIDUtil;
 import com.springmvc.walker.mapper.customer.PhotoMapper;
 import com.springmvc.walker.service.PhotoService;
-import com.springmvc.walker.util.UUIDUtil;
 
 @Service("photoService")
 public class PhotoServiceImpl implements PhotoService{

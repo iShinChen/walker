@@ -325,11 +325,11 @@ com.walker.xml.xmlConfig.save = function() {
 						});
 						com.walker.xml.xmlConfig.query();
 					} else {
-						Ext.Msg.alert("提示", "字段" + action.result.desc);
+						Ext.Msg.alert("提示", "对象" + action.result.desc);
 					}
 				},
 				failure : function(form, action) {
-					Ext.Msg.alert("提示", "字段操作失败。");
+					Ext.Msg.alert("提示", "对象操作失败。");
 				}
 			});
 

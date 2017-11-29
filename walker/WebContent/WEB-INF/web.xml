@@ -12,7 +12,7 @@
 	<listener>
 		<!-- 加载系统缓存 -->
 		<listener-class>
-			com.springmvc.walker.listener.ContextListener
+			com.springmvc.framework.listener.ContextListener
 		</listener-class>
 	</listener>
 	
@@ -72,7 +72,7 @@
   	<!-- 配置VerifyCodeServlet -->
 	<servlet>
     	<servlet-name>VerifyCodeServlet</servlet-name>
-    	<servlet-class> com.springmvc.walker.servlet.VerifyCodeServlet</servlet-class>
+    	<servlet-class> com.springmvc.framework.servlet.VerifyCodeServlet</servlet-class>
   	</servlet>
   	<servlet-mapping>
     	<servlet-name>VerifyCodeServlet</servlet-name>
@@ -88,7 +88,7 @@
     <!-- 配置登陆过滤器-->
 	<filter>
         <filter-name>loginFilter</filter-name>
-         <filter-class>com.springmvc.walker.filter.LoginFilter</filter-class>
+         <filter-class>com.springmvc.framework.filter.LoginFilter</filter-class>
     </filter>
  	<filter-mapping>
          <filter-name>loginFilter</filter-name>

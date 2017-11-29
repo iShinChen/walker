@@ -10,9 +10,9 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
-import com.springmvc.walker.constant.GlobalConstant;
-import com.springmvc.walker.constant.UploadStatus;
-import com.springmvc.walker.util.ContinueFTP;
+import com.springmvc.framework.constant.GlobalConstant;
+import com.springmvc.framework.constant.UploadStatus;
+import com.springmvc.framework.util.ContinueFTP;
 import com.springmvc.walker.xml.entity.PictureEntity;
 import com.springmvc.walker.xml.entity.XmlEntity;
 

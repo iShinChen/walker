@@ -24,10 +24,10 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSON;
-import com.springmvc.walker.constant.GlobalConstant;
-import com.springmvc.walker.util.FtpUtils;
-import com.springmvc.walker.util.StringUtils;
-import com.springmvc.walker.util.UUIDUtil;
+import com.springmvc.framework.constant.GlobalConstant;
+import com.springmvc.framework.util.FtpUtils;
+import com.springmvc.framework.util.StringUtils;
+import com.springmvc.framework.util.UUIDUtil;
 import com.springmvc.walker.util.UeditorResopnse;
 
 public class UeditorServlet extends HttpServlet {

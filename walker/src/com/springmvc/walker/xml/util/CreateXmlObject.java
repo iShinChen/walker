@@ -8,7 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 
-import com.springmvc.walker.constant.GlobalConstant;
+import com.springmvc.framework.constant.GlobalConstant;
 import com.springmvc.walker.constant.MappingConstant;
 import com.springmvc.walker.xml.entity.MovieEntity;
 import com.springmvc.walker.xml.entity.PictureEntity;

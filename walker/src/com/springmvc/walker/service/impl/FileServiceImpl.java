@@ -10,10 +10,10 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.springmvc.walker.entity.Page;
+import com.springmvc.framework.entity.Page;
+import com.springmvc.framework.util.UUIDUtil;
 import com.springmvc.walker.mapper.file.FileMapper;
 import com.springmvc.walker.service.FileService;
-import com.springmvc.walker.util.UUIDUtil;
 
 @Service("fileService")
 public class FileServiceImpl implements FileService{

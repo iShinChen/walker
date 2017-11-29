@@ -15,4 +15,12 @@ public interface SeriesMapper {
 	public List<Map<String, Object>> getPageList(Map<String, Object> paraMap);
 	
 	public List<PictureEntity> getPicturesBySeriesId(String SERIES_ID);
+	
+	public boolean insertSeries(SeriesEntity series);
+	
+	public boolean updateSeries(SeriesEntity series);
+	
+	public boolean updateStatusById(Map<String, Object> paraMap);
+	
+	public SeriesEntity getSeriesByOriginalId(String ORIGINAL_ID);
 }

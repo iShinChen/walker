@@ -2,7 +2,78 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.springmvc.walker.mapper.xml.SeriesMapper" >
 
-	 <select id="getSeriesById" parameterType="java.lang.String" resultType="com.springmvc.walker.xml.entity.SeriesEntity">
+	<insert id="insertSeries" parameterType="com.springmvc.walker.xml.entity.SeriesEntity">
+		insert into t_vod_series(
+			SERIES_ID,ORIGINAL_ID,CP_ID,IMPORT_SOURCE,EPISODE_TYPE,TYPE,TYPE_NAME,NAME,FULLSPELL,SIMPLESPELL,
+			ALIAS_NAME,EN_NAME,LANGUAGE,CAPTION,RELEASE_TIME,AREA,PROGRAM_COUNT,NEW_PROGRAM,DIRECTOR,PRODUCER,
+			ADAPTOR,ACTOR,AWARDS,DESCRIPTION,KEYWORDS,KIND,TAGS,CLARITY,COPYRIGHT,COPYRIGHT_DATE,CREATE_TIME,
+			MODIFY_TIME,CDN_TIME,CDN_ID,STATUS,ONLINE_TIME,UNLINE_TIME,REAL_PROGRAM_COUNT,ONLINE_PROGRAM_COUNT,
+			IS_LACK_PROGRAM,PLATFORM_ID
+		)values(
+			#{SERIES_ID},#{ORIGINAL_ID},#{CP_ID},#{IMPORT_SOURCE},#{EPISODE_TYPE},#{TYPE},#{TYPE_NAME},#{NAME},#{FULLSPELL},#{SIMPLESPELL},
+			#{ALIAS_NAME},#{EN_NAME},#{LANGUAGE},#{CAPTION},#{RELEASE_TIME},#{AREA},#{PROGRAM_COUNT},#{NEW_PROGRAM},#{DIRECTOR},#{PRODUCER},
+			#{ADAPTOR},#{ACTOR},#{AWARDS},#{DESCRIPTION},#{KEYWORDS},#{KIND},#{TAGS},#{CLARITY},#{COPYRIGHT},#{COPYRIGHT_DATE},#{CREATE_TIME},
+			#{MODIFY_TIME},#{CDN_TIME},#{CDN_ID},#{STATUS},#{ONLINE_TIME},#{UNLINE_TIME},#{REAL_PROGRAM_COUNT},#{ONLINE_PROGRAM_COUNT},
+			#{IS_LACK_PROGRAM},#{PLATFORM_ID}
+		)
+	</insert>
+	
+	<update id="updateSeries" parameterType="com.springmvc.walker.xml.entity.SeriesEntity">
+		update t_vod_series
+		set 
+			ORIGINAL_ID = #{ORIGINAL_ID},
+			CP_ID = #{CP_ID},
+			IMPORT_SOURCE = #{IMPORT_SOURCE},
+			EPISODE_TYPE = #{EPISODE_TYPE},
+			TYPE = #{TYPE},
+			TYPE_NAME = #{TYPE_NAME},
+			NAME = #{NAME},
+			FULLSPELL = #{FULLSPELL},
+			SIMPLESPELL = #{SIMPLESPELL},
+			ALIAS_NAME = #{ALIAS_NAME},
+			EN_NAME = #{EN_NAME},
+			LANGUAGE = #{LANGUAGE},
+			CAPTION = #{CAPTION},
+			RELEASE_TIME = #{RELEASE_TIME},
+			AREA = #{AREA},
+			PROGRAM_COUNT = #{PROGRAM_COUNT},
+			NEW_PROGRAM = #{NEW_PROGRAM},
+			DIRECTOR = #{DIRECTOR},
+			PRODUCER = #{PRODUCER},
+			ADAPTOR = #{ADAPTOR},
+			ACTOR = #{ACTOR},
+			AWARDS = #{AWARDS},
+			DESCRIPTION = #{DESCRIPTION},
+			KEYWORDS = #{KEYWORDS},
+			KIND = #{KIND},
+			TAGS = #{TAGS},
+			CLARITY = #{CLARITY},
+			COPYRIGHT = #{COPYRIGHT},
+			COPYRIGHT_DATE = #{COPYRIGHT_DATE},
+			CREATE_TIME = #{CREATE_TIME},
+			MODIFY_TIME = now(),
+			CDN_TIME = #{CDN_TIME},
+			CDN_ID = #{CDN_ID},
+			STATUS = #{STATUS},
+			ONLINE_TIME = #{ONLINE_TIME},
+			UNLINE_TIME = #{UNLINE_TIME},
+			REAL_PROGRAM_COUNT = #{REAL_PROGRAM_COUNT},
+			ONLINE_PROGRAM_COUNT = #{ONLINE_PROGRAM_COUNT},
+			IS_LACK_PROGRAM = #{IS_LACK_PROGRAM},
+			PLATFORM_ID = #{PLATFORM_ID}
+		where
+			SERIES_ID = #{SERIES_ID}
+	</update>
+
+	<update id="updateStatusById" parameterType="java.util.Map">
+		update t_vod_series
+		set
+			STATUS = #{STATUS}
+		where
+			SERIES_ID = #{SERIES_ID}
+	</update>
+	
+	<select id="getSeriesById" parameterType="java.lang.String" resultType="com.springmvc.walker.xml.entity.SeriesEntity">
 		SELECT 
 			SERIES_ID,ORIGINAL_ID,CP_ID,IMPORT_SOURCE,EPISODE_TYPE,TYPE,TYPE_NAME,NAME,FULLSPELL,SIMPLESPELL,
 			ALIAS_NAME,EN_NAME,LANGUAGE,CAPTION,RELEASE_TIME,AREA,PROGRAM_COUNT,NEW_PROGRAM,DIRECTOR,PRODUCER,
@@ -18,7 +89,23 @@
 	    WHERE SERIES_ID = #{SERIES_ID}
      </select>
      
-      <select id="getPicturesBySeriesId" parameterType="java.lang.String" resultType="com.springmvc.walker.xml.entity.PictureEntity">
+     <select id="getSeriesByOriginalId" parameterType="java.lang.String" resultType="com.springmvc.walker.xml.entity.SeriesEntity">
+		SELECT 
+			SERIES_ID,ORIGINAL_ID,CP_ID,IMPORT_SOURCE,EPISODE_TYPE,TYPE,TYPE_NAME,NAME,FULLSPELL,SIMPLESPELL,
+			ALIAS_NAME,EN_NAME,LANGUAGE,CAPTION,RELEASE_TIME,AREA,PROGRAM_COUNT,NEW_PROGRAM,DIRECTOR,PRODUCER,
+			ADAPTOR,ACTOR,AWARDS,DESCRIPTION,KEYWORDS,KIND,TAGS,CLARITY,COPYRIGHT,
+			date_format(COPYRIGHT_DATE, '%Y-%m-%d %H:%i:%s') COPYRIGHT_DATE,
+			date_format(CREATE_TIME, '%Y-%m-%d %H:%i:%s') CREATE_TIME,
+			date_format(MODIFY_TIME, '%Y-%m-%d %H:%i:%s') MODIFY_TIME,
+			date_format(CDN_TIME, '%Y-%m-%d %H:%i:%s') CDN_TIME,CDN_ID,STATUS,
+			date_format(ONLINE_TIME, '%Y-%m-%d %H:%i:%s') ONLINE_TIME,
+			date_format(UNLINE_TIME, '%Y-%m-%d %H:%i:%s') UNLINE_TIME,REAL_PROGRAM_COUNT,ONLINE_PROGRAM_COUNT,
+			IS_LACK_PROGRAM,PLATFORM_ID
+	    FROM t_vod_series
+	    WHERE ORIGINAL_ID = #{ORIGINAL_ID}
+     </select>
+     
+     <select id="getPicturesBySeriesId" parameterType="java.lang.String" resultType="com.springmvc.walker.xml.entity.PictureEntity">
 		SELECT 
 			PICTURE_ID,
 			ORIGINAL_ID,

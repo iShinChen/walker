@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.walker.mapper.xml.MovieMapper" >
+
+	<insert id="insertMovie" parameterType="com.springmvc.walker.xml.entity.MovieEntity">
+		insert into t_vod_movie(
+			MOVIE_ID,
+			ORIGINAL_ID,
+			SERIES_ID,
+			PROGRAM_ID,
+			IMPORT_SOURCE,
+			NAME,
+			TYPE,
+			FILE_URL,
+			PLAY_URL,
+			TAG,
+			CLARITY,
+			RESOLUTION_W,
+			RESOLUTION_H,
+			OVERALLBITRATEMODE,
+			VIDEOTYPE,
+			KBPS,
+			AUDIOTYPE,
+			AUDIOFORMAT,
+			CAPTIONED,
+			DIMENSIONS,
+			FILE_TYPE,
+			DURATION,
+			FILE_SIZE,
+			MD5,
+			CREATE_TIME,
+			MODIFY_TIME,
+			CDN_ID,
+			CDN_TIME,
+			STATUS,
+			ONLINE_TIME,
+			UNLINE_TIME,
+			PLATFORM_ID
+		)values(
+			#{MOVIE_ID},
+			#{ORIGINAL_ID},
+			#{SERIES_ID},
+			#{PROGRAM_ID},
+			#{IMPORT_SOURCE},
+			#{NAME},
+			#{TYPE},
+			#{FILE_URL},
+			#{PLAY_URL},
+			#{TAG},
+			#{CLARITY},
+			#{RESOLUTION_W},
+			#{RESOLUTION_H},
+			#{OVERALLBITRATEMODE},
+			#{VIDEOTYPE},
+			#{KBPS},
+			#{AUDIOTYPE},
+			#{AUDIOFORMAT},
+			#{CAPTIONED},
+			#{DIMENSIONS},
+			#{FILE_TYPE},
+			#{DURATION},
+			#{FILE_SIZE},
+			#{MD5},
+			#{CREATE_TIME},
+			#{MODIFY_TIME},
+			#{CDN_ID},
+			#{CDN_TIME},
+			#{STATUS},
+			#{ONLINE_TIME},
+			#{UNLINE_TIME},
+			#{PLATFORM_ID}
+		)
+	</insert>
+	
+	<update id="updateMovie" parameterType="com.springmvc.walker.xml.entity.MovieEntity">
+		update t_vod_movie
+		set
+			ORIGINAL_ID = #{ORIGINAL_ID},
+			SERIES_ID = #{SERIES_ID},
+			PROGRAM_ID = #{PROGRAM_ID},
+			IMPORT_SOURCE = #{IMPORT_SOURCE},
+			NAME = #{NAME},
+			TYPE = #{TYPE},
+			FILE_URL = #{FILE_URL},
+			PLAY_URL = #{PLAY_URL},
+			TAG = #{TAG},
+			CLARITY = #{CLARITY},
+			RESOLUTION_W = #{RESOLUTION_W},
+			RESOLUTION_H = #{RESOLUTION_H},
+			OVERALLBITRATEMODE = #{OVERALLBITRATEMODE},
+			VIDEOTYPE = #{VIDEOTYPE},
+			KBPS = #{KBPS},
+			AUDIOTYPE = #{AUDIOTYPE},
+			AUDIOFORMAT = #{AUDIOFORMAT},
+			CAPTIONED = #{CAPTIONED},
+			DIMENSIONS = #{DIMENSIONS},
+			FILE_TYPE = #{FILE_TYPE},
+			DURATION = #{DURATION},
+			FILE_SIZE = #{FILE_SIZE},
+			MD5 = #{MD5},
+			CREATE_TIME = #{CREATE_TIME},
+			MODIFY_TIME = now(),
+			CDN_ID = #{CDN_ID},
+			CDN_TIME = #{CDN_TIME},
+			STATUS = #{STATUS},
+			ONLINE_TIME = #{ONLINE_TIME},
+			UNLINE_TIME = #{UNLINE_TIME},
+			PLATFORM_ID = #{PLATFORM_ID}
+		where
+			MOVIE_ID = #{MOVIE_ID}
+	</update>
+	
+	<update id="updateStatusById" parameterType="java.util.Map">
+		update t_vod_movie
+		set
+			STATUS = #{STATUS}
+		where
+			MOVIE_ID = #{MOVIE_ID}
+	</update>
+	
+	<select id="getMovieById" parameterType="java.lang.String" resultType="com.springmvc.walker.xml.entity.MovieEntity">
+		select
+			MOVIE_ID,
+			ORIGINAL_ID,
+			SERIES_ID,
+			PROGRAM_ID,
+			IMPORT_SOURCE,
+			NAME,
+			TYPE,
+			FILE_URL,
+			PLAY_URL,
+			TAG,
+			CLARITY,
+			RESOLUTION_W,
+			RESOLUTION_H,
+			OVERALLBITRATEMODE,
+			VIDEOTYPE,
+			KBPS,
+			AUDIOTYPE,
+			AUDIOFORMAT,
+			CAPTIONED,
+			DIMENSIONS,
+			FILE_TYPE,
+			DURATION,
+			FILE_SIZE,
+			MD5,
+			CREATE_TIME,
+			MODIFY_TIME,
+			CDN_ID,
+			CDN_TIME,
+			STATUS,
+			ONLINE_TIME,
+			UNLINE_TIME,
+			PLATFORM_ID
+		from
+			t_vod_movie
+		where
+			MOVIE_ID = #{MOVIE_ID}
+	</select>
+	
+	<select id="getMovieByOriginalId" parameterType="java.lang.String" resultType="com.springmvc.walker.xml.entity.MovieEntity">
+		select
+			MOVIE_ID,
+			ORIGINAL_ID,
+			SERIES_ID,
+			PROGRAM_ID,
+			IMPORT_SOURCE,
+			NAME,
+			TYPE,
+			FILE_URL,
+			PLAY_URL,
+			TAG,
+			CLARITY,
+			RESOLUTION_W,
+			RESOLUTION_H,
+			OVERALLBITRATEMODE,
+			VIDEOTYPE,
+			KBPS,
+			AUDIOTYPE,
+			AUDIOFORMAT,
+			CAPTIONED,
+			DIMENSIONS,
+			FILE_TYPE,
+			DURATION,
+			FILE_SIZE,
+			MD5,
+			CREATE_TIME,
+			MODIFY_TIME,
+			CDN_ID,
+			CDN_TIME,
+			STATUS,
+			ONLINE_TIME,
+			UNLINE_TIME,
+			PLATFORM_ID
+		from
+			t_vod_movie
+		where
+			ORIGINAL_ID = #{ORIGINAL_ID}
+	</select>
+	
+	
+</mapper>

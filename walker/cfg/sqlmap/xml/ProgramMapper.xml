@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.walker.mapper.xml.ProgramMapper" >
+
+	<insert id="insertProgram" parameterType="com.springmvc.walker.xml.entity.ProgramEntity">
+		insert into t_vod_program(
+			PROGRAM_ID,
+			ORIGINAL_ID,
+			SERIES_ID,
+			IMPORT_SOURCE,
+			NAME,
+			SERIALNO,
+			DURATION,
+			AWARDS,
+			DESCRIPTION,
+			KEYWORDS,
+			DIRECTOR,
+			ADAPTOR,
+			ACTOR,
+			UPDATE_TIME,
+			CREATE_TIME,
+			MODIFY_TIME,
+			CDN_ID,
+			CDN_TIME,
+			STATUS,
+			ONLINE_TIME,
+			UNLINE_TIME,
+			MOVIE_COUNT,
+			ONLINE_MOVIE_COUNT,
+			PLATFORM_ID
+		)value(
+			#{PROGRAM_ID},
+			#{ORIGINAL_ID},
+			#{SERIES_ID},
+			#{IMPORT_SOURCE},
+			#{NAME},
+			#{SERIALNO},
+			#{DURATION},
+			#{AWARDS},
+			#{DESCRIPTION},
+			#{KEYWORDS},
+			#{DIRECTOR},
+			#{ADAPTOR},
+			#{ACTOR},
+			#{UPDATE_TIME},
+			#{CREATE_TIME},
+			now(),
+			#{CDN_ID},
+			#{CDN_TIME},
+			#{STATUS},
+			#{ONLINE_TIME},
+			#{UNLINE_TIME},
+			#{MOVIE_COUNT},
+			#{ONLINE_MOVIE_COUNT},
+			#{PLATFORM_ID}
+		)
+	</insert>
+	
+	<update id="updateProgram" parameterType="com.springmvc.walker.xml.entity.ProgramEntity">
+		update t_vod_program
+		set
+			ORIGINAL_ID = #{ORIGINAL_ID},
+			SERIES_ID = #{SERIES_ID},
+			IMPORT_SOURCE = #{IMPORT_SOURCE},
+			NAME = #{NAME},
+			SERIALNO = #{SERIALNO},
+			DURATION = #{DURATION},
+			AWARDS = #{AWARDS},
+			DESCRIPTION = #{DESCRIPTION},
+			KEYWORDS = #{KEYWORDS},
+			DIRECTOR = #{DIRECTOR},
+			ADAPTOR = #{ADAPTOR},
+			ACTOR = #{ACTOR},
+			UPDATE_TIME = #{UPDATE_TIME},
+			CREATE_TIME = #{CREATE_TIME},
+			MODIFY_TIME = now(),
+			CDN_ID = #{CDN_ID},
+			CDN_TIME = #{CDN_TIME},
+			STATUS = #{STATUS},
+			ONLINE_TIME = #{ONLINE_TIME},
+			UNLINE_TIME = #{UNLINE_TIME},
+			MOVIE_COUNT = #{MOVIE_COUNT},
+			ONLINE_MOVIE_COUNT = #{ONLINE_MOVIE_COUNT},
+			PLATFORM_ID = #{PLATFORM_ID}
+		where
+			PROGRAM_ID = #{PROGRAM_ID}
+	</update>
+	
+	<update id="updateStatusById" parameterType="java.util.Map">
+		update t_vod_program
+		set
+			STATUS = #{STATUS}
+		where
+			PROGRAM_ID = #{PROGRAM_ID}
+	</update>
+	
+	<select id="getProgramById" parameterType="java.lang.String" resultType="com.springmvc.walker.xml.entity.ProgramEntity">
+		select
+			PROGRAM_ID,
+			ORIGINAL_ID,
+			SERIES_ID,
+			IMPORT_SOURCE,
+			NAME,
+			SERIALNO,
+			DURATION,
+			AWARDS,
+			DESCRIPTION,
+			KEYWORDS,
+			DIRECTOR,
+			ADAPTOR,
+			ACTOR,
+			date_format(UPDATE_TIME, '%Y-%m-%d %H:%i:%s') UPDATE_TIME,
+			date_format(CREATE_TIME, '%Y-%m-%d %H:%i:%s') CREATE_TIME,
+			date_format(MODIFY_TIME, '%Y-%m-%d %H:%i:%s') MODIFY_TIME,
+			CDN_ID,
+			date_format(CDN_TIME, '%Y-%m-%d %H:%i:%s') CDN_TIME,
+			STATUS,
+			date_format(ONLINE_TIME, '%Y-%m-%d %H:%i:%s') ONLINE_TIME,
+			date_format(UNLINE_TIME, '%Y-%m-%d %H:%i:%s') UNLINE_TIME,
+			MOVIE_COUNT,
+			ONLINE_MOVIE_COUNT,
+			PLATFORM_ID
+		where
+			PROGRAM_ID = #{PROGRAM_ID}
+	</select>
+	
+	<select id="getProgramByOriginalId" parameterType="java.lang.String" resultType="com.springmvc.walker.xml.entity.ProgramEntity">
+		select
+			PROGRAM_ID,
+			ORIGINAL_ID,
+			SERIES_ID,
+			IMPORT_SOURCE,
+			NAME,
+			SERIALNO,
+			DURATION,
+			AWARDS,
+			DESCRIPTION,
+			KEYWORDS,
+			DIRECTOR,
+			ADAPTOR,
+			ACTOR,
+			date_format(UPDATE_TIME, '%Y-%m-%d %H:%i:%s') UPDATE_TIME,
+			date_format(CREATE_TIME, '%Y-%m-%d %H:%i:%s') CREATE_TIME,
+			date_format(MODIFY_TIME, '%Y-%m-%d %H:%i:%s') MODIFY_TIME,
+			CDN_ID,
+			date_format(CDN_TIME, '%Y-%m-%d %H:%i:%s') CDN_TIME,
+			STATUS,
+			date_format(ONLINE_TIME, '%Y-%m-%d %H:%i:%s') ONLINE_TIME,
+			date_format(UNLINE_TIME, '%Y-%m-%d %H:%i:%s') UNLINE_TIME,
+			MOVIE_COUNT,
+			ONLINE_MOVIE_COUNT,
+			PLATFORM_ID
+		where
+			ORIGINAL_ID = #{ORIGINAL_ID}
+	</select>
+</mapper>
