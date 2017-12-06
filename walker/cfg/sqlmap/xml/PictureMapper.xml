@@ -33,16 +33,37 @@
 	<update id="updatePicture" parameterType="com.springmvc.walker.xml.entity.PictureEntity">
 		update t_vod_picture
 		set
-			ORIGINAL_ID = #{ORIGINAL_ID},
-			SERIES_ID = #{SERIES_ID},
-			TYPE = #{TYPE},
-			FILE_URL = #{FILE_URL},
-			MD5 = #{MD5},
-			FILE_SIZE = #{FILE_SIZE},
-			RESLOUTION = #{RESLOUTION},
-			STATUS = #{STATUS},
-			CREATE_TIME = #{CREATE_TIME},
-			PLATFORM_ID = #{PLATFORM_ID}
+			<if test="ORIGINAL_ID != null">
+				ORIGINAL_ID = #{ORIGINAL_ID},
+			</if>
+			<if test="SERIES_ID != null">
+				SERIES_ID = #{SERIES_ID},
+			</if>
+			<if test="TYPE != null">
+				TYPE = #{TYPE},
+			</if>
+			<if test="FILE_URL != null">
+				FILE_URL = #{FILE_URL},
+			</if>
+			<if test="MD5 != null">
+				MD5 = #{MD5},
+			</if>
+			<if test="FILE_SIZE != null">
+				FILE_SIZE = #{FILE_SIZE},
+			</if>
+			<if test="RESLOUTION != null">
+				RESLOUTION = #{RESLOUTION},
+			</if>
+			<if test="STATUS != null">
+				STATUS = #{STATUS},
+			</if>
+			<if test="CREATE_TIME != null">
+				CREATE_TIME = #{CREATE_TIME},
+			</if>
+			<if test="PLATFORM_ID != null">
+				PLATFORM_ID = #{PLATFORM_ID},
+			</if>
+			1 = 1 
 		where
 			PICTURE_ID = #{PICTURE_ID}
 	</update>
@@ -93,4 +114,9 @@
 			ORIGINAL_ID = #{ORIGINAL_ID}
 	</select>
 	
+	
+	<delete id="deletePicture" parameterType="java.lang.String">
+		delete from t_vod_picture
+		where PICTURE_ID = #{PICTURE_ID}
+	</delete>
 </mapper>

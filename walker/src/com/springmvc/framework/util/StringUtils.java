@@ -22,8 +22,8 @@ public class StringUtils {
 		return false;
 	}
 
-	public static boolean isEmptyOrBlank(String str) {
-		if (str == null || str.trim().length() == 0) {
+	public static boolean isEmptyOrBlank(Object str) {
+		if (str == null || str.toString().trim().length() == 0) {
 			return true;
 		}
 		return false;

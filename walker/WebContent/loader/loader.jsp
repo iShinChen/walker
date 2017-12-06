@@ -46,7 +46,7 @@ Ext.grid.GridView.prototype.templates.cell = new Ext.Template(
 		'</td>');
 	BASE_PATH = '<%=basePath%>/';
 
-	Ext.namespace("CYCMS");
+	Ext.namespace("WALKER");
 
 	Ext.grid.ColumnModel.override( {
 		getTotalWidth : function(includeHidden) {
@@ -97,17 +97,53 @@ Ext.grid.GridView.prototype.templates.cell = new Ext.Template(
 	Ext.onReady(function(){
 		Ext.QuickTips.init();
 	});
+	
+	//找到打开自己的父页面
+	WALKER.parentPage = function(){
+		var win = findFrameWin(parent);
+		
+		if(Ext.isEmpty(win)){
+			Ext.Msg.alert('提示','找不到父页面');
+			return null;
+		} else {
+			return win;
+		}
+	};
+	
+	var findFrameWin = function(win) {
+		if (win.Ext && win.WALKER) {
+			if (win.WALKER.popWinId == WALKER.findPopWinId) {
+				return win;
+			}
+			var curframes = win.frames;
+			if (curframes && curframes.length > 0) {
+				var globalFrame = null;
+				for(var i = 0;i < curframes.length;i++){
+					var tmpFrame = curframes[i];
+					if (globalFrame == null) {
+						if (tmpFrame.Ext) {
+							globalFrame = findFrameWin(tmpFrame);
+						}
+					}
+					else {
+						break;
+					}
+				}
+				return globalFrame;
+			}
+		}
+	};
 
-	//查找父页面打开窗口的ID，使用本id找到对应的CYCMS.popWinId
-	CYCMS.findPopWinId = 'nothing';
+	//查找父页面打开窗口的ID，使用本id找到对应的WALKER.popWinId
+	WALKER.findPopWinId = 'nothing';
 
 	//打开新窗口
-	CYCMS.popWindow = function(param) {
+	WALKER.popWindow = function(param) {
 		var pWin = param.openWindow;
 		if (!pWin) {
 			pWin = top;
 		}
-		CYCMS.popWinId = pWin.Ext.id();
+		WALKER.popWinId = pWin.Ext.id();
 		var initialConfig = param.win.initialConfig;
 		var fileUrl = param.url;
 		//处理跨节点调用问题
@@ -118,12 +154,12 @@ Ext.grid.GridView.prototype.templates.cell = new Ext.Template(
 			fileUrl = '<%=basePath%>'+fileUrl;
 		}
 		if(fileUrl.indexOf('?')>0)
-			fileUrl += "&POP_WIN_ID="+CYCMS.popWinId;
+			fileUrl += "&POP_WIN_ID="+WALKER.popWinId;
 		else
-			fileUrl += "?POP_WIN_ID="+CYCMS.popWinId;
+			fileUrl += "?POP_WIN_ID="+WALKER.popWinId;
 		
 		var initConfig = {
-			id : CYCMS.popWinId,
+			id : WALKER.popWinId,
 			layout: 'border',
 			items: [
 				new top.Ext.Panel({
@@ -144,8 +180,8 @@ Ext.grid.GridView.prototype.templates.cell = new Ext.Template(
 	};
 
 	//在子页面中关闭自己
-	CYCMS.closePopWindow = function() {
-		var popWin = top.Ext.getCmp(CYCMS.findPopWinId);
+	WALKER.closePopWindow = function() {
+		var popWin = top.Ext.getCmp(WALKER.findPopWinId);
 		if (popWin) {
 			popWin.close();
 		}
@@ -173,7 +209,7 @@ Ext.grid.GridView.prototype.templates.cell = new Ext.Template(
 
 	<%
 		if(RequestUtils.getStringParameter(request, "POP_WIN_ID",RequestUtils.STRING_REGEX_CODE)!=null){
-			out.write("CYCMS.findPopWinId='" + RequestUtils.getStringParameter(request, "POP_WIN_ID", RequestUtils.STRING_REGEX_CODE) + "';");
+			out.write("WALKER.findPopWinId='" + RequestUtils.getStringParameter(request, "POP_WIN_ID", RequestUtils.STRING_REGEX_CODE) + "';");
 		}
 	%>
 </script>

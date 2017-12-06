@@ -75,37 +75,97 @@
 	<update id="updateMovie" parameterType="com.springmvc.walker.xml.entity.MovieEntity">
 		update t_vod_movie
 		set
-			ORIGINAL_ID = #{ORIGINAL_ID},
-			SERIES_ID = #{SERIES_ID},
-			PROGRAM_ID = #{PROGRAM_ID},
-			IMPORT_SOURCE = #{IMPORT_SOURCE},
-			NAME = #{NAME},
-			TYPE = #{TYPE},
-			FILE_URL = #{FILE_URL},
-			PLAY_URL = #{PLAY_URL},
-			TAG = #{TAG},
-			CLARITY = #{CLARITY},
-			RESOLUTION_W = #{RESOLUTION_W},
-			RESOLUTION_H = #{RESOLUTION_H},
-			OVERALLBITRATEMODE = #{OVERALLBITRATEMODE},
-			VIDEOTYPE = #{VIDEOTYPE},
-			KBPS = #{KBPS},
-			AUDIOTYPE = #{AUDIOTYPE},
-			AUDIOFORMAT = #{AUDIOFORMAT},
-			CAPTIONED = #{CAPTIONED},
-			DIMENSIONS = #{DIMENSIONS},
-			FILE_TYPE = #{FILE_TYPE},
-			DURATION = #{DURATION},
-			FILE_SIZE = #{FILE_SIZE},
-			MD5 = #{MD5},
-			CREATE_TIME = #{CREATE_TIME},
-			MODIFY_TIME = now(),
-			CDN_ID = #{CDN_ID},
-			CDN_TIME = #{CDN_TIME},
-			STATUS = #{STATUS},
-			ONLINE_TIME = #{ONLINE_TIME},
-			UNLINE_TIME = #{UNLINE_TIME},
-			PLATFORM_ID = #{PLATFORM_ID}
+			<if test="ORIGINAL_ID != null">
+				ORIGINAL_ID = #{ORIGINAL_ID},
+			</if>
+			<if test="SERIES_ID != null">
+				SERIES_ID = #{SERIES_ID},
+			</if>
+			<if test="PROGRAM_ID != null">
+				PROGRAM_ID = #{PROGRAM_ID},
+			</if>
+			<if test="IMPORT_SOURCE != null">
+				IMPORT_SOURCE = #{IMPORT_SOURCE},
+			</if>
+			<if test="NAME != null">
+				NAME = #{NAME},
+			</if>
+			<if test="TYPE != null">
+				TYPE = #{TYPE},
+			</if>
+			<if test="FILE_URL != null">
+				FILE_URL = #{FILE_URL},
+			</if>
+			<if test="PLAY_URL != null">
+				PLAY_URL = #{PLAY_URL},
+			</if>
+			<if test="TAG != null">
+				TAG = #{TAG},
+			</if>
+			<if test="CLARITY != null">
+				CLARITY = #{CLARITY},
+			</if>
+			<if test="RESOLUTION_W != null">
+				RESOLUTION_W = #{RESOLUTION_W},
+			</if>
+			<if test="RESOLUTION_H != null">
+				RESOLUTION_H = #{RESOLUTION_H},
+			</if>
+			<if test="OVERALLBITRATEMODE != null">
+				OVERALLBITRATEMODE = #{OVERALLBITRATEMODE},
+			</if>
+			<if test="VIDEOTYPE != null">
+				VIDEOTYPE = #{VIDEOTYPE},
+			</if>
+			<if test="KBPS != null">
+				KBPS = #{KBPS},
+			</if>
+			<if test="AUDIOTYPE != null">
+				AUDIOTYPE = #{AUDIOTYPE},
+			</if>
+			<if test="AUDIOFORMAT != null">
+				AUDIOFORMAT = #{AUDIOFORMAT},
+			</if>
+			<if test="CAPTIONED != null">
+				CAPTIONED = #{CAPTIONED},
+			</if>
+			<if test="DIMENSIONS != null">
+				DIMENSIONS = #{DIMENSIONS},
+			</if>
+			<if test="FILE_TYPE != null">
+				FILE_TYPE = #{FILE_TYPE},
+			</if>
+			<if test="DURATION != null">
+				DURATION = #{DURATION},
+			</if>
+			<if test="FILE_SIZE != null">
+				FILE_SIZE = #{FILE_SIZE},
+			</if>
+			<if test="MD5 != null">
+				MD5 = #{MD5},
+			</if>
+			<if test="CREATE_TIME != null">
+				CREATE_TIME = #{CREATE_TIME},
+			</if>
+			<if test="CDN_ID != null">
+				CDN_ID = #{CDN_ID},
+			</if>
+			<if test="CDN_TIME != null">
+				CDN_TIME = #{CDN_TIME},
+			</if>
+			<if test="STATUS != null">
+				STATUS = #{STATUS},
+			</if>
+			<if test="ONLINE_TIME != null">
+				ONLINE_TIME = #{ONLINE_TIME},
+			</if>
+			<if test="UNLINE_TIME != null">
+				UNLINE_TIME = #{UNLINE_TIME},
+			</if>
+			<if test="PLATFORM_ID != null">
+				PLATFORM_ID = #{PLATFORM_ID},
+			</if>
+			MODIFY_TIME = now()
 		where
 			MOVIE_ID = #{MOVIE_ID}
 	</update>
@@ -197,6 +257,51 @@
 		where
 			ORIGINAL_ID = #{ORIGINAL_ID}
 	</select>
+	
+	<select id="getMoviesByProgramId" parameterType="java.lang.String" resultType="com.springmvc.walker.xml.entity.MovieEntity">
+		select
+			MOVIE_ID,
+			ORIGINAL_ID,
+			SERIES_ID,
+			PROGRAM_ID,
+			IMPORT_SOURCE,
+			NAME,
+			TYPE,
+			FILE_URL,
+			PLAY_URL,
+			TAG,
+			CLARITY,
+			RESOLUTION_W,
+			RESOLUTION_H,
+			OVERALLBITRATEMODE,
+			VIDEOTYPE,
+			KBPS,
+			AUDIOTYPE,
+			AUDIOFORMAT,
+			CAPTIONED,
+			DIMENSIONS,
+			FILE_TYPE,
+			DURATION,
+			FILE_SIZE,
+			MD5,
+			CREATE_TIME,
+			MODIFY_TIME,
+			CDN_ID,
+			CDN_TIME,
+			STATUS,
+			ONLINE_TIME,
+			UNLINE_TIME,
+			PLATFORM_ID
+		from
+			t_vod_movie
+		where
+			PROGRAM_ID = #{PROGRAM_ID}
+	</select>
+	
+	<delete id="deleteMovie" parameterType="java.lang.String">
+		delete from t_vod_movie
+		where MOVIE_ID = #{MOVIE_ID}
+	</delete>
 	
 	
 </mapper>

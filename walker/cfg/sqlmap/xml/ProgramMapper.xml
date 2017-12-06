@@ -59,29 +59,73 @@
 	<update id="updateProgram" parameterType="com.springmvc.walker.xml.entity.ProgramEntity">
 		update t_vod_program
 		set
-			ORIGINAL_ID = #{ORIGINAL_ID},
-			SERIES_ID = #{SERIES_ID},
-			IMPORT_SOURCE = #{IMPORT_SOURCE},
-			NAME = #{NAME},
-			SERIALNO = #{SERIALNO},
-			DURATION = #{DURATION},
-			AWARDS = #{AWARDS},
-			DESCRIPTION = #{DESCRIPTION},
-			KEYWORDS = #{KEYWORDS},
-			DIRECTOR = #{DIRECTOR},
-			ADAPTOR = #{ADAPTOR},
-			ACTOR = #{ACTOR},
-			UPDATE_TIME = #{UPDATE_TIME},
-			CREATE_TIME = #{CREATE_TIME},
-			MODIFY_TIME = now(),
-			CDN_ID = #{CDN_ID},
-			CDN_TIME = #{CDN_TIME},
-			STATUS = #{STATUS},
-			ONLINE_TIME = #{ONLINE_TIME},
-			UNLINE_TIME = #{UNLINE_TIME},
-			MOVIE_COUNT = #{MOVIE_COUNT},
-			ONLINE_MOVIE_COUNT = #{ONLINE_MOVIE_COUNT},
-			PLATFORM_ID = #{PLATFORM_ID}
+			<if test="ORIGINAL_ID != null">
+				ORIGINAL_ID = #{ORIGINAL_ID},
+			</if>
+			<if test="SERIES_ID != null">
+				SERIES_ID = #{SERIES_ID},
+			</if>
+			<if test="IMPORT_SOURCE != null">
+				IMPORT_SOURCE = #{IMPORT_SOURCE},
+			</if>
+			<if test="NAME != null">
+				NAME = #{NAME},
+			</if>
+			<if test="SERIALNO != null">
+				SERIALNO = #{SERIALNO},
+			</if>
+			<if test="DURATION != null">
+				DURATION = #{DURATION},
+			</if>
+			<if test="AWARDS != null">
+				AWARDS = #{AWARDS},
+			</if>
+			<if test="DESCRIPTION != null">
+				DESCRIPTION = #{DESCRIPTION},
+			</if>
+			<if test="KEYWORDS != null">
+				KEYWORDS = #{KEYWORDS},
+			</if>
+			<if test="DIRECTOR != null">
+				DIRECTOR = #{DIRECTOR},
+			</if>
+			<if test="ADAPTOR != null">
+				ADAPTOR = #{ADAPTOR},
+			</if>
+			<if test="ACTOR != null">
+				ACTOR = #{ACTOR},
+			</if>
+			<if test="UPDATE_TIME != null">
+				UPDATE_TIME = #{UPDATE_TIME},
+			</if>
+			<if test="CREATE_TIME != null">
+				CREATE_TIME = #{CREATE_TIME},
+			</if>
+			<if test="CDN_ID != null">
+				CDN_ID = #{CDN_ID},
+			</if>
+			<if test="CDN_TIME != null">
+				CDN_TIME = #{CDN_TIME},
+			</if>
+			<if test="STATUS != null">
+				STATUS = #{STATUS},
+			</if>
+			<if test="ONLINE_TIME != null">
+				ONLINE_TIME = #{ONLINE_TIME},
+			</if>
+			<if test="UNLINE_TIME != null">
+				UNLINE_TIME = #{UNLINE_TIME},
+			</if>
+			<if test="MOVIE_COUNT != null">
+				MOVIE_COUNT = #{MOVIE_COUNT},
+			</if>
+			<if test="ONLINE_MOVIE_COUNT != null">
+				ONLINE_MOVIE_COUNT = #{ONLINE_MOVIE_COUNT},
+			</if>
+			<if test="PLATFORM_ID != null">
+				PLATFORM_ID = #{PLATFORM_ID},
+			</if>
+			MODIFY_TIME = now()
 		where
 			PROGRAM_ID = #{PROGRAM_ID}
 	</update>
@@ -120,6 +164,8 @@
 			MOVIE_COUNT,
 			ONLINE_MOVIE_COUNT,
 			PLATFORM_ID
+		from
+			t_vod_program
 		where
 			PROGRAM_ID = #{PROGRAM_ID}
 	</select>
@@ -150,7 +196,107 @@
 			MOVIE_COUNT,
 			ONLINE_MOVIE_COUNT,
 			PLATFORM_ID
+		from
+			t_vod_program
 		where
 			ORIGINAL_ID = #{ORIGINAL_ID}
+	</select>
+	
+	<delete id="deleteProgram" parameterType="java.lang.String">
+		delete from t_vod_program
+		where PROGRAM_ID = #{PROGRAM_ID}
+	</delete>
+	
+	<!--根据合集ID查询分集总数 -->
+	<select id="getProgramCountBySeriesId" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT count(1)
+		FROM t_vod_program t 
+		WHERE t.SERIES_ID = #{SERIES_ID}
+	</select>
+	
+	<!--根据合集ID查询分集 -->
+	<select id="getProgramBySeriesId" parameterType="java.util.Map" resultType="com.springmvc.walker.xml.entity.ProgramEntity">
+		SELECT PROGRAM_ID, ORIGINAL_ID, SERIES_ID, NAME, SERIALNO, DURATION
+		    , AWARDS, DESCRIPTION, KEYWORDS, DIRECTOR, ADAPTOR, ACTOR, IMPORT_SOURCE, STATUS, CDN_ID 
+		    , date_format(UPDATE_TIME,'%Y-%m-%d') UPDATE_TIME
+		    , date_format(CREATE_TIME,'%Y-%m-%d %H:%i:%s') CREATE_TIME
+		    , date_format(MODIFY_TIME,'%Y-%m-%d %H:%i:%s') MODIFY_TIME
+		    , date_format(CDN_TIME,'%Y-%m-%d %H:%i:%s') CDN_TIME
+			, date_format(ONLINE_TIME, '%Y-%m-%d %H:%i:%s') ONLINE_TIME
+			, date_format(UNLINE_TIME, '%Y-%m-%d %H:%i:%s') UNLINE_TIME
+		    , IFNULL(MOVIE_COUNT, 0) MOVIE_COUNT
+		    , IFNULL(ONLINE_MOVIE_COUNT, 0) ONLINE_MOVIE_COUN
+		    ,PLATFORM_ID  
+		FROM t_vod_program t 
+		WHERE t.SERIES_ID = #{SERIES_ID}
+		ORDER BY t.SERIALNO + 0
+		LIMIT ${start},${limit}
+	</select>
+	
+	
+	<select id="getProgramCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT 
+			count(1)
+		FROM t_vod_program tp
+		LEFT JOIN t_vod_series ts ON tp.SERIES_ID = ts.SERIES_ID
+		WHERE	1=1
+		<if test="NAME != null and NAME != ''">
+            tp.NAME LIKE #{NAME}
+        </if>
+       	<if test="SERIES_NAME != null and SERIES_NAME != ''">
+            ts.NAME LIKE #{SERIES_NAME}
+        </if>
+        <if test="SERIES_ID != null and SERIES_ID != ''">
+            tp.SERIES_ID = #{SERIES_ID}
+        </if>
+        <if test="STATUS != null and STATUS != ''">
+            tp.STATUS = #{STATUS}
+        </if>
+        <if test="CDN_TIME != null and CDN_TIME != ''">
+            tp.CDN_TIME BETWEEN '${CDN_TIME} 00:00:00' AND '${CDN_TIME} 23:59:59'
+        </if>
+       	<if test="UNLINE_TIME != null and UNLINE_TIME != ''">
+            tp.CDN_TIME BETWEEN '$UNLINE_TIME$ 00:00:00' AND '$UNLINE_TIME$ 23:59:59'
+        </if>
+        ORDER BY tp.CREATE_TIME DESC
+		LIMIT ${start},${limit}
+	</select>
+	<!--页面展示分集信息 -->
+	<select id="getProgramPage" parameterType="java.util.Map" resultType="java.util.HashMap">
+		SELECT tp.PROGRAM_ID, tp.ORIGINAL_ID, tp.SERIES_ID, ts.ORIGINAL_ID ORIGINAL_SERIES_ID, tp.NAME, tp.SERIALNO, tp.DURATION
+		    , tp.AWARDS, tp.DESCRIPTION, tp.KEYWORDS, tp.DIRECTOR, tp.ADAPTOR, tp.ACTOR, tp.IMPORT_SOURCE
+		    , date_format(tp.UPDATE_TIME,'%Y-%m-%d') UPDATE_TIME
+		    , date_format(tp.CREATE_TIME,'%Y-%m-%d %H:%i:%s') CREATE_TIME
+		    , date_format(tp.MODIFY_TIME,'%Y-%m-%d %H:%i:%s') MODIFY_TIME
+		    , date_format(tp.CDN_TIME,'%Y-%m-%d %H:%i:%s') CDN_TIME
+			, date_format(tp.ONLINE_TIME, '%Y-%m-%d %H:%i:%s') ONLINE_TIME
+			, date_format(tp.UNLINE_TIME, '%Y-%m-%d %H:%i:%s') UNLINE_TIME
+		    , tp.CDN_ID, tp.STATUS
+		    , IFNULL(tp.MOVIE_COUNT, 0) MOVIE_COUNT
+		    , IFNULL(tp.ONLINE_MOVIE_COUNT, 0) ONLINE_MOVIE_COUNT
+		    , ts.NAME SERIES_NAME, ts.EPISODE_TYPE, ts.TYPE_NAME, ts.STATUS SERIES_STATUS
+		FROM t_vod_program tp
+		LEFT JOIN t_vod_series ts ON tp.SERIES_ID = ts.SERIES_ID
+		WHERE	1=1
+		<if test="NAME != null and NAME != ''">
+            tp.NAME LIKE #{NAME}
+        </if>
+       	<if test="SERIES_NAME != null and SERIES_NAME != ''">
+            ts.NAME LIKE #{SERIES_NAME}
+        </if>
+        <if test="SERIES_ID != null and SERIES_ID != ''">
+            tp.SERIES_ID = #{SERIES_ID}
+        </if>
+        <if test="STATUS != null and STATUS != ''">
+            tp.STATUS = #{STATUS}
+        </if>
+        <if test="CDN_TIME != null and CDN_TIME != ''">
+            tp.CDN_TIME BETWEEN '${CDN_TIME} 00:00:00' AND '${CDN_TIME} 23:59:59'
+        </if>
+       	<if test="UNLINE_TIME != null and UNLINE_TIME != ''">
+            tp.CDN_TIME BETWEEN '$UNLINE_TIME$ 00:00:00' AND '$UNLINE_TIME$ 23:59:59'
+        </if>
+        ORDER BY tp.CREATE_TIME DESC
+		LIMIT ${start},${limit}
 	</select>
 </mapper>

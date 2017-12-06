@@ -452,4 +452,15 @@
 	    	and ID!=#{ID}
 	    </if>
 	 </select>
+	 
+	 <select id="child" resultType="java.util.HashMap" parameterType="java.util.Map">
+        SELECT b.ID, b.CODE, b.NAME, b.VALUE,b.STATUS 
+		FROM t_bas_pubcode a 
+		INNER JOIN t_bas_pubcode b ON a.CODE = b.PARENT_ID
+		where a.CODE = #{code}
+		<if test="STATUS != null and STATUS != ''">
+			and b.STATUS = #{status}
+		</if>
+		ORDER BY b.ORDERINDEX
+    </select>
 </mapper>

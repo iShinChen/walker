@@ -21,46 +21,124 @@
 	<update id="updateSeries" parameterType="com.springmvc.walker.xml.entity.SeriesEntity">
 		update t_vod_series
 		set 
-			ORIGINAL_ID = #{ORIGINAL_ID},
-			CP_ID = #{CP_ID},
-			IMPORT_SOURCE = #{IMPORT_SOURCE},
-			EPISODE_TYPE = #{EPISODE_TYPE},
-			TYPE = #{TYPE},
-			TYPE_NAME = #{TYPE_NAME},
-			NAME = #{NAME},
-			FULLSPELL = #{FULLSPELL},
-			SIMPLESPELL = #{SIMPLESPELL},
-			ALIAS_NAME = #{ALIAS_NAME},
-			EN_NAME = #{EN_NAME},
-			LANGUAGE = #{LANGUAGE},
-			CAPTION = #{CAPTION},
-			RELEASE_TIME = #{RELEASE_TIME},
-			AREA = #{AREA},
-			PROGRAM_COUNT = #{PROGRAM_COUNT},
-			NEW_PROGRAM = #{NEW_PROGRAM},
-			DIRECTOR = #{DIRECTOR},
-			PRODUCER = #{PRODUCER},
-			ADAPTOR = #{ADAPTOR},
-			ACTOR = #{ACTOR},
-			AWARDS = #{AWARDS},
-			DESCRIPTION = #{DESCRIPTION},
-			KEYWORDS = #{KEYWORDS},
-			KIND = #{KIND},
-			TAGS = #{TAGS},
-			CLARITY = #{CLARITY},
-			COPYRIGHT = #{COPYRIGHT},
-			COPYRIGHT_DATE = #{COPYRIGHT_DATE},
-			CREATE_TIME = #{CREATE_TIME},
-			MODIFY_TIME = now(),
-			CDN_TIME = #{CDN_TIME},
-			CDN_ID = #{CDN_ID},
-			STATUS = #{STATUS},
-			ONLINE_TIME = #{ONLINE_TIME},
-			UNLINE_TIME = #{UNLINE_TIME},
-			REAL_PROGRAM_COUNT = #{REAL_PROGRAM_COUNT},
-			ONLINE_PROGRAM_COUNT = #{ONLINE_PROGRAM_COUNT},
-			IS_LACK_PROGRAM = #{IS_LACK_PROGRAM},
-			PLATFORM_ID = #{PLATFORM_ID}
+			<if test="ORIGINAL_ID != null">
+				ORIGINAL_ID = #{ORIGINAL_ID},
+			</if>
+			<if test="CP_ID != null">
+				CP_ID = #{CP_ID},
+			</if>
+			<if test="IMPORT_SOURCE != null">
+				IMPORT_SOURCE = #{IMPORT_SOURCE},
+			</if>
+			<if test="EPISODE_TYPE != null">
+				EPISODE_TYPE = #{EPISODE_TYPE},
+			</if>
+			<if test="TYPE != null">
+				TYPE = #{TYPE},
+			</if>
+			<if test="TYPE_NAME != null">
+				TYPE_NAME = #{TYPE_NAME},
+			</if>
+			<if test="NAME != null">
+				NAME = #{NAME},
+			</if>
+			<if test="FULLSPELL != null">
+				FULLSPELL = #{FULLSPELL},
+			</if>
+			<if test="SIMPLESPELL != null">
+				SIMPLESPELL = #{SIMPLESPELL},
+			</if>
+			<if test="ALIAS_NAME != null">
+				ALIAS_NAME = #{ALIAS_NAME},
+			</if>
+			<if test="EN_NAME != null">
+				EN_NAME = #{EN_NAME},
+			</if>
+			<if test="LANGUAGE != null">
+				LANGUAGE = #{LANGUAGE},
+			</if>
+			<if test="CAPTION != null">
+				CAPTION = #{CAPTION},
+			</if>
+			<if test="RELEASE_TIME != null">
+				RELEASE_TIME = #{RELEASE_TIME},
+			</if>
+			<if test="AREA != null">
+				AREA = #{AREA},
+			</if>
+			<if test="PROGRAM_COUNT != null">
+				PROGRAM_COUNT = #{PROGRAM_COUNT},
+			</if>
+			<if test="NEW_PROGRAM != null">
+				NEW_PROGRAM = #{NEW_PROGRAM},
+			</if>
+			<if test="DIRECTOR != null">
+				DIRECTOR = #{DIRECTOR},
+			</if>
+			<if test="PRODUCER != null">
+				PRODUCER = #{PRODUCER},
+			</if>
+			<if test="ADAPTOR != null">
+				ADAPTOR = #{ADAPTOR},
+			</if>
+			<if test="ACTOR != null">
+				ACTOR = #{ACTOR},
+			</if>
+			<if test="AWARDS != null">
+				AWARDS = #{AWARDS},
+			</if>
+			<if test="DESCRIPTION != null">
+				DESCRIPTION = #{DESCRIPTION},
+			</if>
+			<if test="KEYWORDS != null">
+				KEYWORDS = #{KEYWORDS},
+			</if>
+			<if test="KIND != null">
+				KIND = #{KIND},
+			</if>
+			<if test="TAGS != null">
+				TAGS = #{TAGS},
+			</if>
+			<if test="CLARITY != null">
+				CLARITY = #{CLARITY},
+			</if>
+			<if test="COPYRIGHT != null">
+				COPYRIGHT = #{COPYRIGHT},
+			</if>
+			<if test="COPYRIGHT_DATE != null">
+				COPYRIGHT_DATE = #{COPYRIGHT_DATE},
+			</if>
+			<if test="CREATE_TIME != null">
+				CREATE_TIME = #{CREATE_TIME},
+			</if>
+			<if test="CDN_TIME != null">
+				CDN_TIME = #{CDN_TIME},
+			</if>
+			<if test="CDN_ID != null">
+				CDN_ID = #{CDN_ID},
+			</if>
+			<if test="STATUS != null">
+				STATUS = #{STATUS},
+			</if>
+			<if test="ONLINE_TIME != null">
+				ONLINE_TIME = #{ONLINE_TIME},
+			</if>
+			<if test="UNLINE_TIME != null">
+				UNLINE_TIME = #{UNLINE_TIME},
+			</if>
+			<if test="REAL_PROGRAM_COUNT != null">
+				REAL_PROGRAM_COUNT = #{REAL_PROGRAM_COUNT},
+			</if>
+			<if test="ONLINE_PROGRAM_COUNT != null">
+				ONLINE_PROGRAM_COUNT = #{ONLINE_PROGRAM_COUNT},
+			</if>
+			<if test="IS_LACK_PROGRAM != null">
+				IS_LACK_PROGRAM = #{IS_LACK_PROGRAM},
+			</if>
+			<if test="PLATFORM_ID != null">
+				PLATFORM_ID = #{PLATFORM_ID},
+			</if>
+			MODIFY_TIME = now()
 		where
 			SERIES_ID = #{SERIES_ID}
 	</update>
@@ -177,5 +255,29 @@
        	</if>
 		ORDER BY s.CREATE_TIME DESC
 		LIMIT ${start},${limit}
+	</select>
+	
+	<parameterMap id="procCheckProgramParameters" type="java.util.HashMap">
+		<parameter property="PROGRAM_ID" jdbcType="VARCHAR" javaType="java.lang.String"
+			mode="IN" />
+	</parameterMap>
+	
+	<select id="proc_check_program" parameterMap="procCheckProgramParameters">
+		{call proc_check_program(?)}
+	</select>
+	
+	<select id="proc_init_media_check">
+		{call proc_init_media_check()}
+	</select>
+	
+	<parameterMap id="procCheckSeriesParameters" type="java.lang.String">
+		<parameter property="SERIES_ID" jdbcType="VARCHAR" javaType="java.lang.String"
+			mode="IN" />
+	</parameterMap>
+	
+	<select id="proc_check_series" statementType="CALLABLE" parameterMap="procCheckSeriesParameters">
+		{
+			call proc_check_series(?)
+		}
 	</select>
 </mapper>

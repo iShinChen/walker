@@ -1,0 +1,25 @@
+.x-ux-form-imageupload {
+	border: 1px solid #b5b8c8;
+}
+
+.x-ux-form-imageupload .x-form-file-wrap .x-form-file-btn {
+	left: 0;
+}
+
+.x-ux-form-imageupload .x-form-file-wrap .x-form-file {
+	left: -10;
+}
+
+.x-ux-form-imageupload .x-form-file-wrap .x-form-file-text {
+	left: 0;
+}
+
+.x-ux-form-imageupload .x-toolbar {
+	overflow: visible;
+	border-bottom: 0px;
+}
+
+.x-ux-form-imageupload .x-ux-form-imageupload-resloution {
+	padding-left: 15px;
+	color: blue;
+}

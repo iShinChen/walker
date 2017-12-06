@@ -136,4 +136,37 @@
 .btnPdf {
 	background-image: url(../images/button/document-pdf.png) !important;
 }
+/* 自动 */
+.btnIconAuto {
+	background-image: url(../images/button/auto.png) !important;
+}
+/* 检测 */
+.btnIconCheck {
+	background-image: url(../images/button/check.png) !important;
+}
+/* 媒资上线 */
+.btnIconOnLine {
+	background-image: url(../images/button/arrow_up.png) !important;
+}
 
+/* 媒资下线 */
+.btnIconOffLine {
+	background-image: url(../images/button/arrow_down.png) !important;
+}
+
+/* 刷新 */
+.btnIconRefresh {
+	background-image:url(../ext3.3.1/resources/images/default/grid/refresh.gif) !important;
+}
+/* 绑定合集 */
+.btnIconBind {
+	background-image: url(../images/button/binding.png) !important;
+}
+/* 拆分 */
+.btnIconSplit {
+	background-image: url(../images/button/scissors.png) !important;
+}
+/* 导出Excel按钮图片 */
+.btnIconExcel {
+	background-image: url(../images/button/excel.png) !important;
+}

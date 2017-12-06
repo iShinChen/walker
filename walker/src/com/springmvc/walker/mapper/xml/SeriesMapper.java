@@ -23,4 +23,10 @@ public interface SeriesMapper {
 	public boolean updateStatusById(Map<String, Object> paraMap);
 	
 	public SeriesEntity getSeriesByOriginalId(String ORIGINAL_ID);
+	
+	public void proc_check_series(String SERIES_ID);
+	
+	public void proc_check_program(String PROGRAM_ID);
+	
+	public void proc_init_media_check();
 }

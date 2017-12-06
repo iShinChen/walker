@@ -20,4 +20,5 @@ public interface SysConfigService {
 	Map<String, Object> getXmlBookById(String ID);
 	
 	List<Map<String, Object>> getXmlBookByParent(String PARENT_ID);
+
 }

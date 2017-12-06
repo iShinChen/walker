@@ -10,35 +10,35 @@
 		div.novod {
 			width: 16px;
 			height: 16px;
-			background: url("resources/images/novod.png") no-repeat;
+			background: url("../../resources/images/novod.png") no-repeat;
 			margin: 0px auto;
 		}
 
 		div.lackvod {
 			width: 16px;
 			height: 16px;
-			background: url("resources/images/lackvod.png") no-repeat;
+			background: url("../../resources/images/lackvod.png") no-repeat;
 			margin: 0px auto;
 		}
 
 		div.okvod {
 			width: 16px;
 			height: 16px;
-			background: url("resources/images/okvod.png") no-repeat;
+			background: url("../../resources/images/okvod.png") no-repeat;
 			margin: 0px auto;
 		}
 
 		div.lackpicture {
 			width: 16px;
 			height: 16px;
-			background: url("resources/images/lackpicture.png") no-repeat;
+			background: url("../../resources/images/lackpicture.png") no-repeat;
 			margin: 0px auto;
 		}
 
 		div.okpicture {
 			width: 16px;
 			height: 16px;
-			background: url("resources/images/okvod.png") no-repeat;
+			background: url("../../resources/images/okvod.png") no-repeat;
 			margin: 0px auto;
 		}
 	</style>

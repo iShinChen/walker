@@ -12,6 +12,8 @@ public interface PictureMapper {
 	
 	public boolean updateStatusById(Map<String, Object> paraMap);
 	
+	public boolean deletePicture(String PICTURE_ID);
+	
 	public PictureEntity getPictureById(String PICTURE_ID);
 	
 	public PictureEntity getPictureByOriginalId(String ORIGINAL_ID);

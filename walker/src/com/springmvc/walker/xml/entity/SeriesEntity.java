@@ -290,6 +290,5 @@ public class SeriesEntity {
 	public void setPLATFORM_ID(String pLATFORM_ID) {
 		PLATFORM_ID = pLATFORM_ID;
 	}
-	
 
 }

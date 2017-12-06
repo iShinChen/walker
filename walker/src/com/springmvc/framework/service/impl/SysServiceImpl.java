@@ -468,4 +468,13 @@ public class SysServiceImpl implements SysService{
 		return map;
 	}
 	
+	@Override
+	public List<Map<String, Object>> child(String code,String status) {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		Map<String, Object> paraMap = new HashMap<String, Object>();
+		paraMap.put("code", code);
+		paraMap.put("status", status);
+		list = sysMapper.child(paraMap);
+		return list;
+	}
 }

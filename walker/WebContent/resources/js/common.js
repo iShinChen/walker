@@ -75,10 +75,10 @@ com.walker.common.getPubCodeStore = function(parentCode, needBlank) {
 		needBlank = '1';
 	}
 	var store = new Ext.data.Store( {
-		url : 'pubcode_childForSelect.do',
+		url : '/walker/user/childForSelect',
 		reader : new Ext.data.JsonReader( {
 			fields : [ 
-			    "CODE", "NAME"
+			    "CODE", "VALUE"
 			],
 			root : 'rows'
 		}),
@@ -108,9 +108,9 @@ com.walker.common.renderer = {
 					var record = store.data.get(i);
 					if(record.get("CODE") === value) {
 						if(colors && colors[value]) {
-							return '<font color="' + colors[value] + '">' + record.get("NAME") + '</font>';
+							return '<font color="' + colors[value] + '">' + record.get("VALUE") + '</font>';
 						}
-						return record.get("NAME");
+						return record.get("VALUE");
 					}
 				}
 			}
@@ -126,7 +126,7 @@ com.walker.common.renderer = {
 								font.css("color", colors[value]);
 							}
 
-							font.html(record.get("NAME"));
+							font.html(record.get("VALUE"));
 						}
 					}
 					

@@ -91,7 +91,7 @@ com.walker.xml.mediaSeries.getQueryForm = function(){
 					fieldLabel : '内容分类',
 					name : 'TYPE',
 		            triggerAction: 'all',
-		            displayField : 'NAME', 
+		            displayField : 'VALUE', 
 		            valueField : 'CODE', 
 		            store: com.walker.xml.mediaSeries.mediaTypeStore,
 		            mode: 'local',
@@ -119,7 +119,7 @@ com.walker.xml.mediaSeries.getQueryForm = function(){
 					fieldLabel : '上线状态',
 					name : 'STATUS',
 		            triggerAction: 'all',
-		            displayField : 'NAME', 
+		            displayField : 'VALUE', 
 		            valueField : 'CODE', 
 		            store: com.walker.xml.mediaSeries.statusStore,
 		            mode: 'local',
@@ -301,7 +301,7 @@ com.walker.xml.mediaSeries.getGridPnl = function(){
 					metadata.css += " x-grid3-cell-icon";
 					var divId = Ext.id();
 					jQuery.ajax({
-						url : 'media_checkPictureBySeriesId.do',
+						url : '/walker/picture/checkPictureBySeriesId',
 						dataType: "json",
 						data : {seriesId : value},
 						success : function(data, result) {
@@ -382,7 +382,7 @@ com.walker.xml.mediaSeries.onLineSeries = function() {
 				if(btn!='yes'){return;}
 				
 				Ext.Ajax.request({
-					url : 'media_onlineSeries.do',
+					url : '/walker/series/onlineSeries',
 					success : function(response) {
 						var result = Ext.util.JSON.decode(response.responseText);
 						if(result.success) {
@@ -424,7 +424,7 @@ com.walker.xml.mediaSeries.autoOnLineSeries = function() {
 			if(btn!='yes'){return;}
 			
 			Ext.Ajax.request({
-				url : 'media_autoOnlineSeries.do',
+				url : '/walker/series/autoOnlineSeries',
 				success : function(response) {
 					var result = Ext.util.JSON.decode(response.responseText);
 					if(result.success) {
@@ -482,7 +482,7 @@ com.walker.xml.mediaSeries.offLineSeries = function() {
 				if(btn!='yes'){return;}
 				
 				Ext.Ajax.request({
-					url : 'media_offlineSeries.do',
+					url : '/walker/series/offlineSeries',
 					success : function(response) {
 						var result = Ext.util.JSON.decode(response.responseText);
 						if(result.success) {
@@ -520,11 +520,11 @@ com.walker.xml.mediaSeries.doFail = function(response) {
 
 com.walker.xml.mediaSeries.modifySeries = function(){
 	
-	var rec = cn.surfvideo.common.getSelectRecord(com.walker.xml.mediaSeries.seriesGridPnl,true);
+	var rec = com.walker.common.getSelectRecord(com.walker.xml.mediaSeries.seriesGridPnl,true);
 	if(rec){
 		var winTitle = ('编辑合集【' + rec.get('NAME') + '】');
-		CYCMS.popWindow({
-			url:"jsp/cms/media/modifyMediaSeries.jsp",
+		WALKER.popWindow({
+			url:"jsp/xml/modifyMediaSeries.jsp",
 			openWindow: top,
 			win:{
 				initialConfig:{
@@ -543,14 +543,14 @@ com.walker.xml.mediaSeries.modifySeries = function(){
 
 com.walker.xml.mediaSeries.checkProgram = function(){
 	
-	var rec = cn.surfvideo.common.getSelectRecord(com.walker.xml.mediaSeries.seriesGridPnl,true);
+	var rec = com.walker.common.getSelectRecord(com.walker.xml.mediaSeries.seriesGridPnl,true);
 	if(rec){
 		var seriesId = rec.get("SERIES_ID");
 		
 		var myLoadMask = new Ext.LoadMask(Ext.getBody(), {msg:"数据处理中..."});
 		myLoadMask.show();
 		Ext.Ajax.request({
-			url : 'media_checkSeries.do',
+			url : '/walker/series/checkSeries',
 			success : function(response) {
 				myLoadMask.hide();
 				Ext.Msg.alert("提示", "缺集检查完成!", function() {
@@ -578,7 +578,7 @@ var loadMask = new Ext.LoadMask(Ext.getBody(), {msg:"数据处理中..."});
 
 //删除合集
 com.walker.xml.mediaSeries.deleteSeries = function(){
-	var rec = cn.surfvideo.common.getSelectRecord(com.walker.xml.mediaSeries.seriesGridPnl,true);
+	var rec = com.walker.common.getSelectRecord(com.walker.xml.mediaSeries.seriesGridPnl,true);
 	if(rec){
 		var status = rec.get("STATUS");
 		if(status === '01') {
@@ -593,7 +593,7 @@ com.walker.xml.mediaSeries.deleteSeries = function(){
 			var myLoadMask = new Ext.LoadMask(Ext.getBody(), {msg:"数据处理中..."});
 			myLoadMask.show();
 			Ext.Ajax.request({
-				url : 'media_deleteSeries.do',
+				url : '/walker/series/deleteSeries',
 				success : function(response) {
 					myLoadMask.hide();
 					Ext.Msg.alert("提示", "删除成功!", function() {

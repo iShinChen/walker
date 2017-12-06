@@ -91,4 +91,6 @@ public interface SysMapper {
 	
 	public int checkCode(Map<String, Object> paraMap);
 	
+	public List<Map<String, Object>> child(Map<String, Object> paraMap);
+	
 }

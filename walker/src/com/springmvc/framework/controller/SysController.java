@@ -26,6 +26,7 @@ import com.springmvc.framework.service.SysService;
 import com.springmvc.framework.util.MapJsonUtil;
 import com.springmvc.framework.util.ParamUtil;
 import com.springmvc.framework.util.PrintWriterUtil;
+import com.springmvc.framework.util.StringUtils;
 
 @Controller
 @RequestMapping("/user") 
@@ -774,6 +775,46 @@ public class SysController {
 			session.setAttribute("userMap", null);
 			result.setSuccess(true);
 		} catch (Exception e) {
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("用户登出时发生异常。");
+		}
+		PrintWriterUtil.write(response, result);
+	}
+	
+	/**
+	 * 用户登出
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "/childForSelect")
+	public void childForSelect(HttpServletRequest request,HttpServletResponse response) {
+		PageResultBean result = new PageResultBean();
+		try {
+			String parentCode = request.getParameter("parentCode");
+			List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
+
+			if (StringUtils.isNotEmpty(parentCode)) {
+				String needBlank = request.getParameter("needBlank");
+				if ("1".equals(needBlank)) {
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("CODE", null);
+					map.put("VALUE", "请选择...");
+					mapList.add(map);
+				}
+
+				List<Map<String, Object>> list = sysService.child(parentCode, "0");
+				if (list != null && list.size() > 0) {
+					for (Map<String, Object> map : list) {
+						Map<String, Object> m = new HashMap<String, Object>();
+						m.put("CODE", map.get("CODE"));
+						m.put("VALUE", map.get("VALUE"));
+						mapList.add(m);
+					}
+				}
+			}
+			result.setPageResultBean(mapList.size(), mapList.size(), mapList, true);
+		}catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);
 			result.setErr_msg("用户登出时发生异常。");
