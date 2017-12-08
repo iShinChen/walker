@@ -1158,6 +1158,7 @@ com.walker.xml.modifyMediaSeries.createProgramPnl = function() {
 				Ext.getCmp("programDel").setDisabled(false);
 				
 				var result = Ext.util.JSON.decode(response.responseText);
+				result = result.data;
 				com.walker.xml.modifyMediaSeries.programId = record.get('PROGRAM_ID');
 				com.walker.xml.modifyMediaSeries.editProgramForm.status = result.STATUS;
 				
@@ -1420,8 +1421,8 @@ com.walker.xml.modifyMediaSeries.deleteProgram = function(){
 				failure : function(response) {
 					myLoadMask.hide();
 					var result = Ext.util.JSON.decode(response.responseText);
-					if(result.errorMsg){
-						Ext.Msg.alert("提示", result.errorMsg);
+					if(result.err_msg){
+						Ext.Msg.alert("提示", result.err_msg);
 					}else{
 						Ext.Msg.alert("提示","删除失败!");
 					}

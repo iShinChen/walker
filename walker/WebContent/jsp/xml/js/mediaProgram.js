@@ -63,7 +63,8 @@ com.walker.xml.mediaProgram.getQueryForm = function(){
 			text : '下载',
 			iconCls : 'btnIconDownload',
 			handler : function() {
-				com.walker.xml.mediaProgram.downloadMovie();
+				//com.walker.xml.mediaProgram.downloadMovie();
+				com.walker.xml.mediaProgram.downloadXml();
 			}
 		}, '-', {
 			text : '导出记录',
@@ -713,7 +714,7 @@ com.walker.xml.mediaProgram.onLineProgram = function() {
 						var result = Ext.util.JSON.decode(response.responseText);
 						if(result.success){
 							
-							Ext.Msg.alert("提示","成功上线" + result.successCount + "个分集!", function() {
+							Ext.Msg.alert("提示","成功上线" + result.data.successCount + "个分集!", function() {
 								com.walker.xml.mediaProgram.programGridPnl.store.reload();
 							});
 						}else{
@@ -756,7 +757,7 @@ com.walker.xml.mediaProgram.offLineProgram = function() {
 						var result = Ext.util.JSON.decode(response.responseText);
 						if(result.success){
 							
-							Ext.Msg.alert("提示","成功下线" + result.successCount + "个分集!", function() {
+							Ext.Msg.alert("提示","成功下线" + result.data.successCount + "个分集!", function() {
 								com.walker.xml.mediaProgram.programGridPnl.store.reload();
 							});
 						}else{
@@ -825,6 +826,28 @@ com.walker.xml.mediaProgram.downloadMovie = function() {
 	}
 };
 
+com.walker.xml.mediaProgram.downloadXml = function() {
+	var sumBtn = function(btn){
+		if(btn!='yes'){return;}
+		
+		Ext.Ajax.request({
+			url : '/walker/program/downloadXml',
+			success : function(response) {
+				var result = Ext.util.JSON.decode(response.responseText);
+				if(result.success){
+					Ext.Msg.alert("提示","操作成功!");
+					com.walker.xml.mediaProgram.programGridPnl.store.reload();
+				}else{
+					Ext.Msg.alert("提示","操作失败!");
+				}
+			},
+			failure : com.walker.xml.mediaProgram.doFail
+			
+		});
+	};
+	Ext.Msg.confirm('提示',"确定解析工单吗?",sumBtn);
+};
+
 com.walker.xml.mediaProgram.exportRecords = function() {
 	var STATUS = com.walker.xml.mediaProgram.queryFormPnl.find("name","STATUS")[0].getValue();
 	var CDN_TIME = com.walker.xml.mediaProgram.queryFormPnl.find("name","CDN_TIME")[0].getRawValue();
@@ -883,8 +906,8 @@ com.walker.xml.mediaProgram.deleteProgram = function(){
 				failure : function(response) {
 					myLoadMask.hide();
 					var result = Ext.util.JSON.decode(response.responseText);
-					if(result.errorMsg){
-						Ext.Msg.alert("提示", result.errorMsg);
+					if(result.err_msg){
+						Ext.Msg.alert("提示", result.err_msg);
 					}else{
 						Ext.Msg.alert("提示","删除失败!");
 					}
@@ -914,6 +937,7 @@ com.walker.xml.mediaProgram.splitProgram = function(){
 					myLoadMask.hide();
 					var result = Ext.util.JSON.decode(response.responseText);
 					if(result.success){
+						result = result.data;
 						if (result.resultCode == '0') {
 							Ext.Msg.alert("提示","拆条成功!", function() {
 								com.walker.xml.mediaProgram.programGridPnl.store.reload();
@@ -938,8 +962,8 @@ com.walker.xml.mediaProgram.splitProgram = function(){
 				failure : function(response) {
 					myLoadMask.hide();
 					var result = Ext.util.JSON.decode(response.responseText);
-					if(result.errorMsg){
-						Ext.Msg.alert("提示", result.errorMsg);
+					if(result.err_msg){
+						Ext.Msg.alert("提示", result.err_msg);
 					}else{
 						Ext.Msg.alert("提示","操作失败!");
 					}
@@ -1208,6 +1232,7 @@ com.walker.xml.mediaProgram.modifyProgram = function(){
 						success : function(response) {
 							editForm.getEl().unmask();
 							var result = Ext.util.JSON.decode(response.responseText);
+							result = result.data;
 							STATUS = result.STATUS;
 							for ( var o in result) {
 								var field = editForm.getForm().findField(o);
@@ -1221,7 +1246,7 @@ com.walker.xml.mediaProgram.modifyProgram = function(){
 						failure : function(response) {
 							editForm.getEl().unmask();
 							var result = Ext.util.JSON.decode(response.responseText);
-							Ext.Msg.alert("提示","查询发生异常!\n" + result.errorMsg);
+							Ext.Msg.alert("提示","查询发生异常!\n" + result.err_msg);
 						},
 						params : {
 							programId : rec.get("PROGRAM_ID")

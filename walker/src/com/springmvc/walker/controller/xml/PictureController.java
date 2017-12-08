@@ -47,7 +47,7 @@ public class PictureController {
 				// 海报不存在
 				picture.setPICTURE_ID(UUIDUtil.getUUID());
 				picture.setSTATUS("00");
-				save = pictureService.insertPicture(picture);
+				save = pictureService.savePicture(picture);
 			} else {
 				save = pictureService.updatePicture(picture);
 			}

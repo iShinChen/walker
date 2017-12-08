@@ -371,8 +371,8 @@ com.walker.xml.xmlField.remove = function() {
 							Ext.Msg.alert("提示", "删除成功!");
 							com.walker.xml.xmlField.query();
 						} else {
-							if(result.errorMsg) {
-								Ext.Msg.alert("提示", result.errorMsg);
+							if(result.err_msg) {
+								Ext.Msg.alert("提示", result.err_msg);
 							}
 							else {
 								Ext.Msg.alert("提示", "删除失败!");
@@ -382,7 +382,7 @@ com.walker.xml.xmlField.remove = function() {
 					}
 				},
 				failure : function(response) {
-					Ext.Msg.alert("提示", result.errorMsg);
+					Ext.Msg.alert("提示", result.err_msg);
 				}
 			});
 		};
@@ -553,7 +553,7 @@ com.walker.xml.xmlField.getContentGridPnl = function() {
 		width : 100,
 		align : 'left'
 	}, {
-		header : "工单字段",
+		header : "目标字段",
 		dataIndex : "VALUE",
 		sortable : true,
 		width : 100,
@@ -752,7 +752,7 @@ com.walker.xml.xmlField.contenEditWinForm = function() {
 			regexText : '只能输入数字、字母、下划线且长度不超过50'
 		}, {
 			xtype : "textfield",
-			fieldLabel : "工单字段",
+			fieldLabel : "目标字段",
 			anchor : '85%',
 			name : 'VALUE',
 			allowBlank : true,
@@ -842,13 +842,13 @@ com.walker.xml.xmlField.deleteContent = function() {
 							Ext.Msg.alert("提示", "删除成功!");
 							com.walker.xml.xmlField.queryContent();
 						} else {
-							Ext.Msg.alert("提示", result.errorMsg);
+							Ext.Msg.alert("提示", result.err_msg);
 						}
 					} catch (e) {
 					}
 				},
 				failure : function(response) {
-					Ext.Msg.alert("提示", result.errorMsg);
+					Ext.Msg.alert("提示", result.err_msg);
 				}
 			});
 		};

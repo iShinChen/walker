@@ -17,7 +17,9 @@ import com.springmvc.framework.entity.PageResultBean;
 import com.springmvc.framework.entity.ResultBean;
 import com.springmvc.framework.util.ParamUtil;
 import com.springmvc.framework.util.PrintWriterUtil;
+import com.springmvc.walker.service.xml.CollectService;
 import com.springmvc.walker.service.xml.ProgramService;
+import com.springmvc.walker.thread.xml.ParseXmlThread;
 import com.springmvc.walker.xml.entity.ProgramEntity;
 
 @Controller
@@ -28,7 +30,8 @@ public class ProgramController {
 	
 	@Autowired
 	private ProgramService programService;
-	
+	@Autowired
+	private CollectService collectService;
 	/**
 	 * 查询媒资分集列表
 	 * @param request
@@ -196,6 +199,29 @@ public class ProgramController {
 			logger.error("程序异常", e);
 			result.setSuccess(false);
 			result.setErr_msg("分集删除发生异常。");
+		}
+		PrintWriterUtil.write(response, result);
+	}
+	
+	/**
+	 * 工单解析
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "/downloadXml")
+	public void downloadXml(HttpServletRequest request,HttpServletResponse response) {
+		ResultBean result = new ResultBean();
+		try {
+			String[] fileUrl ={"D://工作区/files/series.xml","D://工作区/files/program.xml","D://工作区/files/movie.xml"};
+			for(String url :fileUrl){
+				ParseXmlThread t = new ParseXmlThread(collectService,url);
+				t.start();
+			}
+			result.setSuccess(true);
+		} catch (Exception e) {
+			logger.error("程序异常", e);
+			result.setSuccess(false);
+			result.setErr_msg("工单解析发生异常。");
 		}
 		PrintWriterUtil.write(response, result);
 	}

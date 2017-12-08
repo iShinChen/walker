@@ -21,8 +21,14 @@ public class PictureServiceImpl implements PictureService{
 	private PictureMapper pictureMapper;
 	
 	@Override
-	public boolean insertPicture(PictureEntity picture) {
-		return pictureMapper.insertPicture(picture);
+	public boolean savePicture(PictureEntity picture) {
+		PictureEntity pictureEntity = pictureMapper.getPictureByOriginalId(picture.getORIGINAL_ID());
+		if(null != pictureEntity){
+			picture.setPICTURE_ID(pictureEntity.getPICTURE_ID());
+			return pictureMapper.updatePicture(picture);
+		}else{
+			return pictureMapper.insertPicture(picture);
+		}
 	}
 
 	@Override

@@ -386,6 +386,7 @@ com.walker.xml.mediaSeries.onLineSeries = function() {
 					success : function(response) {
 						var result = Ext.util.JSON.decode(response.responseText);
 						if(result.success) {
+							result = result.data;
 							Ext.Msg.alert("提示","成功上线" + result.successCount + "个合集!", function() {
 								com.walker.xml.mediaSeries.seriesGridPnl.store.reload();
 							});
@@ -447,8 +448,8 @@ com.walker.xml.mediaSeries.autoOnLineSeries = function() {
 							});
 						});
 					} else {
-						if(result.errorMsg) {
-							Ext.Msg.alert("失败", "智能上线失败,<font color='red'>原因:" + result.errorMsg + "</front>");
+						if(result.err_msg) {
+							Ext.Msg.alert("失败", "智能上线失败,<font color='red'>原因:" + result.err_msg + "</front>");
 						}
 						else {
 							Ext.Msg.alert("提示","操作失败!");
@@ -486,12 +487,13 @@ com.walker.xml.mediaSeries.offLineSeries = function() {
 					success : function(response) {
 						var result = Ext.util.JSON.decode(response.responseText);
 						if(result.success) {
+							result = result.data;
 							Ext.Msg.alert("提示","成功下线" + result.successCount + "个合集!", function() {
 								com.walker.xml.mediaSeries.seriesGridPnl.store.reload();
 							});
 						} else {
-							if(result.errorMsg) {
-								Ext.Msg.alert("提示", result.errorMsg);
+							if(result.err_msg) {
+								Ext.Msg.alert("提示", result.err_msg);
 							}
 							else {
 								Ext.Msg.alert("提示","操作失败!");
@@ -560,8 +562,8 @@ com.walker.xml.mediaSeries.checkProgram = function(){
 			failure : function(response) {
 				myLoadMask.hide();
 				var result = Ext.util.JSON.decode(response.responseText);
-				if(result.errorMsg){
-					Ext.Msg.alert("提示", result.errorMsg);
+				if(result.err_msg){
+					Ext.Msg.alert("提示", result.err_msg);
 				}else{
 					Ext.Msg.alert("提示", "缺集检查失败!");
 				}
@@ -603,8 +605,8 @@ com.walker.xml.mediaSeries.deleteSeries = function(){
 				failure : function(response) {
 					myLoadMask.hide();
 					var result = Ext.util.JSON.decode(response.responseText);
-					if(result.errorMsg){
-						Ext.Msg.alert("提示", result.errorMsg);
+					if(result.err_msg){
+						Ext.Msg.alert("提示", result.err_msg);
 					}else{
 						Ext.Msg.alert("提示", "删除失败!");
 					}

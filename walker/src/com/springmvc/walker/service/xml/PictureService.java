@@ -4,7 +4,7 @@ import com.springmvc.walker.xml.entity.PictureEntity;
 
 public interface PictureService {
 
-	public boolean insertPicture(PictureEntity picture);
+	public boolean savePicture(PictureEntity picture);
 	
 	public boolean updatePicture(PictureEntity picture);
 	

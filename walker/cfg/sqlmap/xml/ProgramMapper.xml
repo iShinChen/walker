@@ -28,7 +28,7 @@
 			MOVIE_COUNT,
 			ONLINE_MOVIE_COUNT,
 			PLATFORM_ID
-		)value(
+		)values(
 			#{PROGRAM_ID},
 			#{ORIGINAL_ID},
 			#{SERIES_ID},

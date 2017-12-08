@@ -53,7 +53,7 @@ public class ProgramServiceImpl implements ProgramService{
 			return programMapper.updateProgram(program);
 		}else{
 			logger.info("不存在对应Program数据，插入更新操作："+program.getPROGRAM_ID());
-			return programMapper.updateProgram(program);
+			return programMapper.insertProgram(program);
 		}
 	}
 
