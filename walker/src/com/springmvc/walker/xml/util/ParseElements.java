@@ -19,6 +19,7 @@ public class ParseElements {
 	
 	/**
 	 * 反射合集对象
+	 * @param series
 	 * @param node
 	 * @return
 	 */
@@ -47,6 +48,7 @@ public class ParseElements {
 	
 	/**
 	 * 反射分集对象
+	 * @param program
 	 * @param node
 	 * @return
 	 */
@@ -75,6 +77,7 @@ public class ParseElements {
 	
 	/**
 	 * 反射片源对象
+	 * @param movie
 	 * @param node
 	 * @return
 	 */
@@ -103,6 +106,7 @@ public class ParseElements {
 	
 	/**
 	 * 反射图片对象
+	 * @param picture
 	 * @param node
 	 * @return
 	 */

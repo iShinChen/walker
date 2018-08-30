@@ -1,6 +1,5 @@
 package com.springmvc.walker.controller.xml;
 
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.alibaba.fastjson.JSONObject;
 import com.springmvc.framework.entity.ResultBean;
 import com.springmvc.framework.util.ParamUtil;
 import com.springmvc.framework.util.PrintWriterUtil;

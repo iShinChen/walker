@@ -474,6 +474,13 @@ public class MapJsonUtil {
 		return sbf.toString();		
 	}
 	
+	/**
+	 * map转化为bean
+	 * @param map
+	 * @param beanClass
+	 * @return
+	 * @throws Exception
+	 */
 	public static Object mapToObject(Map<String, Object> map, Class<?> beanClass) throws Exception {    
         if (map == null)  
             return null;

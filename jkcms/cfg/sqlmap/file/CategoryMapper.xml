@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.walker.mapper.file.CategoryMapper" >
+	<!-- 查询栏目 -->
+	<select id="getCategory" parameterType="java.util.Map" resultType="java.util.HashMap">
+		SELECT t.CATEGORY_ID, t.NAME, t.PARENTID, t.ORDERINDEX, t.STATUS
+		    , t.DESCRIPTION, t.IMG_URL, t.ICON_URL, t.TYPE
+		    , IFNULL(t.IMG_RESLOUTION, '') IMG_RESLOUTION,t.CDN_ID
+		FROM t_vod_category t
+		<if test="STATUS != null and STATUS != ''">
+			WHERE t.STATUS = #{STATUS}
+		</if>
+		ORDER BY PARENTID,  ORDERINDEX
+	</select>
+	
+	<!-- 更新栏目 -->
+	<update id="updateGategoryById" parameterType="java.util.Map">
+		UPDATE t_vod_category
+			SET
+			<if test="NAME != null and NAME != ''">
+                NAME = #{NAME},
+			</if>
+			<if test="PARENTID != null and PARENTID != ''">
+                PARENTID = #{PARENTID},
+			</if>
+			<if test="TYPE != null and TYPE != ''">
+                TYPE = #{TYPE},
+			</if>
+			<if test="DESCRIPTION != null and DESCRIPTION != ''">
+                DESCRIPTION = #{DESCRIPTION},
+			</if>
+			<if test="STATUS != null and STATUS != ''">
+                STATUS = #{STATUS},
+			</if>
+			<if test="IMG_URL != null and IMG_URL != ''">
+                IMG_URL = #{IMG_URL},
+			</if>
+			<if test="IMG_RESLOUTION != null and IMG_RESLOUTION != ''">
+                IMG_RESLOUTION = #{IMG_RESLOUTION},
+			</if>
+			CATEGORY_ID = #{CATEGORY_ID}
+        WHERE CATEGORY_ID = #{CATEGORY_ID}
+	</update>
+	
+	<!-- 新增栏目 -->
+	<insert id="insertCategory" parameterType="java.util.Map">
+		INSERT INTO t_vod_category(CATEGORY_ID,NAME,PARENTID,DESCRIPTION,STATUS,TYPE,ORDERINDEX)
+		VALUES (#{CATEGORY_ID},#{NAME}, #{PARENTID},#{DESCRIPTION}, #{STATUS},#{TYPE},
+				(SELECT IFNULL(max(t.ORDERINDEX)+1,1) FROM t_vod_category t WHERE t.PARENTID = #{PARENTID}))
+	</insert>
+	
+	<!-- 删除栏目 -->
+	<delete id="deleteGategoryById" parameterType="java.lang.String">
+		DELETE FROM t_vod_category WHERE CATEGORY_ID =  #{CATEGORY_ID}
+	</delete>
+	
+	<!-- 删除栏目关系 -->
+	<delete id="deleteGategoryRef" parameterType="java.lang.String">
+		DELETE FROM t_vod_category WHERE PARENTID  =  #{CATEGORY_ID}
+	</delete>
+	
+	<!--移动到目标上面，同级移动 -->
+	<update id="moveToAbove" parameterType="java.util.Map">
+		<![CDATA[
+		UPDATE t_vod_category a, (
+		    SELECT ORDERINDEX TARGET_ORDER
+		    FROM t_vod_category
+		    WHERE CATEGORY_ID = #{TARGET_CATEGORY_ID}
+		) b, (
+		    SELECT CATEGORY_ID, ORDERINDEX SOURCE_ORDER
+		    FROM t_vod_category
+		    WHERE CATEGORY_ID = #{SOURCE_CATEGORY_ID}
+		) c
+		SET a.ORDERINDEX = (
+		    CASE 
+		        WHEN b.TARGET_ORDER > c.SOURCE_ORDER THEN (
+		            CASE 
+		                WHEN a.CATEGORY_ID = c.CATEGORY_ID THEN b.TARGET_ORDER - 1
+		                WHEN a.ORDERINDEX > c.SOURCE_ORDER AND a.ORDERINDEX < b.TARGET_ORDER THEN a.ORDERINDEX - 1
+		                ELSE a.ORDERINDEX 
+		            END
+		        )
+		        ELSE 
+		            CASE 
+		                WHEN a.CATEGORY_ID = c.CATEGORY_ID THEN b.TARGET_ORDER
+		                WHEN a.ORDERINDEX >= b.TARGET_ORDER AND a.ORDERINDEX < c.SOURCE_ORDER THEN a.ORDERINDEX + 1
+		                ELSE a.ORDERINDEX 
+		            END
+		    END
+		)
+		WHERE a.PARENTID = #{PARENTID}
+		]]> 
+	</update>
+	
+	<!--移动到目标下面，同级移动 -->
+	<update id="moveToBelow" parameterType="java.util.Map">
+		<![CDATA[
+		UPDATE t_vod_category a, (
+		    SELECT ORDERINDEX TARGET_ORDER
+		    FROM t_vod_category
+		    WHERE CATEGORY_ID = #{TARGET_CATEGORY_ID}
+		) b, (
+		    SELECT CATEGORY_ID, ORDERINDEX SOURCE_ORDER
+		    FROM t_vod_category
+		    WHERE CATEGORY_ID = #{SOURCE_CATEGORY_ID}
+		) c
+		SET a.ORDERINDEX = (
+		    CASE 
+		        WHEN b.TARGET_ORDER > c.SOURCE_ORDER THEN (
+		            CASE 
+		                WHEN a.CATEGORY_ID = c.CATEGORY_ID THEN b.TARGET_ORDER
+		                WHEN a.ORDERINDEX > c.SOURCE_ORDER AND a.ORDERINDEX <= b.TARGET_ORDER THEN a.ORDERINDEX - 1
+		                ELSE a.ORDERINDEX 
+		            END
+		        )
+		        ELSE 
+		            CASE 
+		                WHEN a.CATEGORY_ID = c.CATEGORY_ID THEN b.TARGET_ORDER + 1
+		                WHEN a.ORDERINDEX > b.TARGET_ORDER AND a.ORDERINDEX < c.SOURCE_ORDER THEN a.ORDERINDEX + 1
+		                ELSE a.ORDERINDEX 
+		            END
+		    END
+		)
+		WHERE a.PARENTID = #{PARENTID}
+		]]> 
+	</update>
+	
+	<!--移动到目标上面，不同级移动 -->
+	<update id="moveToOtherAbove" parameterType="java.util.Map">
+		<![CDATA[
+		UPDATE t_vod_category a, (
+		    SELECT ORDERINDEX, PARENTID
+		    FROM t_vod_category
+		    WHERE CATEGORY_ID = #{TARGET_CATEGORY_ID}
+		) t
+		SET a.PARENTID = t.PARENTID, 
+		    a.ORDERINDEX = (
+		        CASE
+		            WHEN a.CATEGORY_ID = #{SOURCE_CATEGORY_ID} THEN t.ORDERINDEX
+		            ELSE a.ORDERINDEX + 1
+		        END
+		    )
+		WHERE a.CATEGORY_ID = #{SOURCE_CATEGORY_ID}
+		    OR (a.PARENTID = t.PARENTID AND a.ORDERINDEX >= t.ORDERINDEX )
+		]]> 
+	</update>
+	
+	<!--移动到目标下面，不同级移动 -->
+	<update id="moveToOtherBelow" parameterType="java.util.Map">
+		<![CDATA[
+		UPDATE t_vod_category a, (
+		    SELECT ORDERINDEX, PARENTID
+		    FROM t_vod_category
+		    WHERE CATEGORY_ID = #{TARGET_CATEGORY_ID}
+		) t
+		SET a.PARENTID = t.PARENTID, 
+		    a.ORDERINDEX = (
+		        CASE
+		            WHEN a.CATEGORY_ID = #{SOURCE_CATEGORY_ID} THEN t.ORDERINDEX + 1
+		            ELSE a.ORDERINDEX + 1
+		        END
+		    )
+		WHERE a.CATEGORY_ID = #{SOURCE_CATEGORY_ID} 
+		    OR (a.PARENTID = t.PARENTID AND a.ORDERINDEX > t.ORDERINDEX )
+		]]> 
+	</update>
+	
+	<!--移动到其他父级节点 -->
+	<update id="moveToOtherParent" parameterType="java.util.Map">
+		<![CDATA[
+		UPDATE t_vod_category a, (
+		    SELECT max(ORDERINDEX) + 1 ORDERINDEX
+		    FROM t_vod_category
+		    WHERE PARENTID = #{TARGET_PARENTID}
+		) t
+		SET a.PARENTID = #{TARGET_PARENTID}, 
+		    a.ORDERINDEX = t.ORDERINDEX
+		WHERE a.CATEGORY_ID = #{SOURCE_CATEGORY_ID}
+		]]> 
+	</update>
+	
+<!-- 	<procedure id="proc_refresh_category_levelcode">
+		{call proc_refresh_category_levelcode()}
+	</procedure> -->
+	
+	<select id="getCategoryByCategoryId" parameterType="java.lang.String" resultType="java.util.HashMap" >
+		SELECT t.CATEGORY_ID, t.NAME, t.PARENTID, t.ORDERINDEX, t.STATUS
+		    , t.DESCRIPTION, t.IMG_URL, t.ICON_URL, t.TYPE
+		    , IFNULL(t.IMG_RESLOUTION, '') IMG_RESLOUTION,t.CDN_ID
+		FROM t_vod_category t
+		where t.CATEGORY_ID = #{categoryId}
+	</select>
+	
+	<select id="getCategoryByParentId" parameterType="java.lang.String" resultType="java.util.HashMap" >
+		SELECT 
+			t.NAME name, 
+			t.TYPE level, 
+			t.CATEGORY_ID menuId, 
+			t.DESCRIPTION url
+		FROM t_vod_category t
+		where t.PARENTID = #{parentId}
+		ORDER BY t.ORDERINDEX
+	</select>
+</mapper>

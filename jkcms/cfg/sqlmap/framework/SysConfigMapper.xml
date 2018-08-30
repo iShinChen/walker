@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.framework.mapper.SysConfigMapper" >
+
+	<resultMap id="tSysConfigResult" type="com.springmvc.framework.entity.TSysConfig">
+        <result column="ID" property="id" />
+        <result column="CODE" property="code" />
+        <result column="VALUE" property="value" />
+     </resultMap>
+    
+    <select id="getSysConfigList" resultMap="tSysConfigResult">
+        select ID,CODE,VALUE from t_sys_config
+    </select>
+
+	<select id="getSysBookType" resultType="java.util.HashMap" >
+        SELECT distinct PARENT_ID FROM t_bas_pubcode WHERE STATUS = '0'
+    </select>
+    
+    <select id="getSysBookByParent" parameterType="java.lang.String" resultType="java.util.HashMap" >
+        SELECT CODE,VALUE FROM t_bas_pubcode WHERE PARENT_ID = #{PARENT_ID} AND STATUS = '0' ORDER BY ORDERINDEX
+    </select>
+    
+    <select id="getFtpConfigList" resultType="java.util.HashMap" >
+        SELECT ID,IP,PORT,USER,PASSWORD,FTP_ADDR FROM t_sys_ftp WHERE IS_VALID = '1'
+    </select>
+    
+    <update id="updateSysTaskState">
+		update t_sys_task set TASK_STATE = '0'
+	</update>
+	
+	 <select id="getXmlBookType" resultType="java.util.HashMap" >
+        SELECT distinct PARENT_ID FROM t_xml_field WHERE STATUS = '01' AND PARENT_ID != '0'
+    </select>
+    
+     <select id="getXmlBookByParent" parameterType="java.lang.String" resultType="java.util.HashMap" >
+        SELECT CODE,VALUE FROM t_xml_field WHERE PARENT_ID = #{PARENT_ID} AND STATUS = '01' ORDER BY ORDERINDEX
+    </select>
+    
+    <select id="getXmlBookById" parameterType="java.lang.String" resultType="java.util.HashMap" >
+        SELECT CODE,VALUE FROM t_xml_field WHERE ID = #{ID}
+    </select>
+</mapper>

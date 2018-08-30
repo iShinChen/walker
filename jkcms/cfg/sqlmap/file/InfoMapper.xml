@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.walker.mapper.file.InfoMapper" >
+
+	<insert id="insertInfo" parameterType="java.util.Map">
+		insert into t_info(
+			id,
+			title,
+			<if test="summary != null and summary != ''">
+				summary,
+			</if>
+			<if test="content != null and content != ''">
+				content,
+			</if>
+			<if test="type != null and type != ''">
+				type,
+			</if>
+			<if test="status != null and status != ''">
+				status,
+			</if>
+			create_time,
+			update_time
+		)values(
+			#{id},
+			#{title},
+			<if test="summary != null and summary != ''">
+				#{summary},
+			</if>
+			<if test="content != null and content != ''">
+				#{content},
+			</if>
+			<if test="type != null and type != ''">
+				#{type},
+			</if>
+			<if test="status != null and status != ''">
+				#{status},
+			</if>
+			now(),
+			now()
+		)
+	</insert>
+	
+	<update id="updateInfo" parameterType="java.util.Map">
+		update t_info
+		set 
+			<if test="title != null and title != ''">
+				title = #{title},
+			</if>
+			<if test="summary != null and summary != ''">
+				summary = #{summary},
+			</if>
+			<if test="content != null and content != ''">
+				content = #{content},
+			</if>
+			<if test="type != null and type != ''">
+				type = #{type},
+			</if>
+			<if test="status != null and status != ''">
+				status = #{status},
+			</if>
+			update_time = now()
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteInfo">
+		delete from	t_info
+		where 
+			id in
+			<foreach item="item" index="index" collection="array" 
+            	open="(" separator="," close=")">
+            	#{item}
+            </foreach>
+	</delete>
+	
+	<select id="getInfoCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		select
+			count(id)
+		from
+			t_info
+		WHERE 1=1
+		<if test="name != null and name != ''">
+			and name like concat('%', #{name}, '%')
+		</if>
+	</select>
+	
+	<select id="getInfoPage" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select
+			id,
+			title,
+			summary,
+			content,
+			type,
+			status,
+			date_format(create_time,'%Y-%m-%d %H:%i:%s') create_time,
+			date_format(update_time,'%Y-%m-%d %H:%i:%s') update_time,
+			recommend
+		from
+			t_info
+		WHERE 1=1
+		<if test="name != null and name != ''">
+			and name like concat('%', #{name}, '%')
+		</if>
+		order by update_time desc
+		limit #{start},#{limit}
+	</select>
+	
+	<select id="getInfoById" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select
+			id,
+			title,
+			summary,
+			content,
+			type,
+			status,
+			create_time,
+			update_time
+		from
+			t_info
+		WHERE 
+			id = #{id}
+	</select>
+	
+	<select id="getInfoByTypeCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select
+			count(id)
+		from
+			t_info
+		where
+			status = '2'
+			<if test="type != null and type != ''">
+				and type = #{type}
+			</if>
+	</select>
+	<select id="getInfoByType" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select
+			id messageId,
+			title messageName,
+			summary messageSummary,
+			content messageInfo,
+			type messageType,
+			date_format(create_time,'%Y-%m-%d %H:%i:%s') messageDate
+		from
+			t_info
+		where
+			status = '2'
+			<if test="type != null and type != ''">
+				and type = #{type}
+			</if>
+		order by
+			create_time desc
+		limit #{start},#{limit}
+	</select>
+	
+	<select id="getInfoByInfoId" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select
+			id messageId,
+			title messageName,
+			summary messageSummary,
+			content messageInfo,
+			type messageType,
+			date_format(create_time,'%Y-%m-%d %H:%i:%s') messageDate
+		from
+			t_info
+		WHERE 
+			id = #{id}
+			and status = '2'
+	</select>
+	
+	<select id="getRecommendInfo" resultType="java.util.HashMap">
+		select
+			id messageId,
+			title messageName,
+			summary messageSummary,
+			content messageInfo,
+			type messageType,
+			date_format(create_time,'%Y-%m-%d %H:%i:%s') messageDate
+		from
+			t_info
+		WHERE 
+			recommend = '1'
+			and status = '2'
+	</select>
+	
+	<update id="removeRecommend">
+		update t_info
+		set 
+			recommend = '0'
+		where
+			recommend = '1'
+	</update>
+	
+	<update id="setRecommend" parameterType="java.lang.String">
+		update t_info
+		set 
+			recommend = '1'
+		where
+			id = #{id}
+	</update>
+</mapper>

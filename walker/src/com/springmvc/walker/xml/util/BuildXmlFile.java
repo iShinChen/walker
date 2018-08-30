@@ -42,7 +42,7 @@ public class BuildXmlFile {
 				maps = root.addElement("Mappings");
 				mapFlag = true;
 			}
-			switch (Integer.valueOf(element.get("ID").toString())) {
+			switch (id) {
 			case 1:
 				objects = CreateXmlObject.createSeriesObj(xml.getSeries(), objects);
 				break;

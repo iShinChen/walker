@@ -1,0 +1,172 @@
+﻿@CHARSET "UTF-8";
+
+/* 查找按钮图片 */
+.btnIconFind{
+	background-image:url(../images/button/find.png) !important;
+}
+.btnIconSearch{
+	background-image:url(../images/button/search.png) !important;
+}
+/* 导入按钮图片 */
+.btnIconImport{
+	background-image:url(../images/button/go.png) !important;
+}
+/* 导出Word按钮图片 */
+.btnIconWord{
+	background-image:url(../images/button/word.png) !important;
+}
+/* 保存按钮图片 */
+.btnIconSave{
+	background-image:url(../images/button/save.png) !important;
+}
+/* 下发按钮图片 */
+.btnIconSend{
+	background-image:url(../images/button/arrow_down.png) !important;
+}
+/* 提交按钮图片 */
+.btnIconSubmit{
+	background-image:url(../images/button/arrow_turn_up.png) !important;
+}
+/* 接受(通过)按钮图片 */
+.btnIconAccept{
+	background-image:url(../images/button/arrow_pass.png) !important;
+}
+/* 驳回按钮图片 */
+.btnIconReject{
+	background-image:url(../images/button/arrow_turn_back.png) !important;
+}
+
+/* 加入按钮图片 */
+.btnIconAddIn{
+	background-image:url(../images/button/add.png) !important;
+}
+.btnIconAddWl{
+	background-image:url(../images/button/vcard_add.png) !important;
+}
+/* 删除按钮图片 */
+.btnIconDel{
+	background-image:url(../images/button/delete.png) !important;
+}
+/* 修改按钮图片 */
+.btnIconUpdate{
+	background-image:url(../images/button/edit.gif) !important;
+}
+/* CDN注入图片 */
+.btnIconCDNIn{
+	background-image:url(../images/button/cd_go.png) !important;
+}
+
+/* 恢复默认值 */
+.btnIconRecover{
+	background-image:url(../images/button/control_repeat_blue.png) !important;
+}
+
+/* 重置钮图片 */
+.btnIconReset{
+	background-image:url(../images/button/reset.gif) !important;
+}
+
+.btnIconBulletError{
+	background-image:url(../images/button/bullet_error.png) !important;
+}
+
+.btnIconFilmSave{
+	background-image:url(../images/button/film_save.png) !important;
+}
+
+/* 下载*/
+.btnIconDownload {
+	background-image: url(../images/button/download.png)
+		!important;
+}
+
+/* 重试 */
+.btnIconReDo {
+	background-image: url(../images/button/redo.png)
+		!important;
+}
+
+/* 暂停 */
+.btnIconPause {
+	background-image: url(../images/button/pause.png)
+		!important;
+}
+
+.btnIconFilmDelete{
+	background-image:url(../images/button/film_delete.png) !important;
+}
+
+.btnIconBuildXml{
+	background-image:url(../images/button/page_white_code_red.png) !important;
+}
+
+.btnIconWrench{
+	background-image:url(../images/button/wrench.png) !important;
+}
+
+.btnIconKeyGo{
+	background-image:url(../images/button/key_go.png) !important;
+}
+
+.btnIconImgAdd{
+	background-image:url(../images/button/image_add.png) !important;
+}
+
+.btnIconMediaCopy{
+	background-image:url(../images/button/media_copy.png) !important;
+}
+
+.btnIconMediaSend{
+	background-image:url(../images/button/arrow_right.png) !important;
+}
+/* CDN重置图片 */
+.btnIconCDNReset {
+	background-image: url(../images/button/cd_edit.png) !important;
+}
+
+/* excel图片 */
+.btnExcel {
+	background-image: url(../images/button/excel.png) !important;
+}
+/* excel图片2 */
+.btnExcelPage {
+	background-image: url(../images/button/page_excel.png) !important;
+}
+/* pdf图片 */
+.btnPdf {
+	background-image: url(../images/button/document-pdf.png) !important;
+}
+/* 自动 */
+.btnIconAuto {
+	background-image: url(../images/button/auto.png) !important;
+}
+/* 检测 */
+.btnIconCheck {
+	background-image: url(../images/button/check.png) !important;
+}
+/* 媒资上线 */
+.btnIconOnLine {
+	background-image: url(../images/button/arrow_up.png) !important;
+}
+
+/* 媒资下线 */
+.btnIconOffLine {
+	background-image: url(../images/button/arrow_down.png) !important;
+}
+
+/* 刷新 */
+.btnIconRefresh {
+	background-image:url(../ext3.3.1/resources/images/default/grid/refresh.gif) !important;
+}
+/* 绑定合集 */
+.btnIconBind {
+	background-image: url(../images/button/binding.png) !important;
+}
+/* 拆分 */
+.btnIconSplit {
+	background-image: url(../images/button/scissors.png) !important;
+}
+/* 导出Excel按钮图片 */
+.btnIconExcel {
+	background-image: url(../images/button/excel.png) !important;
+}

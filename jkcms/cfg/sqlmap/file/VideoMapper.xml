@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.walker.mapper.file.VideoMapper" >
+
+	<insert id="insertVideo" parameterType="java.util.Map">
+		insert into t_video(
+			id,
+			name,
+			video_size,
+			duration,
+			url,
+			flag,
+			create_time,
+			update_time,
+			status
+		)values(
+			#{id},
+			#{name},
+			#{video_size},
+			#{duration},
+			#{url},
+			'00',
+			now(),
+			now(),
+			'00'
+		)
+	</insert>
+	
+	<update id="updateVideo" parameterType="java.util.Map">
+		update t_video
+		set 
+			<if test="name != null and name != ''">
+				name = #{name},
+			</if>
+			<if test="video_size != null and video_size != ''">
+				video_size = #{video_size},
+			</if>
+			<if test="duration != null and duration != ''">
+				duration = #{duration},
+			</if>
+			<if test="url != null and url != ''">
+				url = #{url},
+			</if>
+			<if test="flag != null and flag != ''">
+				flag = #{flag},
+			</if>
+			<if test="status != null and status != ''">
+				status = #{status},
+			</if>
+			update_time = now()
+		where
+			id = #{id}
+	</update>
+	
+	<delete id="deleteVideo" parameterType="java.lang.String">
+		delete from t_video
+		where id = #{id}
+	</delete>
+	
+	<update id="updVideoFlag"  parameterType="java.util.Map">
+		update t_video
+		set
+			flag = #{flag}
+		where
+			id = #{id}
+	</update>
+	
+	<update id="updVideoStatus"  parameterType="java.util.Map">
+		update t_video
+		set
+			status = #{status}
+		where
+			id = #{id}
+	</update>
+	
+	<select id="getVideoCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		select
+			count(id)
+		from
+			t_video
+		where 1=1
+		<if test="name != null and name != ''">
+			and name like concat('%', #{name}, '%')
+		</if>
+	</select>
+	
+	<select id="getVideoPage" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select
+			id,
+			name,
+			video_size,
+			duration,
+			url,
+			flag,
+			date_format(create_time,'%Y-%m-%d %H:%i:%s') create_time,
+			date_format(update_time,'%Y-%m-%d %H:%i:%s') update_time,
+			status
+		from
+			t_video
+		where 1=1
+		<if test="name != null and name != ''">
+			and name like concat('%', #{name}, '%')
+		</if>
+		order by update_time desc
+		limit #{start},#{limit}
+	</select>
+	
+	<select id="getVideoById" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select
+			id,
+			name,
+			video_size,
+			duration,
+			url,
+			flag,
+			create_time,
+			update_time,
+			status
+		from
+			t_video
+		where 
+			id = #{id}
+	</select>
+	
+	<select id="getVideoByUrl" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select
+			id,
+			name,
+			url
+		from
+			t_video
+		WHERE 
+			url = #{url}
+	</select>
+	
+	<select id="getVideoListByIds" resultType="java.util.HashMap">
+		select
+			id,
+			name,
+			video_size,
+			duration,
+			url,
+			flag,
+			status
+		from
+			t_video
+		where
+			id in
+			<foreach item="item" index="index" collection="array" 
+            	open="(" separator="," close=")">
+            	#{item}
+            </foreach>
+	</select>
+</mapper>

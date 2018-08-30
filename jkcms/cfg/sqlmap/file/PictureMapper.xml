@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.walker.mapper.file.PictureMapper" >
+	<insert id="insertPicture" parameterType="java.util.Map">
+		insert into t_picture(
+			PICTURE_ID,
+			TYPE,
+			FILE_URL,
+			RESLOUTION,
+			CREATE_TIME,
+			PARENT_ID,
+			STATUS
+		)values(
+			#{PICTURE_ID},
+			#{TYPE},
+			#{FILE_URL},
+			#{RESLOUTION},
+			now(),
+			#{PARENT_ID},
+			'01'
+		)
+	</insert>
+	
+	<update id="updatePicture" parameterType="java.util.Map">
+		update t_picture
+		set
+			<if test="FILE_URL != null and FILE_URL != ''">
+				FILE_URL = #{FILE_URL},
+			</if>
+			<if test="RESLOUTION != null and RESLOUTION != ''">
+				RESLOUTION = #{RESLOUTION},
+			</if>
+			<if test="PARENT_ID != null and PARENT_ID != ''">
+				PARENT_ID = #{PARENT_ID},
+			</if>
+			<if test="STATUS != null and STATUS != ''">
+				STATUS = #{STATUS},
+			</if>
+			CREATE_TIME = now()
+		where
+			PICTURE_ID = #{PICTURE_ID}
+	</update>
+	
+	<delete id="deletePicture">
+		delete from t_picture
+		where PICTURE_ID  = #{PICTURE_ID}
+	</delete>
+	
+	<delete id="deletePictureByParentId">
+		delete from t_picture
+		where PARENT_ID  = #{PARENT_ID}
+	</delete>
+
+	<select id="getPictureCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		select
+			count(id)
+		from t_picture tp
+		left join t_message tm on tm.id = tp.PARENT_ID
+		where 1 = 1
+		<if test="name != null and name != ''">
+			and tm.name like concat('%', #{name}, '%')
+		</if>
+	</select>
+	
+	<select id="getPicturePage" resultType="java.util.Map" parameterType="java.util.Map">
+		select
+			tp.PICTURE_ID id,
+			(case tp.TYPE
+				when '01' then '首页大图'
+				when '03' then '人员大图'
+				when '04' then '人员缩略图'
+				end
+			)as typeName,
+			tp.TYPE type,
+			tp.FILE_URL fileUrl,
+			tp.RESLOUTION resolution,
+			tp.STATUS status,
+			tp.PARENT_ID parentId,
+			'首页大图' as parentName
+		from
+			t_picture tp
+		where tp.type = '01'
+		UNION
+		select
+			tp.PICTURE_ID id,
+			(case tp.TYPE
+				when '01' then '首页大图'
+				when '03' then '人员大图'
+				when '04' then '人员缩略图'
+				end
+			)as typeName,
+			tp.TYPE type,
+			tp.FILE_URL fileUrl,
+			tp.RESLOUTION resolution,
+			tp.STATUS status,
+			tp.PARENT_ID parentId,
+			tm.name as parentName
+		from t_picture tp
+		inner join t_message tm on tm.id = tp.PARENT_ID
+		where tp.type in ('03','04')
+		<if test="name != null and name != ''">
+			and tm.name like concat('%', #{name}, '%')
+		</if>
+		order by parentId,type
+		limit #{start},#{limit}
+	</select>
+	
+	<select id="getPictureById" resultType="java.util.Map" parameterType="java.util.Map">
+		select
+			PICTURE_ID,
+			FILE_URL,
+			RESLOUTION
+		from
+			t_picture
+		where PICTURE_ID = #{PICTURE_ID}	
+	</select>
+	
+	<select id="getPictureByParentId" resultType="java.util.Map" parameterType="java.util.Map">
+		select
+			PICTURE_ID pictureId,
+			FILE_URL pictureUrl,
+			TYPE pictureType
+		from
+			t_picture
+		where PARENT_ID = #{parentId}
+			and STATUS = '01'
+		order by TYPE	
+	</select>
+	
+	<select id="getPictureByType" resultType="java.util.Map" parameterType="java.util.Map">
+		select
+			PICTURE_ID pictureId,
+			FILE_URL pictureUrl,
+			TYPE pictureType 
+		from
+			t_picture
+		where TYPE = #{type}
+			and	STATUS = '01'
+		ORDER BY PICTURE_ID
+	</select>
+
+</mapper>

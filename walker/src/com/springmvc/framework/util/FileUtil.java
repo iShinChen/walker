@@ -89,6 +89,7 @@ public class FileUtil {
 					bytesum += byteread;
 					fs.write(buffer, 0, byteread);
 				}
+				fs.close();
 				inStream.close();
 			}
 			return bytesum;
@@ -111,6 +112,7 @@ public class FileUtil {
 					fs.write(buffer, 0, byteread);
 				}
 				inStream.close();
+				fs.close();
 			}
 			return bytesum;
 		} catch (Exception e) {

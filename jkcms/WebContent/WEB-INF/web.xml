@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns="http://java.sun.com/xml/ns/javaee" 
+		xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+		id="WebApp_ID" version="2.5">
+	<display-name>jkcms</display-name>
+  
+  	<!-- 配置监听器 -->
+	<!-- <listener>   //下面的加载系统缓存的类中已经重写该类，不能重复配置
+    	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener> -->
+	<listener>
+		<!-- 加载系统缓存 -->
+		<listener-class>
+			com.springmvc.framework.listener.ContextListener
+		</listener-class>
+	</listener>
+	
+	<!-- 防止Spring内存溢出监听器  -->
+	<listener>
+	    <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+	
+	<!-- 配置过滤器，解决POST乱码问题 -->
+	<filter>
+	    <filter-name>encodingFilter</filter-name>
+	    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+	    <init-param>
+	        <param-name>encoding</param-name>
+	        <param-value>UTF-8</param-value>
+	    </init-param>
+	    <init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+	    <filter-name>encodingFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- springMVC核心配置 -->
+	<servlet>
+	     <servlet-name>springMVC</servlet-name>
+	     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+	     <init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:springmvc-servlet.xml</param-value>		
+		 </init-param>
+		 <!--当值为正数或零时：Servlet容器先加载数值小的servlet，再依次加载其他数值大的servlet.-->
+		 <load-on-startup>1</load-on-startup>
+		 <!--设置是否启用异步支持--> 
+		 <!-- <async-supported>true</async-supported> -->
+	</servlet>
+	
+	<!-- 拦截设置 -->
+	<servlet-mapping>
+		<servlet-name>springMVC</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 配置ueditorServlet -->
+	<servlet>
+    	<servlet-name>ueditorUpload</servlet-name>
+    	<servlet-class> com.springmvc.walker.servlet.UeditorServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+    	<servlet-name>ueditorUpload</servlet-name>
+    	<url-pattern>/servlet/ueditorUpload</url-pattern>
+  	</servlet-mapping>
+  	
+  	<!-- 配置VerifyCodeServlet -->
+	<servlet>
+    	<servlet-name>VerifyCodeServlet</servlet-name>
+    	<servlet-class> com.springmvc.framework.servlet.VerifyCodeServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+    	<servlet-name>VerifyCodeServlet</servlet-name>
+    	<url-pattern>/servlet/VerifyCodeServlet</url-pattern>
+  	</servlet-mapping>
+  
+	<!-- Spring和mybatis的配置文件 -->  
+  	<context-param>  
+        <param-name>contextConfigLocation</param-name>  
+        <param-value>classpath:spring-mybatis.xml</param-value>  
+    </context-param>
+    
+    <!-- 配置登陆过滤器-->
+	<filter>
+        <filter-name>loginFilter</filter-name>
+         <filter-class>com.springmvc.framework.filter.LoginFilter</filter-class>
+    </filter>
+ 	<filter-mapping>
+         <filter-name>loginFilter</filter-name>
+         <url-pattern>*.do</url-pattern>
+ 	</filter-mapping>
+    <filter-mapping>
+         <filter-name>loginFilter</filter-name>
+         <url-pattern>*.html</url-pattern>
+ 	</filter-mapping>
+ 	<filter-mapping>
+         <filter-name>loginFilter</filter-name>
+         <url-pattern>*.jsp</url-pattern>
+ 	</filter-mapping>
+	
+    <!-- 会话超时配置 -->
+    <session-config>
+    	<!--如果某个会话在一定时间未被访问，则服务器可以扔掉以节约内存-->  
+        <session-timeout>30</session-timeout>  
+    </session-config>
+    
+    <!--定义首页列单.-->
+    <welcome-file-list>
+     	<!--用来指定首页文件名称.我们可以用<welcome-file>指定几个首页,而服务器会依照设定的顺序来找首页.-->  
+        <welcome-file>/index.jsp</welcome-file>   
+    </welcome-file-list>
+    
+    <!-- Log4j日志 -->
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>classpath:log4j.properties</param-value>
+	</context-param>
+	<context-param>
+		<param-name>log4jRefreshInterval</param-name>
+		<param-value>60000</param-value>
+	</context-param>
+	<listener>
+		<listener-class>
+			org.springframework.web.util.Log4jConfigListener
+		</listener-class>
+	</listener>
+	
+	<!-- 错误页面设置 -->
+	<error-page>
+		<error-code>404</error-code>
+		<location>/building.html</location>
+	</error-page> 
+    
+</web-app>

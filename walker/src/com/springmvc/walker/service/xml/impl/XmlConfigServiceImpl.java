@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.springmvc.walker.mapper.xml.XmlConfigMapper;
@@ -14,7 +12,6 @@ import com.springmvc.walker.service.xml.XmlConfigService;
 @Service("xmlConfigService")
 public class XmlConfigServiceImpl implements XmlConfigService{
 
-	private final static Logger logger = Logger.getLogger(XmlConfigServiceImpl.class);
 	
 	@Resource
 	private XmlConfigMapper xmlConfigMapper;

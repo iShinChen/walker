@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.framework.mapper.SysMapper" >
+	
+	<select id="getLoginUserInfo" parameterType="java.util.Map" resultType="java.util.HashMap" >
+		select u.ID, u.LOGIN_NAME, u.USER_NAME, u.SP_ID, u.SP_NAME,u.PASSWORD, r.ID ROLE_ID, r.NAME ROLE_NAME
+		FROM t_sys_user u, t_sys_roleuser ru, t_sys_role r
+		where u.ID = ru.USER_ID
+		  AND ru.ROLE_ID = r.ID
+		  AND u.DELETE_FLAG = '1'
+		  AND u.LOGIN_NAME = #{loginName}
+		  AND u.PASSWORD = #{password}
+	</select>
+	
+	<select id="countUserList" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(u.ID)
+        FROM t_sys_user u
+		LEFT JOIN t_sys_roleuser ru ON ru.USER_ID=u.ID
+		LEFT JOIN t_sys_role r ON r.ID=ru.ROLE_ID AND r.STATE='1'
+		WHERE 1=1
+		<if test="userId != null and userId != ''">
+			AND u.ID = #{userId}
+		</if>
+		<if test="userName != null and userName != ''">
+			AND u.USER_NAME LIKE concat('%', #{userName}, '%')
+		</if>
+	</select>
+	
+	<select id="getUserListPage" parameterType="java.util.Map" resultType="java.util.HashMap" >
+		select u.ID, u.LOGIN_NAME, u.USER_NAME, u.PASSWORD, u.SP_ID, u.SP_NAME, u.DELETE_FLAG, r.ID ROLE_ID, r.NAME ROLE_NAME, ru.ID RU_ID
+		FROM t_sys_user u
+		LEFT JOIN t_sys_roleuser ru ON ru.USER_ID=u.ID
+		LEFT JOIN t_sys_role r ON r.ID=ru.ROLE_ID AND r.STATE='1'
+		WHERE 1=1
+		<if test="userId != null and userId != ''">
+			AND u.ID = #{userId}
+		</if>
+		<if test="userName != null and userName != ''">
+			AND u.USER_NAME LIKE concat('%', #{userName}, '%')
+		</if>
+        ORDER BY u.CREATE_TIME DESC
+		LIMIT #{start},#{limit}
+	</select>
+	
+	<select id="getLevelOneMenuList" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select m.ID,m.MENU_CODE,m.MENU_NAME,m.ICON,m.LEAF,m.PARENT_ID,m.URL 
+		from 
+		t_sys_roleuser ru,
+		t_sys_menu m,
+		t_sys_rolemenu rm
+		where ru.ROLE_ID = rm.ROLE_ID
+		  AND m.ID = rm.MENU_ID
+		  AND m.MENU_TYPE = 'menu'
+		  AND m.`LEVEL` = '0'
+		  AND ru.USER_ID = #{ID}
+		  AND ru.ROLE_ID = #{ROLE_ID}
+		ORDER BY m.MENU_ORDER
+	</select>
+	
+	<select id="getLevelTwoMenuList" parameterType="java.util.Map" resultType="java.util.HashMap" >
+		select m.ID,m.MENU_NAME,m.MENU_CODE,m.ICON,m.LEAF,m.PARENT_ID,m.URL 
+		from 
+		t_sys_roleuser ru,
+		t_sys_menu m,
+		t_sys_rolemenu rm
+		where ru.ROLE_ID = rm.ROLE_ID
+		  AND m.ID = rm.MENU_ID
+		  AND m.MENU_TYPE = 'menu'
+		  AND ru.USER_ID = #{ID}
+		  AND ru.ROLE_ID = #{ROLE_ID}
+		  AND m.PARENT_ID = #{PARENT_ID}
+		ORDER BY m.MENU_ORDER
+	</select>
+	
+	<update id="updateUser" parameterType="java.util.Map">
+		update t_sys_user
+		set
+			<if test="LOGIN_NAME != null and LOGIN_NAME != ''">
+                LOGIN_NAME = #{LOGIN_NAME}
+			</if>
+			<if test="USER_NAME != null and USER_NAME != ''">
+                ,USER_NAME = #{USER_NAME}
+			</if>
+			<if test="DELETE_FLAG != null and DELETE_FLAG != ''">
+                ,DELETE_FLAG = #{DELETE_FLAG}
+			</if>
+        where ID = #{ID}
+	</update>
+	
+	<update id="updateRoleUser" parameterType="java.util.Map">
+		update t_sys_roleuser
+		set
+        	ROLE_ID = #{ROLE_ID}
+        where ID = #{RU_ID}
+	</update>
+	
+	<insert id="insertRoleUser" parameterType="java.util.Map">
+		insert into t_sys_roleuser(ID, USER_ID, ROLE_ID)
+		values (#{RU_ID}, #{ID}, #{ROLE_ID})
+	</insert>
+	
+	<insert id="insertUser" parameterType="java.util.Map">
+		insert into t_sys_user(ID, LOGIN_NAME, USER_NAME, PASSWORD, SYS_FLAG, DELETE_FLAG,CREATE_USER,CREATE_USER_NAME)
+		values (#{ID}, #{LOGIN_NAME}, #{USER_NAME}, #{PASSWORD}, '0', #{DELETE_FLAG},#{CREATE_USER},#{CREATE_USER_NAME})
+	</insert>
+	
+	<select id="getRoleStore" resultType="java.util.HashMap" >
+		select ID,NAME TEXT
+        FROM t_sys_role 
+        where STATE = '1'
+	</select>
+	
+	<select id="getUserInfo" parameterType="java.util.Map" resultType="java.util.HashMap" >
+		select u.ID, u.LOGIN_NAME, u.USER_NAME, u.SP_ID, u.SP_NAME,u.PASSWORD, r.ID ROLE_ID, r.NAME ROLE_NAME
+		FROM t_sys_user u, t_sys_roleuser ru, t_sys_role r
+		where u.ID = ru.USER_ID
+			AND ru.ROLE_ID = r.ID
+		 	AND u.DELETE_FLAG = '1'
+		 	<if test="userId != null and userId != ''">
+                AND u.ID = #{userId}
+		  	</if>
+		  	<if test="loginName != null and loginName != ''">
+                AND u.LOGIN_NAME = #{loginName} 
+                AND u.PASSWORD = #{password}
+		  	</if>
+	</select>
+	
+	<update id="updatePassword" parameterType="java.util.Map">
+		update t_sys_user set PASSWORD=#{NPASSWORD}
+        where ID = #{userId}
+	</update>
+	
+	<delete id="deleteUser" parameterType="java.util.Map">
+		delete from t_sys_user where id in(${ids})
+	</delete>
+	
+	<select id="getPermissionList" parameterType="java.util.Map" resultType="java.util.HashMap" >
+		select m.ID
+		from 
+		t_sys_roleuser ru,
+		t_sys_menu m,
+		t_sys_rolemenu rm
+		where ru.ROLE_ID = rm.ROLE_ID
+		  AND m.ID = rm.MENU_ID
+		  AND m.MENU_TYPE = 'button'
+		  AND ru.USER_ID = #{ID}
+		  AND ru.ROLE_ID = #{ROLE_ID}
+		  AND m.PARENT_ID = #{MENU_ID}
+	</select>
+	
+	<select id="getLevelOneMenuListByRole" parameterType="java.util.Map" resultType="java.util.HashMap" >
+		SELECT m.ID,m.MENU_NAME,m.URL,m.LEAF,m.`LEVEL`,m.PARENT_ID,m.MENU_ORDER,CASE WHEN rm.ID IS NULL THEN 'false' ELSE 'true' END AS CHECKED
+		FROM t_sys_menu m LEFT JOIN t_sys_rolemenu rm on m.ID = rm.MENU_ID AND rm.ROLE_ID = #{ROLE_ID}
+		WHERE m.`LEVEL` = '0'
+		ORDER BY m.MENU_ORDER
+	</select>
+	
+	<select id="getChildMenuListByRole" parameterType="java.util.Map" resultType="java.util.HashMap" >
+		SELECT m.ID,m.MENU_NAME,m.URL,m.LEAF,m.`LEVEL`,m.PARENT_ID,m.MENU_ORDER,CASE WHEN rm.ID IS NULL THEN 'false' ELSE 'true' END AS CHECKED
+		FROM t_sys_menu m LEFT JOIN t_sys_rolemenu rm on m.ID = rm.MENU_ID AND rm.ROLE_ID = #{ROLE_ID}
+		WHERE m.PARENT_ID = #{PARENT_ID}
+		ORDER BY m.MENU_ORDER
+	</select>
+	
+	<delete id="deleteRoleMenuByRoleId" parameterType="java.lang.String">
+		delete from t_sys_rolemenu where ROLE_ID = #{roleId}
+	</delete>
+	
+	<insert id="insertRoleMenu" parameterType="java.util.Map">
+		insert into t_sys_rolemenu(ID, ROLE_ID, MENU_ID, USE_FLAG, DELETE_FLAG)
+		values (#{ID}, #{ROLE_ID}, #{MENU_ID}, '1', '1')
+	</insert>
+	
+	<select id="countRoleList" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1)
+        FROM t_sys_role 
+        where 1=1
+        <if test="roleId != null and roleId != ''">
+        	AND ID = #{roleId}
+        </if>
+        <if test="roleName != null and roleName != ''">
+        	AND NAME LIKE concat('%', #{roleName}, '%')
+        </if>
+	</select>
+	
+	<select id="getRoleListPage" parameterType="java.util.Map" resultType="java.util.HashMap" >
+		select ID,CODE,NAME,SYS_FLAG,DESCRIPTION,STATE
+        FROM t_sys_role 
+        where 1=1
+        <if test="roleId != null and roleId != ''">
+        	AND ID = #{roleId}
+        </if>
+        <if test="roleName != null and roleName != ''">
+        	AND NAME LIKE concat('%', #{roleName}, '%')
+        </if>
+		LIMIT #{start},#{limit}
+	</select>
+	
+	<delete id="deleteRole" parameterType="java.util.Map">
+		DELETE FROM t_sys_role WHERE ID IN(${ids})
+	</delete>
+	
+	<delete id="deleteRoleAndUserRela" parameterType="java.util.Map">
+		DELETE FROM t_sys_roleuser WHERE ROLE_ID IN(${ids})
+	</delete>
+	
+	<delete id="deleteRoleAndMenuRela" parameterType="java.util.Map">
+		DELETE FROM t_sys_rolemenu WHERE ROLE_ID IN(${ids})
+	</delete>
+	
+	<update id="updateRole" parameterType="java.util.Map">
+		update t_sys_role 
+		set DESCRIPTION = #{DESCRIPTION}
+		<if test="NAME != null and NAME != ''">
+               NAME = #{NAME}
+		</if>
+		<if test="STATE != null and STATE != ''">
+               STATE = #{STATE}
+		</if>
+        where ID = #{ID}
+	</update>
+	
+	<insert id="insertRole" parameterType="java.util.Map">
+		insert into t_sys_role(ID, CODE, NAME, SYS_FLAG, STATE, DESCRIPTION,CREATE_USER,CREATE_USER_NAME)
+		values (#{ID}, #{CODE}, #{NAME}, '0', #{STATE}, #{DESCRIPTION},#{CREATE_USER},#{CREATE_USER_NAME})
+	</insert>
+	
+	<select id="getJsonLevelOneMenuList" parameterType="java.util.Map" resultType="java.util.HashMap" >
+		SELECT m.ID,m.MENU_NAME,m.MENU_TYPE,m.URL,m.LEAF,m.`LEVEL`,m.PARENT_ID,m.MENU_ORDER
+		FROM t_sys_menu m
+		WHERE m.`LEVEL` = '0'
+		ORDER BY m.MENU_ORDER
+	</select>
+	
+	<select id="getJsonChildMenuList" parameterType="java.util.Map" resultType="java.util.HashMap" >
+		SELECT m.ID,m.MENU_NAME,m.MENU_TYPE,m.URL,m.LEAF,m.`LEVEL`,m.PARENT_ID,m.MENU_ORDER
+		FROM t_sys_menu m
+		WHERE m.PARENT_ID = #{PARENT_ID}
+		ORDER BY m.MENU_ORDER
+	</select>
+	
+	<delete id="deleteMenuById" parameterType="java.lang.String">
+		delete from t_sys_menu where ID = #{menuId}
+	</delete>
+	
+	<select id="countMenuById" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select count(1)
+        FROM t_sys_menu
+        where ID = #{ID}
+	</select>
+	
+	<update id="updateMenuById" parameterType="java.util.Map">
+		update t_sys_menu
+		set ID = #{ID}
+            <if test="MENU_TYPE != null and MENU_TYPE != ''">
+                ,MENU_TYPE = #{MENU_TYPE}
+			</if>
+			<if test="MENU_NAME != null and MENU_NAME != ''">
+                ,MENU_NAME = #{MENU_NAME}
+			</if>
+			<if test="URL != null and URL != ''">
+                ,URL = #{URL}
+			</if>
+			<if test="LEAF != null and LEAF != ''">
+                ,LEAF = #{LEAF}
+			</if>
+			<if test="MENU_ORDER != null and MENU_ORDER != ''">
+                ,MENU_ORDER = #{MENU_ORDER}
+			</if>
+        where ID = #{ID}
+	</update>
+	
+	<insert id="insertMenu" parameterType="java.util.Map">
+		insert into t_sys_menu(ID, MENU_TYPE, MENU_CODE, MENU_NAME, URL,PARENT_ID, DELETE_FLAG, LEAF,CREATE_USER,CREATE_USER_NAME
+			<if test="LEVEL != null and LEVEL != ''">
+                ,LEVEL
+			</if>
+			<if test="MENU_ORDER != null and MENU_ORDER != ''">
+                ,MENU_ORDER
+			</if>
+		)
+		values (#{ID}, #{MENU_TYPE}, #{MENU_CODE}, #{MENU_NAME}, #{URL}, #{PARENT_ID}, #{DELETE_FLAG}, #{LEAF}, #{CREATE_USER},#{CREATE_USER_NAME}
+			<if test="LEVEL != null and LEVEL != ''">
+                ,#{LEVEL}
+			</if>
+			<if test="MENU_ORDER != null and MENU_ORDER != ''">
+                ,#{MENU_ORDER}
+			</if>
+		)
+	</insert>
+	
+	<select id="countSysConfigList" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT count(ID) FROM t_sys_config
+        where 1=1
+       	<if test="code != null and code != ''">
+	   		AND CODE LIKE concat('%', #{code}, '%')
+	   	</if>
+	   	<if test="name != null and name != ''">
+	   		AND NAME LIKE concat('%', #{name}, '%')
+	   	</if>
+	</select>
+	
+	<select id="getSysConfigListPage" parameterType="java.util.Map" resultType="java.util.HashMap">
+		SELECT ID,CODE,NAME,VALUE FROM t_sys_config
+        where 1=1
+       	<if test="code != null and code != ''">
+	   		AND CODE LIKE concat('%', #{code}, '%')
+	   	</if>
+	   	<if test="name != null and name != ''">
+	   		AND NAME LIKE concat('%', #{name}, '%')
+	   	</if>
+		LIMIT #{start},#{limit}
+	</select>
+	
+	<update id="updateSysConfigInfo" parameterType="java.util.Map">
+		UPDATE t_sys_config 
+		SET NAME = #{NAME},
+			VALUE = #{VALUE} 
+		WHERE ID = #{ID}
+	</update>
+	
+	<update id="updateSysTaskState">
+		update t_sys_task set TASK_STATE = '0'
+	</update>
+	
+	<select id="countPublicCodeInfo" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT COUNT(ID) 
+		FROM t_bas_pubcode
+		where 1 = 1
+			<if test="name != null and name != ''">
+	   			and NAME LIKE concat('%', #{name}, '%')
+	   		</if>
+	   		<if test="parentId != null and parentId != ''">
+	   			and PARENT_ID = #{parentId}
+	   		</if>
+	   		<if test="code != null and code != ''">
+	   			and CODE = #{code}
+	   		</if>
+	   		<if test="value != null and value != ''">
+	   			and VALUE LIKE concat('%', #{value}, '%')
+	   		</if>
+	</select>
+	
+	<select id="getPublicCodeListPage" parameterType="java.util.Map" resultType="java.util.HashMap" >
+		SELECT  ID,CODE,NAME,VALUE,PARENT_ID,STATUS,`DESC`,ORDERINDEX
+		FROM t_bas_pubcode
+		where 1 = 1
+			<if test="name != null and name != ''">
+	   			and NAME LIKE concat('%', #{name}, '%')
+	   		</if>
+	   		<if test="parentId != null and parentId != ''">
+	   			and PARENT_ID = #{parentId}
+	   		</if>
+	   		<if test="code != null and code != ''">
+	   			and CODE = #{code}
+	   		</if>
+	   		<if test="value != null and value != ''">
+	   			and VALUE LIKE concat('%', #{value}, '%')
+	   		</if>
+		ORDER BY PARENT_ID,ORDERINDEX ASC
+		LIMIT ${start},${limit}
+	</select>
+	
+	<select id="getCodeNameInfo" resultType="java.util.HashMap">
+		SELECT DISTINCT PARENT_ID  FROM t_bas_pubcode GROUP BY PARENT_ID
+	</select>
+	
+	<select id="selectPublicCodeInfoById" parameterType="java.util.Map" resultType="java.util.HashMap" >
+		SELECT t.ID,t.CODE,t.NAME,t.VALUE,t.PARENT_ID,t.ORDERINDEX,t.DESC,t.STATUS FROM t_bas_pubcode t WHERE t.ID=#{ID}
+	</select>
+	
+	<insert id="insertPublicCodeInfo" parameterType="java.util.Map">
+		INSERT INTO t_bas_pubcode(ID,STATUS
+		<if test="NAME != null and NAME != ''">
+			,NAME
+		</if>
+		<if test="PARENT_ID != null and PARENT_ID != ''">
+			,PARENT_ID
+		</if>
+		<if test="CODE != null and CODE != ''">
+			,CODE
+		</if>
+		<if test="VALUE != null and VALUE != ''">
+			,VALUE
+		</if>
+		<if test="ORDERINDEX != null and ORDERINDEX != ''">
+			,ORDERINDEX
+		</if>
+		<if test="DESC != null and DESC != ''">
+			,`DESC`
+		</if>
+		) VALUES (#{ID},'0'
+		<if test="NAME != null and NAME != ''">
+			,#{NAME}
+		</if>
+		<if test="PARENT_ID != null and PARENT_ID != ''">
+			,#{PARENT_ID}
+		</if>
+		<if test="CODE != null and CODE != ''">
+			,#{CODE}
+		</if>
+		<if test="VALUE != null and VALUE != ''">
+			,#{VALUE}
+		</if>
+		<if test="ORDERINDEX != null and ORDERINDEX != ''">
+			,#{ORDERINDEX}
+		</if>
+		<if test="DESC != null and DESC != ''">
+			,#{DESC}
+		</if>
+		)
+	</insert>
+	
+	<update id="updatePublicCodeInfo" parameterType="java.util.Map">
+		UPDATE t_bas_pubcode
+		set
+			<if test="NAME != null and NAME != ''">
+				NAME=#{NAME},
+			</if>
+			<if test="CODE != null and CODE != ''">
+				`CODE`=#{CODE},
+			</if>
+			<if test="VALUE != null and VALUE != ''">
+				VALUE=#{VALUE},
+			</if>
+			<if test="PARENT_ID != null and PARENT_ID != ''">
+				PARENT_ID=#{PARENT_ID},
+			</if>
+			<if test="ORDERINDEX != null and ORDERINDEX != ''">
+				ORDERINDEX=#{ORDERINDEX},
+			</if>
+			<if test="DESC != null and DESC != ''">
+				`DESC`=#{DESC},
+			</if>
+			ID = #{ID}
+		WHERE 
+			ID=#{ID}
+	</update>
+	
+	<update id="deletePublicCodeInfo" parameterType="java.lang.String">
+		UPDATE t_bas_pubcode set STATUS='1' WHERE ID =#{codeId}
+	</update>
+	
+	<!-- 唯一性校验 -->
+	<select id="checkCode" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+	   SELECT COUNT(1) FROM t_bas_pubcode 
+	    WHERE CODE = #{CODE}
+	    <if test="PARENT_ID != null and PARENT_ID != ''">
+	    	and PARENT_ID = #{PARENT_ID}
+	    </if>
+	    <if test="ID != null and ID != ''">
+	    	and ID!=#{ID}
+	    </if>
+	 </select>
+	 
+	 <select id="child" resultType="java.util.HashMap" parameterType="java.util.Map">
+        SELECT b.ID, b.CODE, b.NAME, b.VALUE,b.STATUS 
+		FROM t_bas_pubcode a 
+		INNER JOIN t_bas_pubcode b ON a.CODE = b.PARENT_ID
+		where a.CODE = #{code}
+		<if test="STATUS != null and STATUS != ''">
+			and b.STATUS = #{status}
+		</if>
+		ORDER BY b.ORDERINDEX
+    </select>
+</mapper>
