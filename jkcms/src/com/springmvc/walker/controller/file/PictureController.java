@@ -20,8 +20,10 @@ import com.springmvc.framework.entity.Page;
 import com.springmvc.framework.entity.PageResultBean;
 import com.springmvc.framework.entity.ResultBean;
 import com.springmvc.framework.util.ContinueFTP;
+import com.springmvc.framework.util.IpAdrressUtil;
 import com.springmvc.framework.util.ParamUtil;
 import com.springmvc.framework.util.PrintWriterUtil;
+import com.springmvc.logs.service.LogsService;
 import com.springmvc.walker.service.PictureService;
 
 @Controller
@@ -32,6 +34,8 @@ public class PictureController {
 	
 	@Autowired
 	private PictureService pictureService;
+	@Autowired
+	private LogsService logsService;
 	
 	/**
 	 * 获取数据列表
@@ -48,6 +52,13 @@ public class PictureController {
 			Page page = new Page();
 			List<Map<String, Object>> list = pictureService.getPicturePage(paraMap, page);
 			result.setPageResultBean(page.getTotalRow(), page.getPageRow(), list, true);
+			
+			//记录访问日志
+			Map<String, Object> logsMap = new HashMap<String, Object>();
+			logsMap.put("PAGE_URL", "/picture/getPictureListPage");
+			logsMap.put("VIEW_IP", IpAdrressUtil.getIpAdrress(request));
+			logsMap.put("PAGE_TYPE", "CMS");
+			logsService.logVV(logsMap);
 		} catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);
@@ -68,6 +79,13 @@ public class PictureController {
 			Map<String, Object> resultMap = pictureService.getPictureById(request.getParameter("id"));
 			result.setData(resultMap);
 			result.setSuccess(true);
+			
+			//记录访问日志
+			Map<String, Object> logsMap = new HashMap<String, Object>();
+			logsMap.put("PAGE_URL", "/picture/getPictureById");
+			logsMap.put("VIEW_IP", IpAdrressUtil.getIpAdrress(request));
+			logsMap.put("PAGE_TYPE", "CMS");
+			logsService.logVV(logsMap);
 		} catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);

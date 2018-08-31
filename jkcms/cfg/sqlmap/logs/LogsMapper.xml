@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.logs.mapper.LogsMapper" >
+
+	<insert id="insertLogVV" parameterType="java.util.Map">
+		INSERT INTO t_page_vv(PAGE_URL, VIEW_IP,PAGE_TYPE)
+		VALUES(#{PAGE_URL}, #{VIEW_IP},#{PAGE_TYPE})
+		<selectKey resultType="long" keyProperty="ID" >     
+			select LAST_INSERT_ID() as value     
+    	</selectKey>
+	</insert>
+	
+</mapper>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springmvc.api.mapper.PageShowMapper" >
+
+	<select id="getCategoryByParentId" parameterType="java.lang.String" resultType="java.util.HashMap" >
+		SELECT 
+			t.NAME name, 
+			t.TYPE level, 
+			t.CATEGORY_ID menuId, 
+			t.DESCRIPTION url
+		FROM t_vod_category t
+		where t.PARENTID = #{parentId}
+		ORDER BY t.ORDERINDEX
+	</select>
+	
+	<select id="getPictureByParentId" resultType="java.util.Map" parameterType="java.util.Map">
+		select
+			PICTURE_ID pictureId,
+			FILE_URL pictureUrl,
+			TYPE pictureType
+		from
+			t_picture
+		where PARENT_ID = #{parentId}
+			and STATUS = '01'
+		order by TYPE	
+	</select>
+	
+	<select id="getPictureByType" resultType="java.util.Map" parameterType="java.util.Map">
+		select
+			PICTURE_ID pictureId,
+			FILE_URL pictureUrl,
+			TYPE pictureType 
+		from
+			t_picture
+		where TYPE = #{type}
+			and	STATUS = '01'
+		ORDER BY PICTURE_ID
+	</select>
+	
+	<select id="getPerson" resultType="java.util.HashMap">
+		select
+			id personId,
+			name personName,
+			details personInfo
+		from
+			t_message
+		WHERE 
+			data_flag = '1'
+	</select>
+	
+	<select id="getInfoByTypeCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select
+			count(id)
+		from
+			t_info
+		where
+			status = '2'
+			<if test="type != null and type != ''">
+				and type = #{type}
+			</if>
+	</select>
+	<select id="getInfoByType" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select
+			id messageId,
+			title messageName,
+			summary messageSummary,
+			content messageInfo,
+			type messageType,
+			date_format(create_time,'%Y-%m-%d %H:%i:%s') messageDate
+		from
+			t_info
+		where
+			status = '2'
+			<if test="type != null and type != ''">
+				and type = #{type}
+			</if>
+		order by
+			create_time desc
+		limit #{start},#{limit}
+	</select>
+	
+	<select id="getInfoByInfoId" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select
+			id messageId,
+			title messageName,
+			summary messageSummary,
+			content messageInfo,
+			type messageType,
+			date_format(create_time,'%Y-%m-%d %H:%i:%s') messageDate
+		from
+			t_info
+		WHERE 
+			id = #{id}
+			and status = '2'
+	</select>
+	
+	<select id="getRecommendInfo" resultType="java.util.HashMap">
+		select
+			id messageId,
+			title messageName,
+			summary messageSummary,
+			content messageInfo,
+			type messageType,
+			date_format(create_time,'%Y-%m-%d %H:%i:%s') messageDate
+		from
+			t_info
+		WHERE 
+			recommend = '1'
+			and status = '2'
+	</select>
+
+</mapper>

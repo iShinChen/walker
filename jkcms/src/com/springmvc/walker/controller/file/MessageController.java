@@ -36,9 +36,11 @@ import com.springmvc.framework.entity.PageResultBean;
 import com.springmvc.framework.entity.ResultBean;
 import com.springmvc.framework.util.ContinueFTP;
 import com.springmvc.framework.util.ExcelUtil;
+import com.springmvc.framework.util.IpAdrressUtil;
 import com.springmvc.framework.util.ParamUtil;
 import com.springmvc.framework.util.PrintWriterUtil;
 import com.springmvc.framework.util.StringUtils;
+import com.springmvc.logs.service.LogsService;
 import com.springmvc.walker.service.FileService;
 import com.springmvc.walker.service.ImportExcelService;
 import com.springmvc.walker.service.MessageService;
@@ -58,6 +60,9 @@ public class MessageController {
 	@Autowired
 	private FileService fileService;
 	
+	@Autowired
+	private LogsService logsService;
+	
 	/**
 	 * 获取数据列表
 	 * @param request
@@ -73,6 +78,13 @@ public class MessageController {
 			Page page = new Page();
 			List<Map<String, Object>> list = messageService.getMessagePage(paraMap, page);
 			result.setPageResultBean(page.getTotalRow(), page.getPageRow(), list, true);
+			
+			//记录访问日志
+			Map<String, Object> logsMap = new HashMap<String, Object>();
+			logsMap.put("PAGE_URL", "/file/getMessageListPage");
+			logsMap.put("VIEW_IP", IpAdrressUtil.getIpAdrress(request));
+			logsMap.put("PAGE_TYPE", "CMS");
+			logsService.logVV(logsMap);
 		} catch (Exception e) {
 			logger.error(e);
 			result.setSuccess(false);
@@ -94,6 +106,13 @@ public class MessageController {
 			Map<String, Object> resultMap = messageService.getMessageById(request.getParameter("id"));
 			result.setData(resultMap);
 			result.setSuccess(true);
+			
+			//记录访问日志
+			Map<String, Object> logsMap = new HashMap<String, Object>();
+			logsMap.put("PAGE_URL", "/file/getMessageById");
+			logsMap.put("VIEW_IP", IpAdrressUtil.getIpAdrress(request));
+			logsMap.put("PAGE_TYPE", "CMS");
+			logsService.logVV(logsMap);
 		} catch (Exception e) {
 			logger.error("程序异常", e);
 			result.setSuccess(false);

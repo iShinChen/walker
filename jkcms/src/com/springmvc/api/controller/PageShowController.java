@@ -22,6 +22,11 @@ import com.springmvc.framework.util.PrintWriterUtil;
 import com.springmvc.walker.service.CategoryService;
 import com.springmvc.walker.service.MessageService;
 
+/**
+ * 页面展示API
+ * @author shin chen
+ *
+ */
 @Controller
 @RequestMapping("/view") 
 public class PageShowController {

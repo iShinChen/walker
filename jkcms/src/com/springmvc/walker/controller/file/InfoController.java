@@ -1,5 +1,6 @@
 package com.springmvc.walker.controller.file;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.springmvc.framework.entity.Page;
 import com.springmvc.framework.entity.PageResultBean;
 import com.springmvc.framework.entity.ResultBean;
+import com.springmvc.framework.util.IpAdrressUtil;
 import com.springmvc.framework.util.ParamUtil;
 import com.springmvc.framework.util.PrintWriterUtil;
+import com.springmvc.logs.service.LogsService;
 import com.springmvc.walker.service.InfoService;
 
 @Controller
@@ -26,6 +29,8 @@ public class InfoController {
 	
 	@Autowired
 	private InfoService infoService;
+	@Autowired
+	private LogsService logsService;
 	
 	/**
 	 * 获取信息列表
@@ -42,6 +47,13 @@ public class InfoController {
 			Page page = new Page();
 			List<Map<String, Object>> list = infoService.getInfoPage(paraMap, page);
 			result.setPageResultBean(page.getTotalRow(), page.getPageRow(), list, true);
+			
+			//记录访问日志
+			Map<String, Object> logsMap = new HashMap<String, Object>();
+			logsMap.put("PAGE_URL", "/info/getInfoListPage");
+			logsMap.put("VIEW_IP", IpAdrressUtil.getIpAdrress(request));
+			logsMap.put("PAGE_TYPE", "CMS");
+			logsService.logVV(logsMap);
 		} catch (Exception e) {
 			logger.error("程序异常",e);
 			result.setSuccess(false);
@@ -62,6 +74,13 @@ public class InfoController {
 			Map<String, Object> resultMap = infoService.getInfoById(request.getParameter("id"));
 			result.setData(resultMap);
 			result.setSuccess(true);
+			
+			//记录访问日志
+			Map<String, Object> logsMap = new HashMap<String, Object>();
+			logsMap.put("PAGE_URL", "/info/getInfoById");
+			logsMap.put("VIEW_IP", IpAdrressUtil.getIpAdrress(request));
+			logsMap.put("PAGE_TYPE", "CMS");
+			logsService.logVV(logsMap);
 		} catch (Exception e) {
 			logger.error("程序异常",e);
 			result.setSuccess(false);

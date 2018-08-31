@@ -22,49 +22,124 @@
     <bean id="propertyConfigurer"  
         class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
         <property name="location" value="classpath:jdbc.properties" />  
-    </bean>  
-  
-  	<!-- 配置数据源 -->
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"  
+    </bean>
+    
+  	<!-- 配置数据源  -业务库-->
+    <bean id="masterDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"  
         destroy-method="close">  
-        <property name="driverClassName" value="${driver}" />  
-        <property name="url" value="${url}" />  
-        <property name="username" value="${username}" />  
-        <property name="password" value="${password}" />  
-        <!-- 初始化连接大小 -->  
-        <property name="initialSize" value="${initialSize}"></property>  
-        <!-- 连接池最大数量 -->  
-        <property name="maxActive" value="${maxActive}"></property>  
-        <!-- 连接池最大空闲 -->  
-        <property name="maxIdle" value="${maxIdle}"></property>  
-        <!-- 连接池最小空闲 -->  
-        <property name="minIdle" value="${minIdle}"></property>  
-        <!-- 获取连接最大等待时间 -->  
-        <property name="maxWait" value="${maxWait}"></property>  
-    </bean>  
+        <property name="driverClass" value="${jdbc.driver}" />
+		<property name="jdbcUrl" value="${master.url}" />
+		<property name="user" value="${master.username}" />
+		<property name="password" value="${master.password}" />
+		<property name="checkoutTimeout" value="${cpool.checkoutTimeout}" />
+		<property name="initialPoolSize" value="${cpool.minPoolSize}" />
+		<property name="minPoolSize" value="${cpool.minPoolSize}" />
+		<property name="maxPoolSize" value="${cpool.maxPoolSize}" />
+		<property name="maxIdleTime" value="${cpool.maxIdleTime}" />
+		<property name="acquireIncrement" value="${cpool.acquireIncrement}" />
+		<property name="idleConnectionTestPeriod" value="${cpool.idleConnectionTestPeriod}" />
+    </bean> 
+    <!-- 配置数据源  -日志库-->
+    <bean id="slaveDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="${jdbc.driver}" />
+		<property name="jdbcUrl" value="${slave.url}" />
+		<property name="user" value="${slave.username}" />
+		<property name="password" value="${slave.password}" />
+		<property name="checkoutTimeout" value="${cpool.checkoutTimeout}" />
+		<property name="initialPoolSize" value="${cpool.minPoolSize}" />
+		<property name="minPoolSize" value="${cpool.minPoolSize}" />
+		<property name="maxPoolSize" value="${cpool.maxPoolSize}" />
+		<property name="maxIdleTime" value="${cpool.maxIdleTime}" />
+		<property name="acquireIncrement" value="${cpool.acquireIncrement}" />
+		<property name="idleConnectionTestPeriod" value="${cpool.idleConnectionTestPeriod}" />
+	</bean> 
+  
+  	<bean id="multipleDataSource" class="com.springmvc.framework.datasource.MultipleDataSource">
+		<property name="defaultTargetDataSource" ref="masterDataSource" />
+		<property name="targetDataSources">
+			<map>
+				<entry key="masterDataSource" value-ref="masterDataSource" />
+				<entry key="slaveDataSource" value-ref="slaveDataSource" />
+			</map>
+		</property>
+	</bean>
   
     <!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->  
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
-        <property name="dataSource" ref="dataSource" />  
+        <property name="dataSource" ref="multipleDataSource" />  
         <!-- 自动扫描mapping.xml文件 -->  
         <property name="mapperLocations" value="classpath:sqlmap/**/*.xml"></property> 
-    </bean>  
+    </bean>
   
     <!-- mapper接口所在包名，Spring会自动查找其下的类 -->  
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
-    	<!-- <property name="basePackage" value="com.springmvc.framework.mapper" />  
-        <property name="basePackage" value="com.springmvc.walker.mapper" /> -->
         <property name="basePackage" value="com.springmvc.*.mapper" />
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>  
     </bean>
-  
-    <!-- 声明式事务管理 -->  
-    <bean id="transactionManager"  
-        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
-        <property name="dataSource" ref="dataSource" />  
+    
+    <!-- 这个就是spring的事务管理了，采用的DataSource事务管理，要管理的DataSource当然也是上面配置的DataSource -->
+	<bean id="transactionManager"
+       class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource">
+            <ref bean="masterDataSource" />
+        </property>
     </bean>
     
+    <!-- 事务管理的代理类，将其抽象化abstruct=true,以后需要进行事务管理直接继承此类就行了，非常方便 -->
+	<bean id="transactionProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true">
+		<!-- 这个就是刚才配置的事务管理器 -->
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<!-- 下面是spring事务管理的策略，可以看到，凡是涉及数据库插入、修改的操作都应当以add、insert、edit、update、delete开头，这样才能由spring进行事务管理 -->
+		<property name="transactionAttributes">
+			<props>
+				<prop key="insert*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="add*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="update*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="edit*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="clean*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="is*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="search*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="query*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="find*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+    
     <!--开启事务  -->
-	<tx:annotation-driven transaction-manager="transactionManager" />  
+	<tx:annotation-driven transaction-manager="transactionManager" /> 
+	
+	<!--数据源自动切换  -->
+	<bean id="dbAdvice" class="com.springmvc.framework.datasource.MultipleDataSourceAdvice" />
+	
+	<aop:config proxy-target-class="true">
+		<aop:aspect ref="dbAdvice">
+			<aop:pointcut id="apiPointcut"
+				expression="execution(* com.springmvc.api.service.impl.*.*(..))" />
+			<aop:before method="setMasterDataSource" pointcut-ref="apiPointcut" />
+		</aop:aspect>
+		<aop:aspect ref="dbAdvice">
+			<aop:pointcut id="framworkPointcut"
+				expression="execution(* com.springmvc.framework.service.impl.*.*(..))" />
+			<aop:before method="setMasterDataSource" pointcut-ref="framworkPointcut" />
+		</aop:aspect>
+		<aop:aspect ref="dbAdvice">
+			<aop:pointcut id="cmsPointcut"
+				expression="execution(* com.springmvc.walker.service.impl.*.*(..))" />
+			<aop:before method="setMasterDataSource" pointcut-ref="cmsPointcut" />
+		</aop:aspect>
+		<aop:aspect ref="dbAdvice">
+			<aop:pointcut id="logsPointcut"
+				expression="execution(* com.springmvc.logs.service.impl.*.*(..))" />
+			<aop:before method="setSlaveDataSource" pointcut-ref="logsPointcut" />
+		</aop:aspect>
+	</aop:config> 
   
 </beans>  
